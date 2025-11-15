@@ -8,7 +8,9 @@ public class User
     public string UniversityName { get; set; } = null!;
     public string Semester { get; set; } = "Fall 2025";
 
-    // later: password hash, etc.
+    // SIMPLE password field for hackathon (plain text).
+    // In a real app, you'd hash this.
+    public string PasswordHash { get; set; } = null!;
 
     public ICollection<Wallet> Wallets { get; set; } = new List<Wallet>();
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();

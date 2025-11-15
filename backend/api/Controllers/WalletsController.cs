@@ -18,7 +18,22 @@ public class WalletsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetWallets()
     {
-        var wallets = await _db.Wallets.ToListAsync();
+        var userEmail = Request.Headers["X-User-Email"].FirstOrDefault();
+        
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        if (user == null)
+        {
+            return NotFound(new { message = "User not found" });
+        }
+
+        var wallets = await _db.Wallets
+            .Where(w => w.UserId == user.Id)
+            .ToListAsync();
         return Ok(wallets);
     }
 }

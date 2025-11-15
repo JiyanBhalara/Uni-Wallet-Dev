@@ -48,6 +48,22 @@ export default async function Home() {
   ]);
 
   const primaryWallet = wallets.find((w) => w.isPrimary) ?? wallets[0];
+  
+  // If no wallet exists, show a message
+  if (!primaryWallet) {
+    return (
+      <main className="min-h-screen bg-[var(--sc-cream)] flex items-center justify-center px-3 sm:px-4 py-4 sm:py-6 md:py-10">
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold text-[var(--sc-green-dark)] mb-4">
+            Welcome, {me.fullName}!
+          </h1>
+          <p className="text-[var(--sc-green)]">
+            No wallets found. Please contact support to set up your campus wallet.
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[var(--sc-cream)] flex justify-center px-3 sm:px-4 py-4 sm:py-6 md:py-10">

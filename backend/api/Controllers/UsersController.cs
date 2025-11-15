@@ -18,7 +18,28 @@ public class UsersController : ControllerBase
     [HttpGet("me")]
     public IActionResult GetMe()
     {
-        var user = _db.Users.FirstOrDefault();
-        return Ok(user);
+        // Get user email from header sent by frontend
+        var userEmail = Request.Headers["X-User-Email"].FirstOrDefault();
+        
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+
+        var user = _db.Users.FirstOrDefault(u => u.Email == userEmail);
+        
+        if (user == null)
+        {
+            return NotFound(new { message = "User not found" });
+        }
+
+        return Ok(new
+        {
+            id = user.Id,
+            fullName = user.FullName,
+            email = user.Email,
+            universityName = user.UniversityName,
+            semester = user.Semester
+        });
     }
 }

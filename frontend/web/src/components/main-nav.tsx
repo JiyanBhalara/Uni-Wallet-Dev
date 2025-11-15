@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { signOut } from "next-auth/react";
 
 const links = [
   { href: "/", label: "Dashboard" },
@@ -38,6 +39,13 @@ export function MainNav() {
           </Link>
         );
       })}
+      <Button
+        variant="ghost"
+        onClick={() => signOut({ callbackUrl: "/login" })}
+        className="text-[0.7rem] sm:text-xs md:text-sm px-2 sm:px-3 md:px-4 py-1.5 whitespace-nowrap text-red-600 hover:text-red-700"
+      >
+        Logout
+      </Button>
     </nav>
   );
 }
