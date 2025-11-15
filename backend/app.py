@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from config import Config
 from services import UserService, TransactionService, PlaidService
 from utils import handle_errors
@@ -310,6 +310,285 @@ def bank_status():
         'has_bank_linked': plaid_service.has_linked_bank(user_id),
         'accounts_count': plaid_service.get_linked_accounts_count(user_id),
         'plaid_enabled': plaid_service.is_configured()
+    })
+
+def build_smart_prompt(user, user_message: str) -> str:
+    """Build a comprehensive prompt for the AI with all user context"""
+    
+    # Calculate summary stats
+    total_spent = sum(t.amount for t in user.transactions if t.type == 'debit')
+    total_income = sum(t.amount for t in user.transactions if t.type == 'credit')
+    
+    # Get recent transactions (last 10)
+    recent = sorted(user.transactions, key=lambda x: x.date, reverse=True)[:10]
+    
+    # Build the prompt
+    prompt = f"""You are a helpful financial assistant for {user.name}.
+
+Your ONLY job is to help with financial questions and budgeting. You MUST refuse to answer ANY non-financial questions.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 FINANCIAL SUMMARY:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Total Spent: ${total_spent:.2f}
+Total Income: ${total_income:.2f}
+Net Balance: ${total_income - total_spent:.2f}
+Total Transactions: {len(user.transactions)}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📝 RECENT TRANSACTIONS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
+    
+    for t in recent:
+        symbol = '-' if t.type == 'debit' else '+'
+        prompt += f"{t.date} | {t.category:12} | {symbol}${t.amount:7.2f} | {t.description}\n"
+    
+    # ADD CAMPUS CARDS INFO HERE ⬇️⬇️⬇️
+    campus_cards = campus_cards_db.get(user.user_id, [])
+    if campus_cards:
+        prompt += "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        prompt += "🎓 CAMPUS CARDS:\n"
+        prompt += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        
+        total_campus_balance = 0
+        for card in campus_cards:
+            balance = card.get('balance', 0)
+            total_campus_balance += balance
+            
+            # Format card info
+            balance_info = f"${balance:.2f}" if balance > 0 else "No balance"
+            swipes_info = f" ({card.get('swipes_left', 0)} swipes left)" if card.get('swipes_left') else ""
+            
+            prompt += f"- {card['name']}: {balance_info}{swipes_info}\n"
+            
+            # Add last transaction info
+            if card.get('last_transaction') and card['last_transaction']['merchant'] != 'N/A':
+                lt = card['last_transaction']
+                prompt += f"  Last used: {lt['merchant']}"
+                if lt['amount'] > 0:
+                    prompt += f" (${lt['amount']:.2f})"
+                prompt += "\n"
+        
+        prompt += f"\nTotal Campus Balance: ${total_campus_balance:.2f}\n"
+    
+    prompt += """
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 YOUR RULES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. ONLY answer questions about finances, spending, budgeting, and money management
+2. For ANY non-financial question (weather, sports, news, etc.), politely refuse and remind the user you only help with finances
+3. Use the transaction data above to give accurate, specific answers
+4. Be friendly and helpful but stay focused on financial topics
+5. Give practical budgeting advice when appropriate
+6. Use emojis occasionally to be friendly (💰 🏦 💳 📊)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💬 USER QUESTION:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{user_message}
+
+Respond now:"""
+    
+    return prompt
+    
+# Campus cards storage
+campus_cards_db = {}  # user_id -> [list of cards]
+
+@app.route('/api/campus-cards/summary', methods=['GET'])
+@handle_errors
+def get_campus_cards_summary():
+    """Get summary of all campus cards"""
+    user_id = request.args.get('user_id', 'demo_user')
+    cards = campus_cards_db.get(user_id, [])
+    
+    summary = {
+        'total_balance': sum(c.get('balance', 0) for c in cards),
+        'cards_by_type': {},
+        'low_balance_cards': [],
+        'expiring_soon': []
+    }
+    
+    # Group by type
+    for card in cards:
+        card_type = card.get('type', 'other')
+        if card_type not in summary['cards_by_type']:
+            summary['cards_by_type'][card_type] = {
+                'count': 0,
+                'total_balance': 0
+            }
+        summary['cards_by_type'][card_type]['count'] += 1
+        summary['cards_by_type'][card_type]['total_balance'] += card.get('balance', 0)
+        
+        # Check for low balance (< $20)
+        if card.get('balance', 0) < 20 and card.get('balance', 0) > 0:
+            summary['low_balance_cards'].append({
+                'name': card['name'],
+                'balance': card['balance']
+            })
+    
+    return jsonify({
+        'status': 'success',
+        'summary': summary
+    })
+
+@app.route('/api/campus-cards', methods=['GET'])
+@handle_errors
+def get_campus_cards():
+    """Get all campus cards for a user"""
+    user_id = request.args.get('user_id', 'demo_user')
+    cards = campus_cards_db.get(user_id, [])
+    
+    # Calculate total balance
+    total_balance = sum(card.get('balance', 0) for card in cards if card.get('balance'))
+    
+    return jsonify({
+        'status': 'success',
+        'cards': cards,
+        'total_balance': total_balance
+    })
+
+@app.route('/api/campus-cards', methods=['POST'])
+@handle_errors
+def add_campus_card():
+    """Add a new campus card"""
+    data = request.json
+    user_id = data.get('user_id', 'demo_user')
+    
+    card = {
+        'id': len(campus_cards_db.get(user_id, [])) + 1,
+        'type': data.get('type', 'dining'),  # dining, student_id, gym, library
+        'name': data.get('name', 'Campus Card'),
+        'card_number': data.get('card_number', ''),
+        'balance': float(data.get('balance', 0)),
+        'last_transaction': data.get('last_transaction', {
+            'merchant': 'N/A',
+            'amount': 0,
+            'date': datetime.now().isoformat()
+        }),
+        'added_at': datetime.now().isoformat()
+    }
+    
+    if user_id not in campus_cards_db:
+        campus_cards_db[user_id] = []
+    
+    campus_cards_db[user_id].append(card)
+    
+    print(f"✅ Campus card added: {card['name']} - ${card['balance']}")
+    
+    return jsonify({
+        'status': 'success',
+        'card': card
+    })
+
+@app.route('/api/campus-cards/<int:card_id>', methods=['PUT'])
+@handle_errors
+def update_campus_card(card_id):
+    """Update card balance"""
+    data = request.json
+    user_id = data.get('user_id', 'demo_user')
+    
+    cards = campus_cards_db.get(user_id, [])
+    
+    for card in cards:
+        if card['id'] == card_id:
+            card['balance'] = float(data.get('balance', card['balance']))
+            card['last_transaction'] = data.get('last_transaction', card.get('last_transaction'))
+            
+            return jsonify({
+                'status': 'success',
+                'card': card
+            })
+    
+    return jsonify({
+        'status': 'error',
+        'error': 'Card not found'
+    }), 404
+
+@app.route('/api/campus-cards/<int:card_id>', methods=['DELETE'])
+@handle_errors
+def delete_campus_card(card_id):
+    """Delete a campus card"""
+    user_id = request.args.get('user_id', 'demo_user')
+    
+    cards = campus_cards_db.get(user_id, [])
+    campus_cards_db[user_id] = [c for c in cards if c['id'] != card_id]
+    
+    return jsonify({
+        'status': 'success',
+        'message': 'Card deleted'
+    })
+
+@app.route('/api/demo-campus-cards', methods=['POST'])
+@handle_errors
+def load_demo_campus_cards():
+    """Load demo campus cards for testing"""
+    user_id = request.json.get('user_id', 'demo_user')
+    
+    # Clear existing cards
+    campus_cards_db[user_id] = []
+    
+    demo_cards = [
+        {
+            'type': 'dining',
+            'name': 'Dining Dollars',
+            'card_number': '123456789',
+            'balance': 245.50,
+            'last_merchant': 'Campus Cafe',
+            'last_amount': 12.50,
+            'last_transaction_date': (datetime.now() - timedelta(hours=2)).isoformat()
+        },
+        {
+            'type': 'student_id',
+            'name': 'Student ID Card',
+            'card_number': '987654321',
+            'balance': 50.00,
+            'last_merchant': 'Library Printing',
+            'last_amount': 5.00,
+            'last_transaction_date': (datetime.now() - timedelta(hours=5)).isoformat()
+        },
+        {
+            'type': 'gym',
+            'name': 'Campus Gym Membership',
+            'card_number': '555123456',
+            'balance': 0,
+            'swipes_left': 45,
+            'expires': '2025-12-31',
+            'last_merchant': 'Campus Gym',
+            'last_amount': 0,
+            'last_transaction_date': (datetime.now() - timedelta(days=1)).isoformat()
+        }
+    ]
+    
+    for card_data in demo_cards:
+        card = {
+            'id': len(campus_cards_db[user_id]) + 1,
+            'type': card_data['type'],
+            'name': card_data['name'],
+            'card_number': card_data['card_number'],
+            'balance': card_data['balance'],
+            'swipes_left': card_data.get('swipes_left'),
+            'expires': card_data.get('expires'),
+            'last_transaction': {
+                'merchant': card_data['last_merchant'],
+                'amount': card_data['last_amount'],
+                'date': card_data['last_transaction_date']
+            },
+            'added_at': datetime.now().isoformat(),
+            'updated_at': datetime.now().isoformat()
+        }
+        campus_cards_db[user_id].append(card)
+    
+    total_balance = sum(c['balance'] for c in campus_cards_db[user_id])
+    
+    print(f"✅ Demo campus cards loaded for {user_id}: {len(campus_cards_db[user_id])} cards, ${total_balance} total")
+    
+    return jsonify({
+        'status': 'success',
+        'message': 'Demo campus cards loaded successfully',
+        'cards_count': len(campus_cards_db[user_id]),
+        'total_balance': total_balance,
+        'cards': campus_cards_db[user_id]
     })
 
 if __name__ == '__main__':
