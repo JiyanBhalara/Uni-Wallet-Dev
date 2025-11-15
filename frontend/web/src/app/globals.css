@@ -1,23 +1,17 @@
-/* src/app/globals.css */
 @import "tailwindcss";
 
-/* You can keep or tweak the default Next.js styles below */
-
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+  --sc-green: #606c38;
+  --sc-green-dark: #283618;
+  --sc-cream: #fefae0;
+  --sc-gold: #dda15e;
+  --sc-gold-dark: #bc6c25;
 }
 
 body {
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
     "Segoe UI", sans-serif;
-  background: var(--background);
-  color: var(--foreground);
+  background-color: var(--sc-cream);
+  color: #111827;
 }
