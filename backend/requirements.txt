@@ -63,6 +63,7 @@ opentelemetry-util-http==0.59b0
 overrides==7.7.0
 packaging==25.0
 pillow==12.0.0
+plaid-python>=37.0.0
 posthog==7.0.0
 protobuf==6.33.1
 pulsar-client==3.8.0
