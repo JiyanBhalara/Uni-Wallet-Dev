@@ -6,6 +6,8 @@ from config import Config
 from services import UserService, TransactionService, PlaidService
 from utils import handle_errors
 from vector_store import get_vector_db
+from services.stress_detector import StressDetector
+
 
 app = Flask(__name__)
 CORS(app)
@@ -16,6 +18,7 @@ vector_db = get_vector_db()
 user_service = UserService()
 transaction_service = TransactionService()
 plaid_service = PlaidService()
+stress_detector = StressDetector()
 
 def build_smart_prompt(user, user_message: str) -> str:
     """Build AI prompt with context"""
@@ -591,6 +594,196 @@ def load_demo_campus_cards():
         'cards': campus_cards_db[user_id]
     })
 
+# ========================================
+# STRESS DETECTION ENDPOINT
+# ========================================
+
+@app.route('/api/stress-analysis', methods=['GET'])
+@handle_errors
+def analyze_stress():
+    """Analyze financial stress patterns"""
+    user_id = request.args.get('user_id', 'demo_user')
+    days = int(request.args.get('days', 7))
+    
+    user = user_service.get_user(user_id)
+    
+    # Get stress analysis
+    analysis = stress_detector.analyze_stress_patterns(user.transactions, days)
+    
+    # If stress detected, get AI advice
+    ai_advice = None
+    if analysis['stress_level'] not in ['none', 'insufficient_data', 'low']:
+        # Build prompt for AI
+        signals_text = '\n'.join([s['message'] for s in analysis['signals'] if s.get('detected')])
+        
+        prompt = f"""Based on this student's spending analysis:
+
+{signals_text}
+
+Stress Level: {analysis['stress_level']}
+
+Give brief, empathetic advice (2-3 sentences) about managing finances during stressful periods. Be supportive and practical."""
+
+        try:
+            response = requests.post(
+                f"{Config.OLLAMA_HOST}/api/chat",
+                headers={
+                    "Authorization": f"Bearer {Config.OLLAMA_API_KEY}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": Config.OLLAMA_MODEL,
+                    "messages": [{"role": "user", "content": prompt}],
+                    "stream": False
+                },
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                ai_advice = response.json()['message']['content']
+        except Exception as e:
+            print(f"⚠️ AI advice generation failed: {e}")
+    
+    return jsonify({
+        'status': 'success',
+        'analysis': analysis,
+        'ai_advice': ai_advice,
+        'user_id': user_id
+    })
+
+@app.route('/api/stress-summary', methods=['GET'])
+@handle_errors  
+def stress_summary():
+    """Get quick stress summary"""
+    user_id = request.args.get('user_id', 'demo_user')
+    
+    user = user_service.get_user(user_id)
+    analysis = stress_detector.analyze_stress_patterns(user.transactions, 7)
+    
+    # Quick summary
+    summary = {
+        'stress_level': analysis['stress_level'],
+        'score': analysis['score'],
+        'alert': None,
+        'top_recommendation': None
+    }
+    
+    if analysis['signals']:
+        summary['alert'] = analysis['signals'][0]['message']
+    
+    if analysis['recommendations']:
+        summary['top_recommendation'] = analysis['recommendations'][0]
+    
+    return jsonify({
+        'status': 'success',
+        'summary': summary
+    })
+    
+@app.route('/api/debug-transactions', methods=['GET'])
+def debug_transactions():
+    """Debug: See what transactions exist"""
+    user_id = request.args.get('user_id', 'demo_user')
+    user = user_service.get_user(user_id)
+    
+    from datetime import datetime, timedelta
+    cutoff = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
+    
+    all_txns = [
+        {
+            'date': t.date,
+            'type': t.type,
+            'amount': t.amount,
+            'description': t.description,
+            'recent': t.date >= cutoff
+        }
+        for t in user.transactions
+    ]
+    
+    recent_count = sum(1 for t in all_txns if t['recent'] and t['type'] == 'debit')
+    
+    return jsonify({
+        'user_id': user_id,
+        'total_transactions': len(all_txns),
+        'recent_debits_last_7_days': recent_count,
+        'cutoff_date': cutoff,
+        'all_transactions': all_txns
+    })
+
+@app.route('/api/demo-stress-data', methods=['POST'])
+@handle_errors
+def load_stress_demo_data():
+    """Load demo data that triggers stress signals"""
+    user_id = request.json.get('user_id', 'stressed_student')
+    
+    # IMPORTANT: Clear existing user data first!
+    if user_id in user_service.users:
+        print(f"⚠️ Clearing existing data for {user_id}")
+        del user_service.users[user_id]
+    
+    # Create fresh user
+    user = user_service.create_user(user_id, "Stressed Student")
+    
+    # Use recent dates
+    from datetime import datetime, timedelta
+    today = datetime.now()
+    
+    # Simulate stressful spending pattern
+    stress_transactions = [
+        # Week 1: Normal
+        {'date': (today - timedelta(days=14)).strftime('%Y-%m-%d'), 'type': 'credit', 'amount': 500.0, 'category': 'Allowance', 'description': 'Monthly allowance'},
+        {'date': (today - timedelta(days=13)).strftime('%Y-%m-%d'), 'type': 'debit', 'amount': 15.0, 'category': 'Food', 'description': 'Campus cafeteria'},
+        {'date': (today - timedelta(days=11)).strftime('%Y-%m-%d'), 'type': 'debit', 'amount': 20.0, 'category': 'Books', 'description': 'Textbook'},
+        
+        # Week 2: Stress builds - late night orders
+        {'date': (today - timedelta(days=7)).strftime('%Y-%m-%d'), 'type': 'debit', 'amount': 25.0, 'category': 'Food', 'description': 'Pizza delivery - late night'},
+        {'date': (today - timedelta(days=6)).strftime('%Y-%m-%d'), 'type': 'debit', 'amount': 18.0, 'category': 'Food', 'description': 'Burger delivery - late night'},
+        {'date': (today - timedelta(days=6)).strftime('%Y-%m-%d'), 'type': 'debit', 'amount': 12.0, 'category': 'Coffee', 'description': 'Coffee - late night study'},
+        {'date': (today - timedelta(days=5)).strftime('%Y-%m-%d'), 'type': 'debit', 'amount': 30.0, 'category': 'Food', 'description': 'Chinese delivery - late night'},
+        
+        # Week 3: High frequency + spikes
+        {'date': (today - timedelta(days=3)).strftime('%Y-%m-%d'), 'type': 'debit', 'amount': 22.0, 'category': 'Food', 'description': 'Breakfast delivery'},
+        {'date': (today - timedelta(days=3)).strftime('%Y-%m-%d'), 'type': 'debit', 'amount': 28.0, 'category': 'Food', 'description': 'Lunch delivery'},
+        {'date': (today - timedelta(days=3)).strftime('%Y-%m-%d'), 'type': 'debit', 'amount': 35.0, 'category': 'Food', 'description': 'Dinner delivery - late night'},
+        {'date': (today - timedelta(days=2)).strftime('%Y-%m-%d'), 'type': 'debit', 'amount': 15.0, 'category': 'Coffee', 'description': 'Coffee run'},
+        {'date': (today - timedelta(days=2)).strftime('%Y-%m-%d'), 'type': 'debit', 'amount': 40.0, 'category': 'Food', 'description': 'Sushi delivery - late night'},
+        {'date': (today - timedelta(days=2)).strftime('%Y-%m-%d'), 'type': 'debit', 'amount': 8.0, 'category': 'Coffee', 'description': 'Energy drinks'},
+        {'date': (today - timedelta(days=1)).strftime('%Y-%m-%d'), 'type': 'debit', 'amount': 32.0, 'category': 'Food', 'description': 'Pizza delivery - late night'},
+        
+        # Today: Continued stress
+        {'date': today.strftime('%Y-%m-%d'), 'type': 'debit', 'amount': 45.0, 'category': 'Food', 'description': 'Grocery delivery - late night'},
+    ]
+    
+    for txn_data in stress_transactions:
+        transaction = transaction_service.create_transaction(
+            user_id=user_id,
+            transaction_id=len(user.transactions) + 1,
+            date=txn_data['date'],
+            type=txn_data['type'],
+            amount=txn_data['amount'],
+            category=txn_data['category'],
+            description=txn_data['description']
+        )
+        user_service.add_transaction(user_id, transaction)
+    
+    # Debug output
+    from datetime import datetime, timedelta
+    cutoff = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
+    recent_debits = [t for t in user.transactions if t.date >= cutoff and t.type == 'debit']
+    
+    print(f"✅ Stress demo data loaded for {user_id}!")
+    print(f"   Total transactions: {len(user.transactions)}")
+    print(f"   Recent debits (last 7 days): {len(recent_debits)}")
+    print(f"   Cutoff date: {cutoff}")
+    
+    return jsonify({
+        'status': 'success',
+        'message': 'Stress pattern demo data loaded',
+        'transactions_count': len(user.transactions),
+        'recent_debits_count': len(recent_debits),
+        'cutoff_date': cutoff,
+        'warning': 'This data simulates high-stress spending patterns'
+    })
+    
 if __name__ == '__main__':
     print("\n" + "="*60)
     print("🚀 STARTING SMART CAMPUS WALLET BACKEND")
