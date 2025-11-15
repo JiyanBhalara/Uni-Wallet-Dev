@@ -30,7 +30,7 @@ export default function WalletActions({ walletId, paymentMethods }: Props) {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   const apiUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5234";
+    process.env.NEXT_PUBLIC_API_BASE_URL;
     
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ message, type });

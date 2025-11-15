@@ -79,167 +79,165 @@ export default async function Home() {
   );
 
   return (
-    <main className="min-h-screen bg-[var(--sc-cream)] flex justify-center px-3 sm:px-4 py-4 sm:py-6 md:py-10">
-      <div className="w-full max-w-5xl space-y-6 sm:space-y-8">
-        {/* Top bar */}
-        <header className="flex items-center justify-between gap-3">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <WalletIcon className="w-4 h-4 text-[var(--sc-green-dark)]" />
-              <p className="text-[0.65rem] sm:text-xs uppercase tracking-[0.2em] text-[var(--sc-green-dark)] font-medium">
-                Smart Campus Wallet
+    <main className="w-full">
+      <div className="w-full max-w-[1400px] mx-auto space-y-4 sm:space-y-5 lg:space-y-6">
+        
+        {/* ===== HEADER SECTION ===== */}
+        <header className="flex flex-col gap-2 sm:gap-3 animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="flex items-start sm:items-center justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-[var(--sc-green-dark)] leading-tight">
+                Hello, {me.fullName.split(" ")[0]} 👋
+              </h1>
+              <p className="text-xs sm:text-sm text-[var(--sc-green)] mt-0.5 flex items-center gap-1.5 flex-wrap">
+                <MapPin className="w-3 h-3 flex-shrink-0" />
+                <span>{me.universityName}</span>
+                <span>·</span>
+                <span>{me.semester}</span>
               </p>
             </div>
-            <h1 className="mt-1 text-xl sm:text-2xl md:text-3xl font-semibold text-[var(--sc-green-dark)] truncate">
-              Hello, {me.fullName.split(" ")[0]}
-            </h1>
-            <p className="text-[0.65rem] sm:text-xs text-[var(--sc-green)] truncate flex items-center gap-1.5">
-              <MapPin className="w-3 h-3" />
-              {me.universityName} · {me.semester}
-            </p>
-          </div>
-          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-            <div className="hidden text-right md:block">
-              <p className="text-xs font-medium text-[var(--sc-green-dark)]">
-                Student
-              </p>
-              <p className="text-[0.7rem] text-[var(--sc-green)]">
-                {me.email}
-              </p>
-            </div>
-            <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-gradient-to-br from-[var(--sc-green-dark)] to-[var(--sc-green)] text-[var(--sc-cream)] flex items-center justify-center text-xs sm:text-sm font-semibold shadow-lg flex-shrink-0 ring-2 ring-[var(--sc-green-dark)]/20">
-              {me.fullName
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+              <div className="text-right hidden sm:block">
+                <p className="text-xs font-semibold text-[var(--sc-green-dark)]">Student</p>
+                <p className="text-[0.7rem] text-[var(--sc-green)] truncate max-w-[180px]">{me.email}</p>
+              </div>
+              <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-gradient-to-br from-[var(--sc-green-dark)] to-[var(--sc-green)] text-[var(--sc-cream)] flex items-center justify-center text-sm font-bold shadow-md hover:shadow-lg transition-all duration-300 flex-shrink-0 cursor-pointer">
+                {me.fullName.split(" ").map((n) => n[0]).join("")}
+              </div>
             </div>
           </div>
         </header>
 
-        {/* Wallet cards row */}
-        <section className="grid gap-3 sm:gap-4 md:grid-cols-[minmax(0,2fr)_minmax(0,1.2fr)]">
-          {/* Primary big card */}
-          <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[var(--sc-green-dark)] to-[var(--sc-green)] text-[var(--sc-cream)] p-4 sm:p-5 md:p-6 shadow-xl hover:shadow-2xl transition-shadow duration-300">
-            {/* Decorative background pattern */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[rgba(254,250,224,0.05)] rounded-full blur-3xl -mr-32 -mt-32"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-[rgba(254,250,224,0.03)] rounded-full blur-2xl -ml-24 -mb-24"></div>
+        {/* ===== WALLET CARDS SECTION ===== */}
+        <section className="grid gap-3 sm:gap-4 lg:grid-cols-[2fr_1fr] xl:grid-cols-[2.2fr_1fr] animate-in fade-in slide-in-from-bottom-4 duration-700">
+          
+          {/* Primary Wallet Card */}
+          <div className="relative overflow-hidden rounded-[20px] sm:rounded-[24px] bg-gradient-to-br from-[var(--sc-green-dark)] via-[var(--sc-green)] to-[#3d5c24] text-[var(--sc-cream)] p-5 sm:p-6 shadow-xl hover:shadow-2xl transition-all duration-300 group">
             
-            <div className="relative z-10">
-              <div className="flex justify-between items-start gap-2">
+            {/* Decorative background elements */}
+            <div className="absolute top-0 right-0 w-40 h-40 sm:w-56 sm:h-56 bg-white/5 rounded-full blur-3xl -mr-20 sm:-mr-28 -mt-20 sm:-mt-28 group-hover:bg-white/8 transition-colors duration-500"></div>
+            <div className="absolute bottom-0 left-0 w-32 h-32 sm:w-44 sm:h-44 bg-black/5 rounded-full blur-2xl -ml-16 sm:-ml-22 -mb-16 sm:-mb-22"></div>
+            
+            <div className="relative z-10 space-y-5 sm:space-y-6">
+              {/* Card Header */}
+              <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <p className="text-[0.6rem] sm:text-[0.65rem] uppercase tracking-[0.2em] text-[rgba(254,250,224,0.7)] font-medium">
+                  <p className="text-[0.65rem] sm:text-xs uppercase tracking-[0.25em] text-[rgba(254,250,224,0.75)] font-medium mb-1.5">
                     Campus Wallet
                   </p>
-                  <h2 className="mt-1 sm:mt-2 text-lg sm:text-xl font-semibold truncate">
+                  <h2 className="text-lg sm:text-xl font-bold truncate">
                     {primaryWallet.displayName}
                   </h2>
                 </div>
-                <span className="rounded-full bg-[rgba(254,250,224,0.18)] backdrop-blur-sm px-2 sm:px-3 py-1 text-[0.65rem] sm:text-[0.7rem] whitespace-nowrap flex items-center gap-1.5 border border-[rgba(254,250,224,0.2)]">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[rgba(254,250,224,0.18)] backdrop-blur-sm px-2.5 sm:px-3 py-1 text-[0.65rem] sm:text-[0.7rem] font-medium whitespace-nowrap border border-[rgba(254,250,224,0.2)]">
                   <Sparkles className="w-3 h-3" />
-                  Tap &amp; Pay Ready
+                  Tap & Pay Ready
                 </span>
               </div>
 
-              <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-between sm:items-end gap-3 sm:gap-0">
+              {/* Balance Display */}
+              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
                 <div>
-                  <p className="text-[0.6rem] sm:text-[0.65rem] uppercase tracking-wide text-[rgba(254,250,224,0.7)] font-medium">
+                  <p className="text-[0.65rem] sm:text-xs uppercase tracking-wide text-[rgba(254,250,224,0.75)] font-medium mb-1.5">
                     Available balance
                   </p>
-                  <p className="mt-1 text-2xl sm:text-3xl md:text-4xl font-bold">
+                  <p className="text-3xl sm:text-4xl font-bold tracking-tight">
                     {primaryWallet.currency} {primaryWallet.balance.toFixed(2)}
                   </p>
                 </div>
-                <div className="text-left sm:text-right text-[0.6rem] sm:text-[0.65rem] text-[rgba(254,250,224,0.7)] flex flex-col gap-0.5">
-                  <span className="flex items-center gap-1 sm:justify-end">
+                <div className="text-left sm:text-right space-y-0.5">
+                  <p className="text-[0.65rem] sm:text-xs text-[rgba(254,250,224,0.7)] flex items-center gap-1.5 sm:justify-end">
                     <Clock className="w-3 h-3" />
                     Last updated just now
-                  </span>
-                  <span className="hidden sm:flex items-center gap-1 sm:justify-end">
+                  </p>
+                  <p className="hidden sm:flex text-[0.65rem] sm:text-xs text-[rgba(254,250,224,0.7)] items-center gap-1.5 sm:justify-end">
                     <TrendingUp className="w-3 h-3" />
-                    On-campus &amp; off-campus spend
-                  </span>
+                    On-campus & off-campus spend
+                  </p>
                 </div>
               </div>
 
-              {/* bottom row: pills + actions */}
-              <div className="mt-4 sm:mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              {/* Tags and Actions */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2 border-t border-[rgba(254,250,224,0.15)]">
                 <div className="flex flex-wrap gap-2 text-[0.65rem] sm:text-[0.7rem]">
-                  <span className="rounded-full bg-[rgba(254,250,224,0.16)] backdrop-blur-sm px-2.5 sm:px-3 py-1 border border-[rgba(254,250,224,0.15)] flex items-center gap-1.5">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[rgba(254,250,224,0.15)] px-2.5 py-1 border border-[rgba(254,250,224,0.18)]">
                     <CreditCard className="w-3 h-3" />
                     Campus card · Default
                   </span>
-                  <span className="rounded-full bg-[rgba(254,250,224,0.12)] backdrop-blur-sm px-2.5 sm:px-3 py-1 border border-[rgba(254,250,224,0.1)]">
+                  <span className="inline-flex items-center rounded-full bg-[rgba(254,250,224,0.12)] px-2.5 py-1 border border-[rgba(254,250,224,0.15)]">
                     Smart budget active
                   </span>
-                  <span className="rounded-full bg-[rgba(254,250,224,0.12)] backdrop-blur-sm px-2.5 sm:px-3 py-1 border border-[rgba(254,250,224,0.1)]">
-                    {totalPaymentMethods} payment method
-                    {totalPaymentMethods !== 1 ? "s" : ""} linked
+                  <span className="hidden sm:inline-flex items-center rounded-full bg-[rgba(254,250,224,0.12)] px-2.5 py-1 border border-[rgba(254,250,224,0.15)]">
+                    {totalPaymentMethods} method{totalPaymentMethods !== 1 ? "s" : ""} linked
                   </span>
                 </div>
 
-                {/* Actions (client component) */}
-                <WalletActions
-                  walletId={primaryWallet.id}
-                  paymentMethods={paymentMethods}
-                />
+                {/* Wallet Actions Component */}
+                <div className="flex-shrink-0">
+                  <WalletActions
+                    walletId={primaryWallet.id}
+                    paymentMethods={paymentMethods}
+                  />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Side stack of smaller cards */}
-          <div className="space-y-2 sm:space-y-3">
-            {/* Dedicated Meal Plan card */}
+          {/* Secondary Wallets Column */}
+          <div className="space-y-3">
+            
+            {/* Meal Plan Wallet Card */}
             {mealPlanWallet && (
-              <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[var(--sc-gold)] to-[var(--sc-gold-dark)] text-[var(--sc-green-dark)] shadow-md hover:shadow-lg transition-all duration-300 border border-[rgba(40,54,24,0.08)] px-3 sm:px-4 py-3 sm:py-3.5 flex justify-between items-center gap-2 group">
+              <div className="rounded-[20px] sm:rounded-[24px] bg-gradient-to-br from-[#dda15e] to-[#c4914e] text-[var(--sc-green-dark)] shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-4.5 flex justify-between items-center gap-3 group cursor-pointer">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <Utensils className="w-3.5 h-3.5 text-[rgba(40,54,24,0.7)]" />
-                    <p className="text-[0.6rem] sm:text-[0.65rem] uppercase tracking-[0.18em] text-[rgba(40,54,24,0.7)] font-medium">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <Utensils className="w-3.5 h-3.5 text-[rgba(40,54,24,0.6)] flex-shrink-0" />
+                    <p className="text-[0.65rem] uppercase tracking-[0.2em] text-[rgba(40,54,24,0.7)] font-medium">
                       Meal Plan
                     </p>
                   </div>
-                  <p className="text-xs sm:text-sm font-semibold truncate mt-1">
+                  <p className="text-sm sm:text-base font-bold truncate">
                     {mealPlanWallet.displayName}
                   </p>
-                  <p className="mt-1 text-[0.65rem] sm:text-[0.7rem] text-[rgba(40,54,24,0.8)] truncate">
+                  <p className="mt-1 text-[0.7rem] text-[rgba(40,54,24,0.75)] truncate">
                     {formatMealPlanText(mealPlanWallet)}
                   </p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-[0.6rem] sm:text-[0.65rem] text-[rgba(40,54,24,0.75)] font-medium">
+                  <p className="text-[0.65rem] text-[rgba(40,54,24,0.7)] font-medium uppercase tracking-wide">
                     Swipes
                   </p>
-                  <p className="text-sm sm:text-base font-bold whitespace-nowrap">
+                  <p className="text-lg sm:text-xl font-bold whitespace-nowrap mt-0.5">
                     {mealPlanDisplayValue(mealPlanWallet)}
                   </p>
                 </div>
               </div>
             )}
 
-            {/* Other wallets */}
+            {/* Other Wallets */}
             {otherWallets.map((w) => (
               <div
                 key={w.id}
-                className="rounded-2xl sm:rounded-3xl bg-white shadow-md hover:shadow-lg transition-all duration-300 border border-[rgba(40,54,24,0.08)] hover:border-[rgba(40,54,24,0.12)] px-3 sm:px-4 py-2.5 sm:py-3 flex justify-between items-center gap-2 group"
+                className="rounded-[20px] sm:rounded-[24px] bg-white shadow-md hover:shadow-lg transition-all duration-300 border border-[rgba(40,54,24,0.06)] p-4 flex justify-between items-center gap-3 group cursor-pointer"
               >
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <WalletIcon className="w-3.5 h-3.5 text-[var(--sc-green)]" />
-                    <p className="text-[0.6rem] sm:text-[0.65rem] uppercase tracking-[0.18em] text-[var(--sc-green)] font-medium">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <WalletIcon className="w-3.5 h-3.5 text-[var(--sc-green)] flex-shrink-0" />
+                    <p className="text-[0.65rem] uppercase tracking-[0.2em] text-[var(--sc-green)] font-medium">
                       {walletTypeLabel(w.type)}
                     </p>
                   </div>
-                  <p className="text-xs sm:text-sm font-semibold text-[var(--sc-green-dark)] truncate mt-0.5">
+                  <p className="text-sm sm:text-base font-bold text-[var(--sc-green-dark)] truncate">
                     {w.displayName}
                   </p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-[0.6rem] sm:text-[0.65rem] text-[var(--sc-green)] font-medium">
+                  <p className="text-[0.65rem] text-[var(--sc-green)] font-medium uppercase tracking-wide">
                     Balance
                   </p>
-                  <p className="text-sm sm:text-base font-bold text-[var(--sc-gold-dark)] whitespace-nowrap">
+                  <p className="text-lg sm:text-xl font-bold text-[#bc6c25] whitespace-nowrap mt-0.5">
                     {w.currency === "SWIPES"
-                      ? `${w.balance} swipes`
+                      ? `${w.balance}`
                       : `${w.currency} ${w.balance.toFixed(2)}`}
                   </p>
                 </div>
@@ -248,44 +246,48 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Compact recent transaction strip */}
+        {/* ===== RECENT TRANSACTION HIGHLIGHT ===== */}
         {latestTransaction && (
           <section>
-            <div className="rounded-2xl sm:rounded-3xl bg-white shadow-md hover:shadow-lg transition-all duration-300 border border-[rgba(40,54,24,0.08)] hover:border-[rgba(40,54,24,0.12)] px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+            <div className="rounded-[20px] sm:rounded-[24px] bg-white shadow-md hover:shadow-lg transition-all duration-300 border border-[rgba(40,54,24,0.06)] p-4 sm:p-5 flex items-center justify-between gap-4 group cursor-pointer">
+              <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                {/* Transaction Icon */}
+                <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${
                   latestTransaction.amount < 0
                     ? "bg-red-50 text-red-600"
                     : "bg-green-50 text-green-600"
                 }`}>
                   {latestTransaction.amount < 0 ? (
-                    <ArrowDownRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <ArrowDownRight className="w-5 h-5" />
                   ) : (
-                    <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <ArrowUpRight className="w-5 h-5" />
                   )}
                 </div>
+                
+                {/* Transaction Details */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[0.65rem] sm:text-xs uppercase tracking-[0.18em] text-[var(--sc-green)] font-medium">
+                  <p className="text-[0.65rem] sm:text-xs uppercase tracking-[0.15em] text-[var(--sc-green)] font-medium flex items-center gap-1.5 mb-1">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--sc-green)] animate-pulse"></span>
                     Most recent transaction
                   </p>
-                  <p className="mt-0.5 text-xs sm:text-sm font-semibold text-[var(--sc-green-dark)] truncate">
+                  <p className="text-sm sm:text-base font-bold text-[var(--sc-green-dark)] truncate">
                     {latestTransaction.description}
                   </p>
-                  <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] truncate flex items-center gap-1.5 mt-0.5">
+                  <p className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] truncate flex items-center gap-1.5 mt-1">
                     <span>{latestTransaction.category}</span>
                     <span>·</span>
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-3 h-3" />
-                      {latestTransaction.isOnCampus ? "On-campus" : "Off-campus"}
-                    </span>
-                    <span>·</span>
-                    <span>{latestTransaction.timestamp.split("T")[0]}</span>
+                    <MapPin className="w-3 h-3" />
+                    <span>{latestTransaction.isOnCampus ? "On-campus" : "Off-campus"}</span>
+                    <span className="hidden sm:inline">·</span>
+                    <span className="hidden sm:inline">{latestTransaction.timestamp.split("T")[0]}</span>
                   </p>
                 </div>
               </div>
+              
+              {/* Transaction Amount */}
               <div className="text-right flex-shrink-0">
                 <p
-                  className={`text-sm sm:text-base font-bold whitespace-nowrap ${
+                  className={`text-base sm:text-lg font-bold whitespace-nowrap ${
                     latestTransaction.amount < 0
                       ? "text-red-600"
                       : "text-green-600"
@@ -300,63 +302,67 @@ export default async function Home() {
           </section>
         )}
 
-        {/* Lower grid: transactions + events */}
-        <section className="grid gap-3 sm:gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1.1fr)]">
-          {/* Transactions */}
-          <div className="rounded-2xl sm:rounded-3xl bg-white shadow-md hover:shadow-lg transition-shadow duration-300 border border-[rgba(40,54,24,0.08)] p-3 sm:p-4 md:p-5">
-            <div className="flex items-center justify-between mb-3 sm:mb-4 gap-2">
+        {/* ===== TRANSACTIONS & EVENTS SECTION ===== */}
+        <section className="grid gap-3 sm:gap-4 grid-cols-1 lg:grid-cols-[1.5fr_1fr]">
+          
+          {/* Recent Transactions Card */}
+          <div className="rounded-[16px] sm:rounded-[20px] lg:rounded-[24px] bg-white shadow-md hover:shadow-lg transition-shadow duration-300 border border-[rgba(40,54,24,0.06)] p-3 sm:p-4 lg:p-5">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-3 sm:mb-4 pb-2 sm:pb-3 border-b border-[rgba(40,54,24,0.05)]">
               <div className="flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-[var(--sc-green-dark)]" />
-                <h3 className="text-sm sm:text-base font-semibold text-[var(--sc-green-dark)]">
+                <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--sc-green-dark)]" />
+                <h3 className="text-sm sm:text-base lg:text-lg font-bold text-[var(--sc-green-dark)]">
                   Recent activity
                 </h3>
               </div>
-              <span className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] font-medium whitespace-nowrap px-2 py-0.5 rounded-full bg-[var(--sc-green)]/5">
+              <span className="text-[0.65rem] sm:text-[0.7rem] lg:text-xs text-[var(--sc-green)] font-medium px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-[var(--sc-green)]/5">
                 Last {Math.min(5, sortedTransactions.length)}
               </span>
             </div>
-            <ul className="divide-y divide-[rgba(40,54,24,0.06)]">
+            
+            {/* Transactions List */}
+            <ul className="divide-y divide-[rgba(40,54,24,0.04)]">
               {sortedTransactions.slice(0, 5).map((t) => (
                 <li
                   key={t.id}
-                  className="py-2 sm:py-2.5 flex items-center justify-between gap-2 sm:gap-3 hover:bg-[var(--sc-green)]/[0.02] transition-colors duration-200 -mx-2 px-2 rounded-lg"
+                  className="py-2 sm:py-3 flex items-center justify-between gap-2 sm:gap-3 hover:bg-[var(--sc-green)]/[0.02] transition-colors duration-200 -mx-1 sm:-mx-2 px-1 sm:px-2 rounded-lg group cursor-pointer"
                 >
-                  <div className="flex items-center gap-2.5 sm:gap-3 flex-1 min-w-0">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                    {/* Transaction Icon */}
+                    <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
                       t.amount < 0
                         ? "bg-red-50 text-red-600"
                         : "bg-green-50 text-green-600"
                     }`}>
                       {t.amount < 0 ? (
-                        <ArrowDownRight className="w-4 h-4" />
+                        <ArrowDownRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       ) : (
-                        <ArrowUpRight className="w-4 h-4" />
+                        <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       )}
                     </div>
+                    
+                    {/* Transaction Info */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs sm:text-sm font-semibold text-[var(--sc-green-dark)] truncate">
+                      <p className="text-[0.7rem] sm:text-xs lg:text-sm font-bold text-[var(--sc-green-dark)] truncate">
                         {t.description}
                       </p>
-                      <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] truncate flex items-center gap-1.5 mt-0.5">
+                      <p className="text-[0.65rem] sm:text-[0.7rem] lg:text-xs text-[var(--sc-green)] truncate flex items-center gap-1 sm:gap-1.5 mt-0.5">
                         <span className="hidden sm:inline">{t.category}</span>
                         <span className="hidden sm:inline">·</span>
-                        <span className="flex items-center gap-1">
-                          <MapPin className="w-3 h-3" />
-                          <span className="sm:hidden">
-                            {t.isOnCampus ? "On" : "Off"}-campus
-                          </span>
-                          <span className="hidden sm:inline">
-                            {t.isOnCampus ? "On-campus" : "Off-campus"}
-                          </span>
-                        </span>
+                        <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                        <span className="sm:hidden">{t.isOnCampus ? "On" : "Off"}</span>
+                        <span className="hidden sm:inline">{t.isOnCampus ? "On-campus" : "Off-campus"}</span>
                         <span>·</span>
-                        <span>{t.timestamp.split("T")[0]}</span>
+                        <span className="hidden xs:inline">{t.timestamp.split("T")[0]}</span>
+                        <span className="xs:hidden">{t.timestamp.split("T")[0].slice(5)}</span>
                       </p>
                     </div>
                   </div>
+                  
+                  {/* Transaction Amount */}
                   <div className="text-right flex-shrink-0">
                     <p
-                      className={`text-xs sm:text-sm font-bold whitespace-nowrap ${
+                      className={`text-[0.7rem] sm:text-xs lg:text-sm font-bold whitespace-nowrap ${
                         t.amount < 0 ? "text-red-600" : "text-green-600"
                       }`}
                     >
@@ -369,53 +375,56 @@ export default async function Home() {
             </ul>
           </div>
 
-          {/* Events */}
-          <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[var(--sc-gold)] to-[var(--sc-gold-dark)] text-[var(--sc-cream)] p-3 sm:p-4 md:p-5 shadow-lg hover:shadow-xl transition-shadow duration-300 relative overflow-hidden">
+          {/* Upcoming Events Card */}
+          <div className="rounded-[16px] sm:rounded-[20px] lg:rounded-[24px] bg-gradient-to-br from-[#dda15e] to-[#c4914e] text-[var(--sc-cream)] p-3 sm:p-4 lg:p-5 shadow-lg hover:shadow-xl transition-shadow duration-300 relative overflow-hidden">
             {/* Decorative background */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[rgba(254,250,224,0.08)] rounded-full blur-2xl -mr-16 -mt-16"></div>
+            <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-white/5 rounded-full blur-2xl -mr-12 sm:-mr-16 -mt-12 sm:-mt-16"></div>
             
             <div className="relative z-10">
-              <div className="flex items-center justify-between mb-3 sm:mb-4 gap-2">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-3 sm:mb-4 pb-2 sm:pb-3 border-b border-[rgba(254,250,224,0.15)]">
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  <h3 className="text-sm sm:text-base font-semibold">
+                  <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <h3 className="text-sm sm:text-base lg:text-lg font-bold">
                     Upcoming events
                   </h3>
                 </div>
-                <span className="text-[0.65rem] sm:text-[0.7rem] font-medium whitespace-nowrap px-2 py-0.5 rounded-full bg-[rgba(254,250,224,0.15)] border border-[rgba(254,250,224,0.2)]">
+                <span className="text-[0.65rem] sm:text-[0.7rem] lg:text-xs font-medium px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-[rgba(254,250,224,0.15)] border border-[rgba(254,250,224,0.2)]">
                   {events.length} scheduled
                 </span>
               </div>
+              
+              {/* Events List */}
               <ul className="space-y-2 sm:space-y-2.5">
                 {events.map((e) => (
                   <li
                     key={e.id}
-                    className="rounded-xl sm:rounded-2xl bg-[rgba(254,250,224,0.12)] backdrop-blur-sm border border-[rgba(254,250,224,0.15)] px-2.5 sm:px-3 py-2 sm:py-2.5 flex justify-between items-start gap-2 hover:bg-[rgba(254,250,224,0.18)] transition-colors duration-200"
+                    className="rounded-lg sm:rounded-xl bg-[rgba(254,250,224,0.12)] backdrop-blur-sm border border-[rgba(254,250,224,0.15)] p-2.5 sm:p-3 flex justify-between items-start gap-2 sm:gap-3 hover:bg-[rgba(254,250,224,0.18)] transition-colors duration-200 cursor-pointer"
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs sm:text-sm font-semibold truncate">
+                      <p className="text-[0.7rem] sm:text-xs lg:text-sm font-bold truncate">
                         {e.title}
                       </p>
-                      <p className="text-[0.65rem] sm:text-[0.7rem] opacity-85 truncate flex items-center gap-1.5 mt-0.5">
-                        <Calendar className="w-3 h-3" />
+                      <p className="text-[0.65rem] sm:text-[0.7rem] lg:text-xs opacity-90 truncate flex items-center gap-1 sm:gap-1.5 mt-0.5 sm:mt-1">
+                        <Calendar className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                         <span>{new Date(e.startsAt).toLocaleDateString()}</span>
-                        <span>•</span>
-                        <MapPin className="w-3 h-3" />
-                        <span>{e.location}</span>
+                        <span className="hidden sm:inline">·</span>
+                        <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3 hidden sm:inline" />
+                        <span className="hidden sm:inline truncate">{e.location}</span>
                       </p>
                     </div>
-                    <p className="text-[0.7rem] sm:text-[0.75rem] font-bold whitespace-nowrap flex-shrink-0 px-2 py-0.5 rounded-full bg-[rgba(254,250,224,0.12)]">
-                      {e.price === 0
-                        ? "Free"
-                        : `${e.currency} ${e.price.toFixed(2)}`}
-                    </p>
+                    <span className="text-[0.65rem] sm:text-[0.7rem] lg:text-xs font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-[rgba(254,250,224,0.15)] border border-[rgba(254,250,224,0.2)] flex-shrink-0">
+                      {e.price === 0 ? "Free" : `${e.currency} ${e.price.toFixed(2)}`}
+                    </span>
                   </li>
                 ))}
               </ul>
-              <div className="mt-3 sm:mt-4 p-2.5 rounded-xl bg-[rgba(254,250,224,0.08)] border border-[rgba(254,250,224,0.12)]">
-                <p className="text-[0.65rem] sm:text-[0.7rem] opacity-90 flex items-start gap-2">
-                  <Sparkles className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
-                  <span>Pay for events directly with your Campus Wallet — no extra forms, no cash.</span>
+              
+              {/* Info Banner */}
+              <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 rounded-lg sm:rounded-xl bg-[rgba(254,250,224,0.1)] border border-[rgba(254,250,224,0.12)]">
+                <p className="text-[0.65rem] sm:text-[0.7rem] lg:text-xs opacity-95 flex items-start gap-1.5 sm:gap-2">
+                  <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0 mt-0.5" />
+                  <span>Pay for events directly with your Campus Wallet — no extra forms, no cash needed.</span>
                 </p>
               </div>
             </div>
@@ -426,7 +435,7 @@ export default async function Home() {
   );
 }
 
-/* Helpers */
+/* ===== HELPER FUNCTIONS ===== */
 
 function walletTypeLabel(type: number): string {
   switch (type) {
