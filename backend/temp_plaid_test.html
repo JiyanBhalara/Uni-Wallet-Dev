@@ -1,0 +1,34 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Plaid Test</title>
+        <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+    </head>
+    <body>
+        <h1>Plaid Link Test</h1>
+        <h2>Instructions:</h2>
+        <ol>
+            <li>Click the button below</li>
+            <li>Select "First Platypus Bank"</li>
+            <li>Login: user_good / pass_good</li>
+            <li>Select any account</li>
+            <li>Copy the public_token that appears below</li>
+        </ol>
+        <button id="btn" onclick="handler.open()">Connect Bank</button>
+        <div id="result"></div>
+        <script>
+            var handler = Plaid.create({
+                token: 'link-sandbox-452451bf-8953-4d29-a98f-b70374b720bd',
+                onSuccess: function(public_token, metadata) {
+                    document.getElementById('result').innerHTML = 
+                        '<h2>SUCCESS!</h2>' +
+                        '<p>Copy this public_token:</p>' +
+                        '<textarea style="width:100%;height:100px">' + public_token + '</textarea>' +
+                        '<p>Institution: ' + metadata.institution.name + '</p>';
+                }
+            });
+        </script>
+    </body>
+    </html>
+    
