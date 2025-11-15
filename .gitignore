@@ -2,14 +2,24 @@
 .env
 backend/.env
 
+# Node
+node_modules
+.next
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store
+
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
+*.pyo
 .Python
 env/
 venv/
+.venv
 ENV/
 build/
 develop-eggs/
@@ -30,6 +40,13 @@ wheels/
 # ChromaDB
 chroma_data/
 *.chroma
+
+# .NET
+bin/
+obj/
+*.user
+*.vs/
+*.suo
 
 # IDEs
 .vscode/

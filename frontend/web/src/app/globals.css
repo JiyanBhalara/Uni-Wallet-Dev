@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+:root {
+  --sc-green: #606c38;
+  --sc-green-dark: #283618;
+  --sc-cream: #fefae0;
+  --sc-gold: #dda15e;
+  --sc-gold-dark: #bc6c25;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", sans-serif;
+  background-color: var(--sc-cream);
+  color: #111827;
+}
+
+/* Hide scrollbar for horizontal navigation on mobile */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
