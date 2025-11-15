@@ -91,7 +91,7 @@ export default function WalletActions({ walletId, paymentMethods }: Props) {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="group text-[0.65rem] sm:text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[rgba(254,250,224,0.12)] hover:bg-[rgba(254,250,224,0.22)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center gap-1.5 border border-[rgba(254,250,224,0.15)] hover:border-[rgba(254,250,224,0.3)]"
+            className="group text-[0.65rem] sm:text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[rgba(254,250,224,0.12)] hover:bg-[rgba(254,250,224,0.22)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center gap-1.5 border border-[rgba(254,250,224,0.15)] hover:border-[rgba(254,250,224,0.3)] cursor-pointer"
           >
             <Eye className="w-3.5 h-3.5 transition-transform group-hover:scale-110 duration-200" />
             <span>See all ({localMethods.length})</span>
@@ -124,7 +124,7 @@ export default function WalletActions({ walletId, paymentMethods }: Props) {
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="w-8 h-8 rounded-full hover:bg-[var(--sc-green)]/5 flex items-center justify-center transition-colors duration-200 text-[var(--sc-green)]"
+                  className="w-8 h-8 rounded-full hover:bg-[var(--sc-green)]/5 flex items-center justify-center transition-colors duration-200 text-[var(--sc-green)] cursor-pointer"
                   aria-label="Close"
                 >
                   <X className="w-4 h-4" />
@@ -198,7 +198,7 @@ export default function WalletActions({ walletId, paymentMethods }: Props) {
                           type="button"
                           onClick={() => handleDeleteClick(pm)}
                           disabled={deletingId === pm.id}
-                          className="w-8 h-8 rounded-full hover:bg-red-50 flex items-center justify-center transition-all duration-200 text-[var(--sc-green)] hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 group-hover:opacity-100 opacity-0"
+                          className="w-8 h-8 rounded-full hover:bg-red-50 flex items-center justify-center transition-all duration-200 text-[var(--sc-green)] hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 group-hover:opacity-100 opacity-0 cursor-pointer"
                           aria-label="Remove payment method"
                         >
                           {deletingId === pm.id ? (
@@ -266,14 +266,14 @@ export default function WalletActions({ walletId, paymentMethods }: Props) {
                 <button
                   type="button"
                   onClick={() => setConfirmDelete(null)}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-[rgba(40,54,24,0.15)] text-[var(--sc-green-dark)] text-sm font-medium hover:bg-[var(--sc-green)]/5 transition-colors duration-200"
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-[rgba(40,54,24,0.15)] text-[var(--sc-green-dark)] text-sm font-medium hover:bg-[var(--sc-green)]/5 transition-colors duration-200 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleConfirmDelete}
-                  className="flex-1 px-4 py-2.5 rounded-xl bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors duration-200 shadow-sm hover:shadow-md"
+                  className="flex-1 px-4 py-2.5 rounded-xl bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors duration-200 shadow-sm hover:shadow-md cursor-pointer"
                 >
                   Remove
                 </button>
@@ -312,7 +312,7 @@ export default function WalletActions({ walletId, paymentMethods }: Props) {
             <button
               type="button"
               onClick={() => setToast(null)}
-              className="w-6 h-6 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors duration-200 flex-shrink-0"
+              className="w-6 h-6 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors duration-200 flex-shrink-0 cursor-pointer"
             >
               <X className="w-4 h-4 text-[var(--sc-green)]" />
             </button>

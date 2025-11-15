@@ -83,7 +83,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             {isAuthenticated && (
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[var(--sc-green)]/5 hover:bg-[var(--sc-green)]/10 transition-colors duration-200 text-[var(--sc-green-dark)]"
+                className="md:hidden flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[var(--sc-green)]/5 hover:bg-[var(--sc-green)]/10 transition-colors duration-200 text-[var(--sc-green-dark)] cursor-pointer"
                 aria-label="Toggle menu"
               >
                 {mobileMenuOpen ? (

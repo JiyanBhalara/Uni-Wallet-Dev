@@ -134,7 +134,7 @@ export default function TopUpPage() {
             onClick={() =>
               router.push(`/payment-methods/new?from=topup&walletId=${walletId}`)
             }
-            className="mt-2 px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-[0.7rem] sm:text-xs font-medium hover:bg-[var(--sc-green)]"
+            className="mt-2 px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-[0.7rem] sm:text-xs font-medium hover:bg-[var(--sc-green)] cursor-pointer"
           >
             Add payment method
           </button>
@@ -189,7 +189,7 @@ export default function TopUpPage() {
                   type="button"
                   onClick={() => setSelectedId(m.id)}
                   className={[
-                    "w-full flex items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left",
+                    "w-full flex items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left cursor-pointer",
                     selectedId === m.id
                       ? "border-[var(--sc-green-dark)] bg-[var(--sc-cream)]/60"
                       : "border-[rgba(40,54,24,0.15)] bg-[var(--sc-cream)]/30 hover:bg-[var(--sc-cream)]/60",
@@ -247,14 +247,14 @@ export default function TopUpPage() {
             <button
               type="button"
               onClick={() => router.back()}
-              className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] hover:underline"
+              className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] hover:underline cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-[0.7rem] sm:text-xs font-medium hover:bg-[var(--sc-green)] disabled:opacity-60"
+              className="px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-[0.7rem] sm:text-xs font-medium hover:bg-[var(--sc-green)] disabled:opacity-60 cursor-pointer"
             >
               {loading ? "Processing..." : "Add balance"}
             </button>

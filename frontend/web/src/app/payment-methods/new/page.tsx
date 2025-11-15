@@ -92,7 +92,7 @@ export default function NewPaymentMethodPage() {
                   type="button"
                   onClick={() => setType(value)}
                   className={[
-                    "rounded-full border px-2.5 py-1.5 text-center",
+                    "rounded-full border px-2.5 py-1.5 text-center cursor-pointer",
                     type === value
                       ? "bg-[var(--sc-green-dark)] text-[var(--sc-cream)] border-[var(--sc-green-dark)]"
                       : "bg-white text-[var(--sc-green-dark)] border-[rgba(40,54,24,0.15)]",
@@ -175,14 +175,14 @@ export default function NewPaymentMethodPage() {
             <button
               type="button"
               onClick={() => router.back()}
-              className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] hover:underline"
+              className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] hover:underline cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-[0.7rem] sm:text-xs font-medium hover:bg-[var(--sc-green)] disabled:opacity-60"
+              className="px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-[0.7rem] sm:text-xs font-medium hover:bg-[var(--sc-green)] disabled:opacity-60 cursor-pointer"
             >
               {loading ? "Saving..." : "Save payment method"}
             </button>

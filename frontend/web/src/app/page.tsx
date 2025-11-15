@@ -142,7 +142,7 @@ export default async function Home() {
                     Available balance
                   </p>
                   <p className="text-3xl sm:text-4xl font-bold tracking-tight">
-                    {primaryWallet.currency} {primaryWallet.balance.toFixed(2)}
+                    {primaryWallet.currency === "USD" ? "$" : primaryWallet.currency} {primaryWallet.balance.toFixed(2)}
                   </p>
                 </div>
                 <div className="text-left sm:text-right space-y-0.5">
@@ -238,7 +238,7 @@ export default async function Home() {
                   <p className="text-lg sm:text-xl font-bold text-[#bc6c25] whitespace-nowrap mt-0.5">
                     {w.currency === "SWIPES"
                       ? `${w.balance}`
-                      : `${w.currency} ${w.balance.toFixed(2)}`}
+                      : `${w.currency === "USD" ? "$" : w.currency} ${w.balance.toFixed(2)}`}
                   </p>
                 </div>
               </div>
@@ -294,7 +294,7 @@ export default async function Home() {
                   }`}
                 >
                   {latestTransaction.amount < 0 ? "-" : "+"}
-                  {latestTransaction.currency}{" "}
+                  {latestTransaction.currency === "USD" ? "$" : latestTransaction.currency}{" "}
                   {Math.abs(latestTransaction.amount).toFixed(2)}
                 </p>
               </div>
@@ -367,7 +367,7 @@ export default async function Home() {
                       }`}
                     >
                       {t.amount < 0 ? "-" : "+"}
-                      {t.currency} {Math.abs(t.amount).toFixed(2)}
+                      {t.currency === "USD" ? "$" : t.currency} {Math.abs(t.amount).toFixed(2)}
                     </p>
                   </div>
                 </li>
@@ -414,7 +414,7 @@ export default async function Home() {
                       </p>
                     </div>
                     <span className="text-[0.65rem] sm:text-[0.7rem] lg:text-xs font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-[rgba(254,250,224,0.15)] border border-[rgba(254,250,224,0.2)] flex-shrink-0">
-                      {e.price === 0 ? "Free" : `${e.currency} ${e.price.toFixed(2)}`}
+                      {e.price === 0 ? "Free" : `${e.currency === "USD" ? "$" : e.currency} ${e.price.toFixed(2)}`}
                     </span>
                   </li>
                 ))}
@@ -459,7 +459,7 @@ function formatMealPlanText(w: Wallet): string {
   if (w.currency === "SWIPES") {
     return `${w.balance} swipes left`;
   }
-  return `${w.currency} ${w.balance.toFixed(2)} remaining`;
+  return `${w.currency === "USD" ? "$" : w.currency} ${w.balance.toFixed(2)} remaining`;
 }
 
 function mealPlanDisplayValue(w: Wallet): string {
