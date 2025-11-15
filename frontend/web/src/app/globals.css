@@ -15,3 +15,13 @@ body {
   background-color: var(--sc-cream);
   color: #111827;
 }
+
+/* Hide scrollbar for horizontal navigation on mobile */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

@@ -17,7 +17,7 @@ export function MainNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex items-center gap-2">
+    <nav className="flex items-center gap-1 sm:gap-2 overflow-x-auto w-full sm:w-auto scrollbar-hide">
       {links.map((link) => {
         const active =
           link.href === "/"
@@ -29,7 +29,7 @@ export function MainNav() {
             <Button
               variant={active ? "primary" : "ghost"}
               className={cn(
-                "text-xs md:text-sm px-3 md:px-4 py-1.5",
+                "text-[0.7rem] sm:text-xs md:text-sm px-2 sm:px-3 md:px-4 py-1.5 whitespace-nowrap",
                 active && "shadow"
               )}
             >

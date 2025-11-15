@@ -30,11 +30,11 @@ export default async function WalletsPage() {
   const wallets = (await api.getWallets()) as Wallet[];
 
   return (
-    <main className="space-y-4">
-      <h1 className="text-xl md:text-2xl font-semibold">
+    <main className="space-y-3 sm:space-y-4">
+      <h1 className="text-lg sm:text-xl md:text-2xl font-semibold">
         Your wallets & balances
       </h1>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
         {wallets.map((w) => (
           <Card key={w.id}>
             <CardHeader>
