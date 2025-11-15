@@ -66,12 +66,12 @@ export default function BudgetingPage() {
   const hasBudgets = budgets.length > 0;
 
   return (
-    <main className="space-y-4 sm:space-y-5">
-      <header className="space-y-1">
-        <h1 className="text-lg sm:text-xl md:text-2xl font-semibold text-[var(--sc-green-dark)]">
-          Budgeting & goals
+    <main className="space-y-4 sm:space-y-5 lg:space-y-6">
+      <header className="space-y-2">
+        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[var(--sc-green-dark)]">
+          Budgeting & Goals
         </h1>
-        <p className="text-[0.7rem] sm:text-xs text-[var(--sc-green)]">
+        <p className="text-sm sm:text-base md:text-lg text-[var(--sc-green)]">
           Set monthly budgets for different categories and track how close you
           are to your goals.
         </p>
@@ -79,11 +79,11 @@ export default function BudgetingPage() {
 
       {!hasBudgets && (
         <Card className="border-[rgba(40,54,24,0.12)] bg-white">
-          <CardContent className="py-4 sm:py-5 space-y-3">
-            <p className="text-[0.8rem] sm:text-sm text-[var(--sc-green-dark)] font-medium">
+          <CardContent className="py-5 sm:py-6 md:py-8 space-y-4">
+            <p className="text-base sm:text-lg md:text-xl text-[var(--sc-green-dark)] font-semibold">
               You haven&apos;t set up any budgets yet.
             </p>
-            <p className="text-[0.7rem] sm:text-xs text-[var(--sc-green)]">
+            <p className="text-sm sm:text-base md:text-lg text-[var(--sc-green)]">
               Start by deciding how much you want to spend on things like
               dining, transport, books, and events this month. We&apos;ll warn
               you automatically when you get close to your limits.
@@ -98,11 +98,11 @@ export default function BudgetingPage() {
           <BudgetTracking budgets={budgets} transactions={transactions} />
 
           <Card className="border-[rgba(40,54,24,0.12)] bg-white">
-            <CardHeader className="pb-2">
-              <p className="text-xs sm:text-sm font-semibold text-[var(--sc-green-dark)]">
-                Adjust budgets & goals
+            <CardHeader className="pb-3">
+              <p className="text-base sm:text-lg md:text-xl font-bold text-[var(--sc-green-dark)]">
+                Adjust Budgets & Goals
               </p>
-              <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)]">
+              <p className="text-sm sm:text-base text-[var(--sc-green)] mt-1">
                 You can update your category limits at any time. Changes apply
                 from now going forward.
               </p>

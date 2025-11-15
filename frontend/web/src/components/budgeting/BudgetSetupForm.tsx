@@ -110,24 +110,24 @@ export default function BudgetSetupForm({ initialBudgets }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-[1.4fr_1fr_1fr] gap-2 sm:gap-3 text-[0.7rem] sm:text-xs">
-        <div className="hidden sm:block text-[var(--sc-green)] font-medium">
+    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 md:space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-[1.4fr_1fr_1fr] gap-3 sm:gap-4 text-sm sm:text-base md:text-lg">
+        <div className="hidden sm:block text-[var(--sc-green)] font-semibold">
           Category
         </div>
-        <div className="hidden sm:block text-[var(--sc-green)] font-medium">
-          Monthly / weekly budget
+        <div className="hidden sm:block text-[var(--sc-green)] font-semibold">
+          Monthly / Weekly Budget
         </div>
-        <div className="hidden sm:block text-[var(--sc-green)] font-medium">
+        <div className="hidden sm:block text-[var(--sc-green)] font-semibold">
           Period
         </div>
 
         {rows.map((row, idx) => (
           <div
             key={row.category}
-            className="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)] sm:grid-cols-subgrid col-span-3 items-center gap-2 sm:gap-3 border-b border-[rgba(40,54,24,0.04)] pb-2 last:border-b-0 last:pb-0"
+            className="grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)] sm:grid-cols-subgrid col-span-3 items-center gap-3 sm:gap-4 border-b border-[rgba(40,54,24,0.06)] pb-3 sm:pb-4 last:border-b-0 last:pb-0"
           >
-            <div className="text-[0.75rem] sm:text-xs text-[var(--sc-green-dark)]">
+            <div className="text-sm sm:text-base md:text-lg font-medium text-[var(--sc-green-dark)]">
               {row.category}
             </div>
             <div>
@@ -135,7 +135,7 @@ export default function BudgetSetupForm({ initialBudgets }: Props) {
                 type="number"
                 min={0}
                 step="0.01"
-                className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-2.5 py-1.5 text-[0.7rem] sm:text-xs bg-[var(--sc-cream)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent"
+                className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 sm:px-4 sm:py-2.5 text-sm sm:text-base md:text-lg bg-[var(--sc-cream)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent"
                 placeholder="0.00"
                 value={row.limitAmount}
                 onChange={(e) =>
@@ -145,7 +145,7 @@ export default function BudgetSetupForm({ initialBudgets }: Props) {
             </div>
             <div>
               <select
-                className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-2.5 py-1.5 text-[0.7rem] sm:text-xs bg-[var(--sc-cream)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent"
+                className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 sm:px-4 sm:py-2.5 text-sm sm:text-base md:text-lg bg-[var(--sc-cream)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent"
                 value={row.periodType}
                 onChange={(e) =>
                   handleChange(
@@ -164,16 +164,16 @@ export default function BudgetSetupForm({ initialBudgets }: Props) {
       </div>
 
       {error && (
-        <p className="text-[0.7rem] sm:text-xs text-red-600">{error}</p>
+        <p className="text-sm sm:text-base text-red-600 font-medium">{error}</p>
       )}
 
-      <div className="flex items-center justify-end gap-2 pt-1">
+      <div className="flex items-center justify-end gap-3 pt-2">
         <button
           type="submit"
           disabled={saving}
-          className="px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-[0.7rem] sm:text-xs font-medium hover:bg-[var(--sc-green)] disabled:opacity-60"
+          className="px-5 py-2.5 sm:px-6 sm:py-3 md:px-8 md:py-3.5 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-sm sm:text-base md:text-lg font-semibold hover:bg-[var(--sc-green)] disabled:opacity-60 transition-all duration-200 shadow-md hover:shadow-lg"
         >
-          {saving ? "Saving..." : "Save budgets"}
+          {saving ? "Saving..." : "Save Budgets"}
         </button>
       </div>
     </form>

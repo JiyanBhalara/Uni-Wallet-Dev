@@ -42,54 +42,54 @@ export default function BudgetTracking({ budgets, transactions }: Props) {
     <section className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] gap-3 sm:gap-4">
       {/* Left: list with progress bars */}
       <Card className="border-[rgba(40,54,24,0.12)] bg-white">
-        <CardHeader className="pb-2">
-          <p className="text-xs sm:text-sm font-semibold text-[var(--sc-green-dark)]">
-            Category budgets
+        <CardHeader className="pb-3">
+          <p className="text-base sm:text-lg md:text-xl font-bold text-[var(--sc-green-dark)]">
+            Category Budgets
           </p>
-          <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)]">
+          <p className="text-sm sm:text-base text-[var(--sc-green)] mt-1">
             See how much you&apos;ve spent so far this period compared to your
             budget.
           </p>
         </CardHeader>
-        <CardContent className="pt-1 space-y-3 sm:space-y-3.5">
-          <div className="flex items-center justify-between text-[0.7rem] sm:text-xs text-[var(--sc-green)]">
+        <CardContent className="pt-2 space-y-4 sm:space-y-5">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-sm sm:text-base md:text-lg text-[var(--sc-green)]">
             <span>
               Total spent:{" "}
-              <span className="font-semibold text-[var(--sc-green-dark)]">
+              <span className="font-bold text-[var(--sc-green-dark)]">
                 ${Math.abs(totalSpent).toFixed(2)}
               </span>
             </span>
             <span>
               Total budget:{" "}
-              <span className="font-semibold text-[var(--sc-green-dark)]">
+              <span className="font-bold text-[var(--sc-green-dark)]">
                 ${totalLimit.toFixed(2)}
               </span>
             </span>
           </div>
 
-          <div className="space-y-2 sm:space-y-2.5">
+          <div className="space-y-3 sm:space-y-4">
             {perCategory.map((row, idx) => (
               <div
                 key={row.category}
-                className="rounded-xl border border-[rgba(40,54,24,0.06)] px-3 py-2 sm:px-3.5 sm:py-2.5 bg-[var(--sc-cream)]/40"
+                className="rounded-xl border border-[rgba(40,54,24,0.08)] px-4 py-3 sm:px-5 sm:py-4 md:px-6 md:py-5 bg-[var(--sc-cream)]/40 hover:bg-[var(--sc-cream)]/60 transition-colors duration-200"
               >
-                <div className="flex items-center justify-between gap-2">
-                  <div>
-                    <p className="text-[0.75rem] sm:text-xs font-medium text-[var(--sc-green-dark)]">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex-1">
+                    <p className="text-sm sm:text-base md:text-lg font-bold text-[var(--sc-green-dark)]">
                       {row.category}
                     </p>
-                    <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)]">
+                    <p className="text-xs sm:text-sm md:text-base text-[var(--sc-green)] mt-0.5">
                       ${row.spent.toFixed(2)} of ${row.limit.toFixed(2)}
                     </p>
                   </div>
-                  <div className="text-right text-[0.65rem] sm:text-[0.7rem]">
+                  <div className="text-right">
                     <span
                       className={
                         row.ratio >= 1
-                          ? "text-red-600 font-semibold"
+                          ? "text-red-600 font-bold text-base sm:text-lg md:text-xl"
                           : row.ratio >= 0.8
-                          ? "text-[var(--sc-gold-dark)] font-semibold"
-                          : "text-[var(--sc-green-dark)]"
+                          ? "text-[var(--sc-gold-dark)] font-bold text-base sm:text-lg md:text-xl"
+                          : "text-[var(--sc-green-dark)] font-semibold text-base sm:text-lg md:text-xl"
                       }
                     >
                       {Math.round(row.ratio * 100)}%
@@ -97,7 +97,7 @@ export default function BudgetTracking({ budgets, transactions }: Props) {
                   </div>
                 </div>
 
-                <div className="mt-1.5 h-1.5 rounded-full bg-[rgba(40,54,24,0.06)] overflow-hidden">
+                <div className="mt-2.5 h-2 sm:h-2.5 rounded-full bg-[rgba(40,54,24,0.08)] overflow-hidden">
                   <div
                     className="h-full rounded-full"
                     style={{
@@ -113,13 +113,13 @@ export default function BudgetTracking({ budgets, transactions }: Props) {
                 </div>
 
                 {row.ratio >= 0.8 && row.ratio < 1 && (
-                  <p className="mt-1 text-[0.6rem] sm:text-[0.65rem] text-[var(--sc-gold-dark)]">
+                  <p className="mt-2 text-xs sm:text-sm md:text-base text-[var(--sc-gold-dark)] font-medium">
                     You&apos;re close to hitting your {row.periodType.toLowerCase()}{" "}
                     budget for {row.category}.
                   </p>
                 )}
                 {row.ratio >= 1 && (
-                  <p className="mt-1 text-[0.6rem] sm:text-[0.65rem] text-red-600">
+                  <p className="mt-2 text-xs sm:text-sm md:text-base text-red-600 font-semibold">
                     You&apos;ve gone over your {row.periodType.toLowerCase()}{" "}
                     budget for {row.category}.
                   </p>
@@ -132,21 +132,21 @@ export default function BudgetTracking({ budgets, transactions }: Props) {
 
       {/* Right: pie chart */}
       <Card className="border-[rgba(40,54,24,0.12)] bg-white">
-        <CardHeader className="pb-2">
-          <p className="text-xs sm:text-sm font-semibold text-[var(--sc-green-dark)]">
-            Budget usage by category
+        <CardHeader className="pb-3">
+          <p className="text-base sm:text-lg md:text-xl font-bold text-[var(--sc-green-dark)]">
+            Budget Usage by Category
           </p>
-          <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)]">
+          <p className="text-sm sm:text-base text-[var(--sc-green)] mt-1">
             Which categories are eating most of your budget this period?
           </p>
         </CardHeader>
-        <CardContent className="pt-0">
+        <CardContent className="pt-2">
           {perCategory.length === 0 ? (
-            <p className="text-[0.7rem] sm:text-xs text-[var(--sc-green)]">
+            <p className="text-sm sm:text-base md:text-lg text-[var(--sc-green)]">
               Add some budgets to see a breakdown here.
             </p>
           ) : (
-            <div className="h-56 sm:h-64">
+            <div className="h-64 sm:h-72 md:h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -172,8 +172,8 @@ export default function BudgetTracking({ budgets, transactions }: Props) {
                     layout="vertical"
                     align="right"
                     verticalAlign="middle"
-                    iconSize={8}
-                    wrapperStyle={{ fontSize: 10 }}
+                    iconSize={10}
+                    wrapperStyle={{ fontSize: 12 }}
                   />
                 </PieChart>
               </ResponsiveContainer>
