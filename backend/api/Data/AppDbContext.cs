@@ -10,12 +10,16 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Wallet> Wallets => Set<Wallet>();
-    public DbSet<Transaction> Transactions => Set<Transaction>();
+    public DbSet<Transaction> Transactions { get; set; } = null!;
+
     public DbSet<Event> Events => Set<Event>();
     public DbSet<EventRegistration> EventRegistrations => Set<EventRegistration>();
     public DbSet<RewardSummary> RewardSummaries => Set<RewardSummary>();
     public DbSet<RewardEvent> RewardEvents => Set<RewardEvent>();
     public DbSet<PayToken> PayTokens => Set<PayToken>();
+
+    public DbSet<PaymentMethod> PaymentMethods { get; set; } = null!;
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

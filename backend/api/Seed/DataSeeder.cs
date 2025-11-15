@@ -13,8 +13,7 @@ public static class DataSeeder
             FullName = "Alex Johnson",
             Email = "alex@campus.edu",
             UniversityName = "Smart Campus University",
-            Semester = "Fall 2025",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("password123")
+            Semester = "Fall 2025"
         };
 
         db.Users.Add(user);

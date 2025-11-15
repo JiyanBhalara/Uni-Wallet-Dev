@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartCampusWallet.Api.Data;
 
@@ -11,9 +12,11 @@ using SmartCampusWallet.Api.Data;
 namespace SmartCampusWallet.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251115105528_EnhanceWallets")]
+    partial class EnhanceWallets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,48 +108,6 @@ namespace SmartCampusWallet.Api.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PayTokens");
-                });
-
-            modelBuilder.Entity("SmartCampusWallet.Api.Models.PaymentMethod", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Brand")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Label")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Last4")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("MaskedNumber")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("PaymentMethods");
                 });
 
             modelBuilder.Entity("SmartCampusWallet.Api.Models.RewardEvent", b =>
@@ -304,8 +265,17 @@ namespace SmartCampusWallet.Api.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsExternalFundingSource")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<bool>("IsPrimary")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("MaskedNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Provider")
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -343,17 +313,6 @@ namespace SmartCampusWallet.Api.Migrations
                 {
                     b.HasOne("SmartCampusWallet.Api.Models.User", "User")
                         .WithMany("PayTokens")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SmartCampusWallet.Api.Models.PaymentMethod", b =>
-                {
-                    b.HasOne("SmartCampusWallet.Api.Models.User", "User")
-                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
