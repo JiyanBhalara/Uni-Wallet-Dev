@@ -19,7 +19,7 @@ public class AppDbContext : DbContext
     public DbSet<PayToken> PayTokens => Set<PayToken>();
 
     public DbSet<PaymentMethod> PaymentMethods { get; set; } = null!;
-
+    public DbSet<Budget> Budgets { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

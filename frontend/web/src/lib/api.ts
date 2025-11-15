@@ -1,3 +1,4 @@
+import { Budget } from "@/types/budget";
 import type { PaymentMethod } from "@/types/payment-method";
 import { PaymentMethodType } from "@/types/payment-method";
 
@@ -70,4 +71,23 @@ export const api = {
       body: JSON.stringify(payload),
     }, userEmail);
   },
+
+  getBudgets(userEmail: string): Promise<Budget[]> {
+    return apiFetch<Budget[]>("/api/budgets", {}, userEmail);
+  },
+
+  saveBudgets(userEmail: string, payload: {
+    budgets: { category: string; limitAmount: number; periodType: "Monthly" | "Weekly" }[];
+  }): Promise<Budget[]> {
+    const mapped = payload.budgets.map((b) => ({
+      category: b.category,
+      limitAmount: b.limitAmount,
+      periodType: b.periodType === "Monthly" ? 0 : 1,
+    }));
+    return apiFetch<Budget[]>("/api/budgets", {
+      method: "POST",
+      body: JSON.stringify({ budgets: mapped }),
+    }, userEmail);
+  },
 };
+

@@ -11,6 +11,7 @@ import {
   Activity, 
   Calendar, 
   Gift, 
+  Target,
   LogOut 
 } from "lucide-react";
 
@@ -18,6 +19,7 @@ const links = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/wallets", label: "Wallets", icon: Wallet },
   { href: "/activity", label: "Activity", icon: Activity },
+  { href: "/budgeting", label: "Budget & Goals", icon: Target },
   { href: "/events", label: "Campus Life", icon: Calendar },
   { href: "/rewards", label: "Rewards", icon: Gift },
 ];
