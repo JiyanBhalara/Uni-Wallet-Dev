@@ -18,6 +18,18 @@ public class EventsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetEvents()
     {
+        var userEmail = Request.Headers["X-User-Email"].FirstOrDefault();
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found" });
+        }
+
         var eventsList = await _db.Events.ToListAsync();
         return Ok(eventsList);
     }

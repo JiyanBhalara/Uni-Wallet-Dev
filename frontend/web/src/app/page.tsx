@@ -1,4 +1,8 @@
 // app/page.tsx
+"use client";
+
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { api } from "@/lib/api";
 import { PaymentMethod } from "@/types/payment-method";
 import WalletActions from "@/components/WalletActions";
@@ -54,15 +58,80 @@ interface EventItem {
   currency: string;
 }
 
-export default async function Home() {
-  const [me, wallets, transactions, events, paymentMethods] = await Promise.all([
-    api.getMe() as Promise<User>,
-    api.getWallets() as Promise<Wallet[]>,
-    api.getTransactions() as Promise<Transaction[]>,
-    api.getEvents() as Promise<EventItem[]>,
-    api.getPaymentMethods() as Promise<PaymentMethod[]>,
-  ]);
+export default function Home() {
+  const { data: session, status } = useSession();
+  const [data, setData] = useState<{
+    me: User | null;
+    wallets: Wallet[];
+    transactions: Transaction[];
+    events: EventItem[];
+    paymentMethods: PaymentMethod[];
+  }>({
+    me: null,
+    wallets: [],
+    transactions: [],
+    events: [],
+    paymentMethods: [],
+  });
+  const [loading, setLoading] = useState(true);
 
+  const fetchData = async () => {
+    if (!session?.user?.email) {
+      return;
+    }
+    
+    try {
+      const userEmail = session.user.email;
+      const [me, wallets, transactions, events, paymentMethods] = await Promise.all([
+        api.getMe(userEmail) as Promise<User>,
+        api.getWallets(userEmail) as Promise<Wallet[]>,
+        api.getTransactions(userEmail) as Promise<Transaction[]>,
+        api.getEvents(userEmail) as Promise<EventItem[]>,
+        api.getPaymentMethods(userEmail) as Promise<PaymentMethod[]>,
+      ]);
+      setData({ me, wallets, transactions, events, paymentMethods });
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetchData();
+    } else if (status === "unauthenticated") {
+      setLoading(false);
+    }
+  }, [status, session]);
+
+  if (status === "loading" || loading) {
+    return (
+      <main className="w-full">
+        <div className="w-full max-w-[1400px] mx-auto space-y-4 sm:space-y-5 lg:space-y-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-[rgba(40,54,24,0.06)] rounded-xl w-48"></div>
+            <div className="h-48 bg-[rgba(40,54,24,0.06)] rounded-2xl"></div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  const { me, wallets, transactions, events, paymentMethods } = data;
+  
+  if (!me || wallets.length === 0) {
+    return (
+      <main className="w-full">
+        <div className="w-full max-w-[1400px] mx-auto space-y-4 sm:space-y-5 lg:space-y-6">
+          <div className="text-center py-12">
+            <p className="text-[var(--sc-green)]">No data available</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+  
   const primaryWallet = wallets.find((w) => w.isPrimary) ?? wallets[0];
   const mealPlanWallet = wallets.find((w) => w.type === 1);
 
@@ -87,22 +156,22 @@ export default async function Home() {
           <div className="flex items-start sm:items-center justify-between gap-3">
             <div className="flex-1 min-w-0">
               <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-[var(--sc-green-dark)] leading-tight">
-                Hello, {me.fullName.split(" ")[0]} 👋
+                Hello, {me!.fullName.split(" ")[0]} 👋
               </h1>
               <p className="text-xs sm:text-sm text-[var(--sc-green)] mt-0.5 flex items-center gap-1.5 flex-wrap">
                 <MapPin className="w-3 h-3 flex-shrink-0" />
-                <span>{me.universityName}</span>
+                <span>{me!.universityName}</span>
                 <span>·</span>
-                <span>{me.semester}</span>
+                <span>{me!.semester}</span>
               </p>
             </div>
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
               <div className="text-right hidden sm:block">
                 <p className="text-xs font-semibold text-[var(--sc-green-dark)]">Student</p>
-                <p className="text-[0.7rem] text-[var(--sc-green)] truncate max-w-[180px]">{me.email}</p>
+                <p className="text-[0.7rem] text-[var(--sc-green)] truncate max-w-[180px]">{me!.email}</p>
               </div>
               <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-gradient-to-br from-[var(--sc-green-dark)] to-[var(--sc-green)] text-[var(--sc-cream)] flex items-center justify-center text-sm font-bold shadow-md hover:shadow-lg transition-all duration-300 flex-shrink-0 cursor-pointer">
-                {me.fullName.split(" ").map((n) => n[0]).join("")}
+                {me!.fullName.split(" ").map((n) => n[0]).join("")}
               </div>
             </div>
           </div>
@@ -177,6 +246,7 @@ export default async function Home() {
                   <WalletActions
                     walletId={primaryWallet.id}
                     paymentMethods={paymentMethods}
+                    onRefresh={fetchData}
                   />
                 </div>
               </div>
@@ -380,7 +450,7 @@ export default async function Home() {
             {/* Decorative background */}
             <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-white/5 rounded-full blur-2xl -mr-12 sm:-mr-16 -mt-12 sm:-mt-16"></div>
             
-            <div className="relative z-10">
+            <div className="relative">
               {/* Header */}
               <div className="flex items-center justify-between mb-3 sm:mb-4 pb-2 sm:pb-3 border-b border-[rgba(254,250,224,0.15)]">
                 <div className="flex items-center gap-2">

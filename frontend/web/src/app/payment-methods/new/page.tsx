@@ -7,7 +7,7 @@ import { PaymentMethodType } from "@/types/payment-method";
 
 export default function NewPaymentMethodPage() {
   const router = useRouter();
-  const [type, setType] = useState<PaymentMethodType>("DEBIT_CARD");
+  const [type, setType] = useState<PaymentMethodType>(PaymentMethodType.DebitCard);
   const [label, setLabel] = useState("");
   const [brand, setBrand] = useState("");
   const [number, setNumber] = useState("");
@@ -36,12 +36,7 @@ export default function NewPaymentMethodPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          type:
-            type === "DEBIT_CARD"
-              ? 0
-              : type === "CREDIT_CARD"
-              ? 1
-              : 2,
+          type: type,
           label,
           cardOrAccountNumber: number.replace(/\s+/g, ""),
           brand: brand || null,
@@ -83,9 +78,9 @@ export default function NewPaymentMethodPage() {
             </label>
             <div className="grid grid-cols-3 gap-2 text-[0.65rem] sm:text-[0.7rem]">
               {([
-                ["DEBIT_CARD", "Debit card"],
-                ["CREDIT_CARD", "Credit card"],
-                ["BANK_ACCOUNT", "Bank account"],
+                [PaymentMethodType.DebitCard, "Debit card"],
+                [PaymentMethodType.CreditCard, "Credit card"],
+                [PaymentMethodType.BankAccount, "Bank account"],
               ] as [PaymentMethodType, string][]).map(([value, labelText]) => (
                 <button
                   key={value}
@@ -111,7 +106,7 @@ export default function NewPaymentMethodPage() {
             <input
               className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40"
               placeholder={
-                type === "BANK_ACCOUNT"
+                type === PaymentMethodType.BankAccount
                   ? "e.g. Chase Checking"
                   : "e.g. Chase Debit • Personal"
               }
@@ -127,7 +122,7 @@ export default function NewPaymentMethodPage() {
             <input
               className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40"
               placeholder={
-                type === "BANK_ACCOUNT" ? "e.g. Chase" : "e.g. Visa, Mastercard"
+                type === PaymentMethodType.BankAccount ? "e.g. Chase" : "e.g. Visa, Mastercard"
               }
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
@@ -136,14 +131,14 @@ export default function NewPaymentMethodPage() {
 
           <div className="space-y-1.5">
             <label className="block text-[0.7rem] sm:text-xs font-medium text-[var(--sc-green-dark)]">
-              {type === "BANK_ACCOUNT"
+              {type === PaymentMethodType.BankAccount
                 ? "Account number"
                 : "Card number"}
             </label>
             <input
               className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40"
               placeholder={
-                type === "BANK_ACCOUNT"
+                type === PaymentMethodType.BankAccount
                   ? "Enter account number"
                   : "1234 5678 9012 3456"
               }

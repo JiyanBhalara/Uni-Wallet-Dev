@@ -2,8 +2,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useSession } from "next-auth/react";
 import type { PaymentMethod } from "@/types/payment-method";
+import AddPaymentMethodModal from "./AddPaymentMethodModal";
+import TopUpWalletModal from "./TopUpWalletModal";
 import {
   Plus,
   CreditCard,
@@ -19,10 +21,14 @@ import {
 interface Props {
   walletId: number;
   paymentMethods: PaymentMethod[];
+  onRefresh?: () => void;
 }
 
-export default function WalletActions({ walletId, paymentMethods }: Props) {
+export default function WalletActions({ walletId, paymentMethods, onRefresh }: Props) {
+  const { data: session } = useSession();
   const [open, setOpen] = useState(false);
+  const [showAddPaymentModal, setShowAddPaymentModal] = useState(false);
+  const [showTopUpModal, setShowTopUpModal] = useState(false);
   const [localMethods, setLocalMethods] =
     useState<PaymentMethod[]>(paymentMethods);
   const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -50,7 +56,12 @@ export default function WalletActions({ walletId, paymentMethods }: Props) {
     setConfirmDelete(null);
     
     try {
-      const response = await fetch(`${apiUrl}/api/paymentmethods/${id}`, { method: "DELETE" });
+      const response = await fetch(`${apiUrl}/api/paymentmethods/${id}`, { 
+        method: "DELETE",
+        headers: {
+          ...(session?.user?.email ? { "X-User-Email": session.user.email } : {})
+        }
+      });
       if (!response.ok) throw new Error('Failed to delete');
       
       setLocalMethods((prev) => prev.filter((m) => m.id !== id));
@@ -65,26 +76,32 @@ export default function WalletActions({ walletId, paymentMethods }: Props) {
 
   const hasMultiple = localMethods.length >= 1;
 
+  const handleSuccess = () => {
+    if (onRefresh) {
+      onRefresh();
+    }
+  };
+
   return (
     <>
       <div className="flex flex-wrap items-center justify-start sm:justify-end gap-2">
         {/* Add balance button */}
-        <Link
-          href={`/wallets/${walletId}/topup`}
-          className="group relative text-[0.65rem] sm:text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[rgba(254,250,224,0.18)] hover:bg-[rgba(254,250,224,0.28)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center gap-1.5 border border-[rgba(254,250,224,0.2)] hover:border-[rgba(254,250,224,0.35)]"
+        <button
+          onClick={() => setShowTopUpModal(true)}
+          className="group relative text-[0.65rem] sm:text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[rgba(254,250,224,0.18)] hover:bg-[rgba(254,250,224,0.28)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center gap-1.5 border border-[rgba(254,250,224,0.2)] hover:border-[rgba(254,250,224,0.35)] cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5 transition-transform group-hover:rotate-90 duration-200" />
           <span>Add balance</span>
-        </Link>
+        </button>
 
         {/* Add payment method button */}
-        <Link
-          href="/payment-methods/new"
-          className="group text-[0.65rem] sm:text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[rgba(254,250,224,0.35)] hover:bg-[rgba(254,250,224,0.18)] hover:border-[rgba(254,250,224,0.5)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center gap-1.5"
+        <button
+          onClick={() => setShowAddPaymentModal(true)}
+          className="group text-[0.65rem] sm:text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[rgba(254,250,224,0.35)] hover:bg-[rgba(254,250,224,0.18)] hover:border-[rgba(254,250,224,0.5)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center gap-1.5 cursor-pointer"
         >
           <CreditCard className="w-3.5 h-3.5 transition-transform group-hover:scale-110 duration-200" />
           <span>Add payment method</span>
-        </Link>
+        </button>
 
         {/* See all payment methods */}
         {hasMultiple && (
@@ -140,13 +157,16 @@ export default function WalletActions({ walletId, paymentMethods }: Props) {
                   <p className="text-sm text-[var(--sc-green)] mb-4">
                     No payment methods yet. Add one to get started.
                   </p>
-                  <Link
-                    href="/payment-methods/new"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-sm font-medium hover:bg-[var(--sc-green)] transition-colors duration-200 shadow-sm hover:shadow-md"
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      setShowAddPaymentModal(true);
+                    }}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-sm font-medium hover:bg-[var(--sc-green)] transition-colors duration-200 shadow-sm hover:shadow-md cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
                     Add payment method
-                  </Link>
+                  </button>
                 </div>
               ) : (
                 <ul className="space-y-2.5 max-h-[400px] overflow-y-auto pr-1 custom-scrollbar">
@@ -216,13 +236,16 @@ export default function WalletActions({ walletId, paymentMethods }: Props) {
               {/* Footer */}
               {localMethods.length > 0 && (
                 <div className="mt-4 pt-3 border-t border-[rgba(40,54,24,0.08)]">
-                  <Link
-                    href="/payment-methods/new"
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-sm font-medium hover:bg-[var(--sc-green)] transition-colors duration-200 shadow-sm hover:shadow-md"
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      setShowAddPaymentModal(true);
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-sm font-medium hover:bg-[var(--sc-green)] transition-colors duration-200 shadow-sm hover:shadow-md cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
                     Add new payment method
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>
@@ -336,6 +359,31 @@ export default function WalletActions({ walletId, paymentMethods }: Props) {
           background: rgba(40, 54, 24, 0.25);
         }
       `}</style>
+
+      {/* Modals */}
+      <AddPaymentMethodModal
+        isOpen={showAddPaymentModal}
+        onClose={() => setShowAddPaymentModal(false)}
+        onSuccess={() => {
+          handleSuccess();
+          showToast('Payment method added successfully', 'success');
+        }}
+      />
+
+      <TopUpWalletModal
+        isOpen={showTopUpModal}
+        onClose={() => setShowTopUpModal(false)}
+        onSuccess={() => {
+          handleSuccess();
+          showToast('Balance added successfully', 'success');
+        }}
+        walletId={walletId}
+        paymentMethods={localMethods}
+        onAddPaymentMethod={() => {
+          setShowTopUpModal(false);
+          setShowAddPaymentModal(true);
+        }}
+      />
     </>
   );
 }

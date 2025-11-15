@@ -20,7 +20,19 @@ public class WalletsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetWallets()
     {
-        var wallets = await _db.Wallets.ToListAsync();
+        var userEmail = Request.Headers["X-User-Email"].FirstOrDefault();
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found" });
+        }
+
+        var wallets = await _db.Wallets.Where(w => w.UserId == user.Id).ToListAsync();
         return Ok(wallets);
     }
 
@@ -32,12 +44,24 @@ public class WalletsController : ControllerBase
     [HttpPost("{walletId:int}/topup")]
     public async Task<IActionResult> TopUp(int walletId, [FromBody] TopUpRequest req)
     {
+        var userEmail = Request.Headers["X-User-Email"].FirstOrDefault();
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found" });
+        }
+
         if (req is null || req.Amount <= 0)
         {
             return BadRequest("Amount must be greater than 0.");
         }
 
-        var wallet = await _db.Wallets.FirstOrDefaultAsync(w => w.Id == walletId);
+        var wallet = await _db.Wallets.FirstOrDefaultAsync(w => w.Id == walletId && w.UserId == user.Id);
         if (wallet == null)
         {
             return NotFound($"Wallet {walletId} not found.");

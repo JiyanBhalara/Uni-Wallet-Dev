@@ -17,14 +17,23 @@ public class PaymentMethodsController : ControllerBase
         _db = db;
     }
 
-    private int GetCurrentUserId() => 1; // TODO: replace with auth
-
     [HttpGet]
     public async Task<IActionResult> GetMine()
     {
-        var userId = GetCurrentUserId();
+        var userEmail = Request.Headers["X-User-Email"].FirstOrDefault();
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found" });
+        }
+
         var methods = await _db.PaymentMethods
-            .Where(pm => pm.UserId == userId)
+            .Where(pm => pm.UserId == user.Id)
             .OrderByDescending(pm => pm.CreatedAt)
             .ToListAsync();
         return Ok(methods);
@@ -41,7 +50,19 @@ public class PaymentMethodsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreatePaymentMethodRequest req)
     {
-        var userId = GetCurrentUserId();
+        var userEmail = Request.Headers["X-User-Email"].FirstOrDefault();
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found" });
+        }
+
+        var userId = user.Id;
 
         // Mask number – don’t store full PAN in real prod
         var last4 = req.CardOrAccountNumber[^4..];
@@ -74,9 +95,20 @@ public class PaymentMethodsController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var userId = GetCurrentUserId();
+        var userEmail = Request.Headers["X-User-Email"].FirstOrDefault();
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found" });
+        }
+
         var method = await _db.PaymentMethods
-            .FirstOrDefaultAsync(pm => pm.Id == id && pm.UserId == userId);
+            .FirstOrDefaultAsync(pm => pm.Id == id && pm.UserId == user.Id);
 
         if (method == null) return NotFound();
 

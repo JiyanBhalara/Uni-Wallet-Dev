@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { api } from "@/lib/api";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
@@ -26,8 +30,45 @@ function walletTypeLabel(type: number): string {
   }
 }
 
-export default async function WalletsPage() {
-  const wallets = (await api.getWallets()) as Wallet[];
+export default function WalletsPage() {
+  const { data: session, status } = useSession();
+  const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchWallets() {
+      if (!session?.user?.email) return;
+      
+      try {
+        const data = await api.getWallets(session.user.email) as Wallet[];
+        setWallets(data);
+      } catch (error) {
+        console.error("Failed to fetch wallets:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (status === "authenticated") {
+      fetchWallets();
+    } else if (status === "unauthenticated") {
+      setLoading(false);
+    }
+  }, [status, session]);
+
+  if (status === "loading" || loading) {
+    return (
+      <main className="space-y-3 sm:space-y-4">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-[rgba(40,54,24,0.06)] rounded-xl w-48"></div>
+          <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
+            <div className="h-32 bg-[rgba(40,54,24,0.06)] rounded-2xl"></div>
+            <div className="h-32 bg-[rgba(40,54,24,0.06)] rounded-2xl"></div>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="space-y-3 sm:space-y-4">
