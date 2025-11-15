@@ -1,0 +1,42 @@
+/* 1) Import Tailwind v4 core */
+@import "tailwindcss";
+
+/* 2) Optional: define some design tokens with @theme */
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+
+  --color-primary: #34d399; /* emerald-400 */
+  --color-bg-dark: #0f172a; /* slate-900 */
+  --color-bg-light: #f8fafc; /* slate-50 */
+}
+
+/* 3) Global resets / body styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-dark);
+  color: white;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Optional: nice scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b; /* slate-800 */
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-track {
+  background: #020617; /* slate-950 */
+}
