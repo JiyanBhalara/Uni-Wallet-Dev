@@ -316,7 +316,7 @@ export default function EventsPage() {
             Campus Life
           </h1>
           <p className="text-xs sm:text-sm text-[var(--sc-green)] mt-1">
-            Discover events, RSVP, and check in from your UniPay wallet.
+            Discover events, RSVP, and check in from your UniWallet wallet.
           </p>
         </div>
       </div>
