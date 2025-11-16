@@ -88,7 +88,7 @@ export default function WalletActions({ walletId, paymentMethods, onRefresh }: P
         {/* Add balance button */}
         <button
           onClick={() => setShowTopUpModal(true)}
-          className="group relative text-[0.65rem] sm:text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[rgba(254,250,224,0.18)] hover:bg-[rgba(254,250,224,0.28)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center gap-1.5 border border-[rgba(254,250,224,0.2)] hover:border-[rgba(254,250,224,0.35)] cursor-pointer"
+          className="group relative text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[rgba(254,250,224,0.18)] hover:bg-[rgba(254,250,224,0.28)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center gap-1.5 border border-[rgba(254,250,224,0.2)] hover:border-[rgba(254,250,224,0.35)] cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5 transition-transform group-hover:rotate-90 duration-200" />
           <span>Add balance</span>
@@ -97,7 +97,7 @@ export default function WalletActions({ walletId, paymentMethods, onRefresh }: P
         {/* Add payment method button */}
         <button
           onClick={() => setShowAddPaymentModal(true)}
-          className="group text-[0.65rem] sm:text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[rgba(254,250,224,0.35)] hover:bg-[rgba(254,250,224,0.18)] hover:border-[rgba(254,250,224,0.5)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center gap-1.5 cursor-pointer"
+          className="group text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[rgba(254,250,224,0.35)] hover:bg-[rgba(254,250,224,0.18)] hover:border-[rgba(254,250,224,0.5)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center gap-1.5 cursor-pointer"
         >
           <CreditCard className="w-3.5 h-3.5 transition-transform group-hover:scale-110 duration-200" />
           <span>Add payment method</span>
@@ -108,7 +108,7 @@ export default function WalletActions({ walletId, paymentMethods, onRefresh }: P
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="group text-[0.65rem] sm:text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[rgba(254,250,224,0.12)] hover:bg-[rgba(254,250,224,0.22)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center gap-1.5 border border-[rgba(254,250,224,0.15)] hover:border-[rgba(254,250,224,0.3)] cursor-pointer"
+            className="group text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[rgba(254,250,224,0.12)] hover:bg-[rgba(254,250,224,0.22)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center gap-1.5 border border-[rgba(254,250,224,0.15)] hover:border-[rgba(254,250,224,0.3)] cursor-pointer"
           >
             <Eye className="w-3.5 h-3.5 transition-transform group-hover:scale-110 duration-200" />
             <span>See all ({localMethods.length})</span>
@@ -134,7 +134,7 @@ export default function WalletActions({ walletId, paymentMethods, onRefresh }: P
                   <div className="w-8 h-8 rounded-full bg-[var(--sc-green)]/10 flex items-center justify-center">
                     <CreditCard className="w-4 h-4 text-[var(--sc-green-dark)]" />
                   </div>
-                  <h2 className="text-base sm:text-lg font-semibold text-[var(--sc-green-dark)]">
+                  <h2 className="text-lg sm:text-xl font-semibold text-[var(--sc-green-dark)]">
                     Payment methods
                   </h2>
                 </div>
@@ -154,7 +154,7 @@ export default function WalletActions({ walletId, paymentMethods, onRefresh }: P
                   <div className="w-12 h-12 rounded-full bg-[var(--sc-green)]/5 flex items-center justify-center mx-auto mb-3">
                     <CreditCard className="w-6 h-6 text-[var(--sc-green)]" />
                   </div>
-                  <p className="text-sm text-[var(--sc-green)] mb-4">
+                  <p className="text-sm sm:text-base text-[var(--sc-green)] mb-4">
                     No payment methods yet. Add one to get started.
                   </p>
                   <button
@@ -188,10 +188,10 @@ export default function WalletActions({ walletId, paymentMethods, onRefresh }: P
 
                           {/* Details */}
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs sm:text-sm font-semibold text-[var(--sc-green-dark)] truncate">
+                            <p className="text-sm sm:text-base font-semibold text-[var(--sc-green-dark)] truncate">
                               {pm.label}
                             </p>
-                            <div className="flex items-center gap-1.5 text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] mt-0.5">
+                            <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[var(--sc-green)] mt-0.5">
                               <span>{formatPaymentMethodType(pm.type)}</span>
                               {pm.brand && (
                                 <>
@@ -271,16 +271,16 @@ export default function WalletActions({ walletId, paymentMethods, onRefresh }: P
               </div>
 
               {/* Content */}
-              <h3 className="text-base sm:text-lg font-bold text-[var(--sc-green-dark)] text-center mb-2">
+              <h3 className="text-lg sm:text-xl font-bold text-[var(--sc-green-dark)] text-center mb-2">
                 Remove Payment Method?
               </h3>
-              <p className="text-xs sm:text-sm text-[var(--sc-green)] text-center mb-1">
+              <p className="text-sm sm:text-base text-[var(--sc-green)] text-center mb-1">
                 Are you sure you want to remove
               </p>
-              <p className="text-sm font-semibold text-[var(--sc-green-dark)] text-center mb-4">
+              <p className="text-base font-semibold text-[var(--sc-green-dark)] text-center mb-4">
                 {confirmDelete.label}?
               </p>
-              <p className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] text-center mb-5">
+              <p className="text-xs sm:text-sm text-[var(--sc-green)] text-center mb-5">
                 This action cannot be undone.
               </p>
 

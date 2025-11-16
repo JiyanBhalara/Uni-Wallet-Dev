@@ -53,49 +53,49 @@ export default function SignupPage() {
         onSubmit={handleSubmit}
         className="w-full max-w-sm rounded-3xl bg-white shadow-md border border-[rgba(40,54,24,0.08)] p-6 space-y-4"
       >
-        <h1 className="text-xl font-semibold text-[var(--sc-green-dark)]">
+        <h1 className="text-2xl font-semibold text-[var(--sc-green-dark)]">
           Create your campus wallet
         </h1>
         <div className="space-y-1">
-          <label className="text-xs text-[var(--sc-green)]">Full name</label>
+          <label className="text-sm text-[var(--sc-green)]">Full name</label>
           <input
-            className="w-full rounded-xl border border-[rgba(40,54,24,0.2)] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--sc-green)]"
+            className="w-full rounded-xl border border-[rgba(40,54,24,0.2)] px-3 py-2 text-base outline-none focus:ring-2 focus:ring-[var(--sc-green)]"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
           />
         </div>
         <div className="space-y-1">
-          <label className="text-xs text-[var(--sc-green)]">Email</label>
+          <label className="text-sm text-[var(--sc-green)]">Email</label>
           <input
             type="email"
-            className="w-full rounded-xl border border-[rgba(40,54,24,0.2)] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--sc-green)]"
+            className="w-full rounded-xl border border-[rgba(40,54,24,0.2)] px-3 py-2 text-base outline-none focus:ring-2 focus:ring-[var(--sc-green)]"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="space-y-1">
-          <label className="text-xs text-[var(--sc-green)]">Password</label>
+          <label className="text-sm text-[var(--sc-green)]">Password</label>
           <input
             type="password"
-            className="w-full rounded-xl border border-[rgba(40,54,24,0.2)] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--sc-green)]"
+            className="w-full rounded-xl border border-[rgba(40,54,24,0.2)] px-3 py-2 text-base outline-none focus:ring-2 focus:ring-[var(--sc-green)]"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <div className="space-y-1">
-          <label className="text-xs text-[var(--sc-green)]">University</label>
+          <label className="text-sm text-[var(--sc-green)]">University</label>
           <input
             type="text"
-            className="w-full rounded-xl border border-[rgba(40,54,24,0.2)] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--sc-green)]"
+            className="w-full rounded-xl border border-[rgba(40,54,24,0.2)] px-3 py-2 text-base outline-none focus:ring-2 focus:ring-[var(--sc-green)]"
             value={universityName}
             onChange={(e) => setUniversityName(e.target.value)}
             placeholder="e.g., Rutgers Newark"
           />
         </div>
         <div className="space-y-1">
-          <label className="text-xs text-[var(--sc-green)]">Semester</label>
+          <label className="text-sm text-[var(--sc-green)]">Semester</label>
           <select
-            className="w-full rounded-xl border border-[rgba(40,54,24,0.2)] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--sc-green)]"
+            className="w-full rounded-xl border border-[rgba(40,54,24,0.2)] px-3 py-2 text-base outline-none focus:ring-2 focus:ring-[var(--sc-green)]"
             value={semester}
             onChange={(e) => setSemester(e.target.value)}
           >
@@ -106,7 +106,7 @@ export default function SignupPage() {
           </select>
         </div>
         {error && (
-          <p className="text-[0.7rem] text-red-600">{error}</p>
+          <p className="text-xs text-red-600">{error}</p>
         )}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? "Creating account..." : "Sign up"}

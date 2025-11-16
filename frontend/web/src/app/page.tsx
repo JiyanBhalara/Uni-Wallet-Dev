@@ -150,10 +150,10 @@ export default function Home() {
         <header className="flex flex-col gap-2 sm:gap-3 animate-in fade-in slide-in-from-top-4 duration-700">
           <div className="flex items-start sm:items-center justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-[var(--sc-green-dark)] leading-tight">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-[var(--sc-green-dark)] leading-tight">
                 Hello, {me.fullName.split(" ")[0]} 👋
               </h1>
-              <p className="text-xs sm:text-sm text-[var(--sc-green)] mt-0.5 flex items-center gap-1.5 flex-wrap">
+              <p className="text-sm sm:text-base text-[var(--sc-green)] mt-0.5 flex items-center gap-1.5 flex-wrap">
                 <MapPin className="w-3 h-3 flex-shrink-0" />
                 <span>{me.universityName}</span>
                 <span>·</span>
@@ -162,10 +162,10 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
               <div className="text-right hidden sm:block">
-                <p className="text-xs font-semibold text-[var(--sc-green-dark)]">
+                <p className="text-sm font-semibold text-[var(--sc-green-dark)]">
                   Student
                 </p>
-                <p className="text-[0.7rem] text-[var(--sc-green)] truncate max-w-[180px]">
+                <p className="text-xs text-[var(--sc-green)] truncate max-w-[180px]">
                   {me.email}
                 </p>
               </div>
@@ -191,10 +191,10 @@ export default function Home() {
               {/* Card Header */}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <p className="text-[0.65rem] sm:text-xs uppercase tracking-[0.25em] text-[rgba(254,250,224,0.75)] font-medium mb-1.5">
+                  <p className="text-xs sm:text-sm uppercase tracking-[0.25em] text-[rgba(254,250,224,0.75)] font-medium mb-1.5">
                     Campus Wallet
                   </p>
-                  <h2 className="text-lg sm:text-xl font-bold truncate">
+                  <h2 className="text-xl sm:text-2xl font-bold truncate">
                     {primaryWallet.displayName}
                   </h2>
                 </div>
@@ -207,10 +207,10 @@ export default function Home() {
               {/* Balance Display */}
               <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
                 <div>
-                  <p className="text-[0.65rem] sm:text-xs uppercase tracking-wide text-[rgba(254,250,224,0.75)] font-medium mb-1.5">
+                  <p className="text-xs sm:text-sm uppercase tracking-wide text-[rgba(254,250,224,0.75)] font-medium mb-1.5">
                     Available balance
                   </p>
-                  <p className="text-3xl sm:text-4xl font-bold tracking-tight">
+                  <p className="text-4xl sm:text-5xl font-bold tracking-tight">
                     {primaryWallet.currency === "USD"
                       ? "$"
                       : primaryWallet.currency}{" "}
@@ -265,11 +265,11 @@ export default function Home() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1.5">
                     <Utensils className="w-3.5 h-3.5 text-[rgba(40,54,24,0.6)] flex-shrink-0" />
-                    <p className="text-[0.65rem] uppercase tracking-[0.2em] text-[rgba(40,54,24,0.7)] font-medium">
+                    <p className="text-xs uppercase tracking-[0.2em] text-[rgba(40,54,24,0.7)] font-medium">
                       Meal Plan
                     </p>
                   </div>
-                  <p className="text-sm sm:text-base font-bold truncate">
+                  <p className="text-base sm:text-lg font-bold truncate">
                     {mealPlanWallet.displayName}
                   </p>
                   <p className="mt-1 text-[0.7rem] text-[rgba(40,54,24,0.75)] truncate">
@@ -343,11 +343,11 @@ export default function Home() {
 
                 {/* Transaction Details */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[0.65rem] sm:text-xs uppercase tracking-[0.15em] text-[var(--sc-green)] font-medium flex items-center gap-1.5 mb-1">
+                  <p className="text-xs sm:text-sm uppercase tracking-[0.15em] text-[var(--sc-green)] font-medium flex items-center gap-1.5 mb-1">
                     <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--sc-green)] animate-pulse" />
                     Most recent transaction
                   </p>
-                  <p className="text-sm sm:text-base font-bold text-[var(--sc-green-dark)] truncate">
+                  <p className="text-base sm:text-lg font-bold text-[var(--sc-green-dark)] truncate">
                     {latestTransaction.merchant}
                   </p>
                   <p className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] truncate flex items-center gap-1.5 mt-1">
@@ -390,7 +390,7 @@ export default function Home() {
             <div className="flex items-center justify-between mb-3 sm:mb-4 pb-2 sm:pb-3 border-b border-[rgba(40,54,24,0.05)]">
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--sc-green-dark)]" />
-                <h3 className="text-sm sm:text-base lg:text-lg font-bold text-[var(--sc-green-dark)]">
+                <h3 className="text-base sm:text-lg lg:text-xl font-bold text-[var(--sc-green-dark)]">
                   Recent activity
                 </h3>
               </div>
@@ -432,10 +432,10 @@ export default function Home() {
 
                     {/* Transaction Info */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-[0.7rem] sm:text-xs lg:text-sm font-bold text-[var(--sc-green-dark)] truncate">
+                      <p className="text-xs sm:text-sm lg:text-base font-bold text-[var(--sc-green-dark)] truncate">
                         {t.merchant}
                       </p>
-                      <p className="text-[0.65rem] sm:text-[0.7rem] lg:text-xs text-[var(--sc-green)] truncate flex items-center gap-1 sm:gap-1.5 mt-0.5">
+                      <p className="text-[0.75rem] sm:text-xs lg:text-sm text-[var(--sc-green)] truncate flex items-center gap-1 sm:gap-1.5 mt-0.5">
                         <span className="hidden sm:inline">{t.category}</span>
                         <span className="hidden sm:inline">·</span>
                         <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
@@ -482,7 +482,7 @@ export default function Home() {
               <div className="flex items-center justify-between mb-3 sm:mb-4 pb-2 sm:pb-3 border-b border-[rgba(254,250,224,0.15)]">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <h3 className="text-sm sm:text-base lg:text-lg font-bold">
+                  <h3 className="text-base sm:text-lg lg:text-xl font-bold">
                     Upcoming events
                   </h3>
                 </div>
@@ -499,10 +499,10 @@ export default function Home() {
                     className="rounded-lg sm:rounded-xl bg-[rgba(254,250,224,0.12)] backdrop-blur-sm border border-[rgba(254,250,224,0.15)] p-2.5 sm:p-3 flex justify-between items-start gap-2 sm:gap-3 hover:bg-[rgba(254,250,224,0.18)] transition-colors duration-200 cursor-pointer"
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="text-[0.7rem] sm:text-xs lg:text-sm font-bold truncate">
+                      <p className="text-xs sm:text-sm lg:text-base font-bold truncate">
                         {e.name}
                       </p>
-                      <p className="text-[0.65rem] sm:text-[0.7rem] lg:text-xs opacity-90 truncate flex items-center gap-1 sm:gap-1.5 mt-0.5 sm:mt-1">
+                      <p className="text-[0.75rem] sm:text-xs lg:text-sm opacity-90 truncate flex items-center gap-1 sm:gap-1.5 mt-0.5 sm:mt-1">
                         <Calendar className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                         <span>
                           {new Date(e.startTime).toLocaleDateString()}

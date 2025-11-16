@@ -123,10 +123,10 @@ export default function TopUpPage() {
     return (
       <main className="min-h-screen bg-[var(--sc-cream)] flex justify-center px-3 sm:px-4 py-6 sm:py-8 md:py-10">
         <div className="w-full max-w-md rounded-2xl bg-white shadow-md border border-[rgba(40,54,24,0.08)] p-4 sm:p-6 space-y-3">
-          <p className="text-sm text-[var(--sc-green-dark)] font-semibold">
+          <p className="text-base sm:text-lg text-[var(--sc-green-dark)] font-semibold">
             No payment methods found
           </p>
-          <p className="text-[0.7rem] sm:text-xs text-[var(--sc-green)]">
+          <p className="text-sm sm:text-base text-[var(--sc-green)]">
             You need to add a payment method before you can top up this wallet.
           </p>
           <button
@@ -134,7 +134,7 @@ export default function TopUpPage() {
             onClick={() =>
               router.push(`/payment-methods/new?from=topup&walletId=${walletId}`)
             }
-            className="mt-2 px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-[0.7rem] sm:text-xs font-medium hover:bg-[var(--sc-green)] cursor-pointer"
+            className="mt-2 px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-xs sm:text-sm font-medium hover:bg-[var(--sc-green)] cursor-pointer"
           >
             Add payment method
           </button>
@@ -149,13 +149,13 @@ export default function TopUpPage() {
     <main className="min-h-screen bg-[var(--sc-cream)] flex justify-center px-3 sm:px-4 py-6 sm:py-8 md:py-10">
       <div className="w-full max-w-md rounded-2xl sm:rounded-3xl bg-white shadow-md border border-[rgba(40,54,24,0.08)] p-4 sm:p-6 space-y-4">
         <header className="space-y-1">
-          <p className="text-[0.65rem] sm:text-xs uppercase tracking-[0.2em] text-[var(--sc-green)]">
+          <p className="text-xs sm:text-sm uppercase tracking-[0.2em] text-[var(--sc-green)]">
             Wallet
           </p>
-          <h1 className="text-lg sm:text-xl font-semibold text-[var(--sc-green-dark)]">
+          <h1 className="text-xl sm:text-2xl font-semibold text-[var(--sc-green-dark)]">
             Add balance
           </h1>
-          <p className="text-[0.7rem] sm:text-xs text-[var(--sc-green)]">
+          <p className="text-sm sm:text-base text-[var(--sc-green)]">
             Choose an amount and a payment method to top up your Campus Wallet.
           </p>
         </header>
@@ -163,14 +163,14 @@ export default function TopUpPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Amount */}
           <div className="space-y-1.5">
-            <label className="block text-[0.7rem] sm:text-xs font-medium text-[var(--sc-green-dark)]">
+            <label className="block text-xs sm:text-sm font-medium text-[var(--sc-green-dark)]">
               Amount
             </label>
             <input
               type="number"
               min={0}
               step="0.01"
-              className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40"
+              className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="e.g. 25.00"
@@ -179,7 +179,7 @@ export default function TopUpPage() {
 
           {/* Payment methods list */}
           <div className="space-y-1.5">
-            <label className="block text-[0.7rem] sm:text-xs font-medium text-[var(--sc-green-dark)]">
+            <label className="block text-xs sm:text-sm font-medium text-[var(--sc-green-dark)]">
               Pay with
             </label>
             <div className="space-y-2 max-h-40 overflow-y-auto">
@@ -196,10 +196,10 @@ export default function TopUpPage() {
                   ].join(" ")}
                 >
                   <div className="min-w-0">
-                    <p className="text-xs sm:text-sm font-medium text-[var(--sc-green-dark)] truncate">
+                    <p className="text-sm sm:text-base font-medium text-[var(--sc-green-dark)] truncate">
                       {m.label}
                     </p>
-                    <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] truncate">
+                    <p className="text-xs sm:text-sm text-[var(--sc-green)] truncate">
                       {formatPaymentMethodType(m.type)} · {m.brand ?? "Card"} ·{" "}
                       ****{m.last4}
                       {m.isDefault && " · Default"}

@@ -60,23 +60,23 @@ export default function NewPaymentMethodPage() {
     <main className="min-h-screen bg-[var(--sc-cream)] flex justify-center px-3 sm:px-4 py-6 sm:py-8 md:py-10">
       <div className="w-full max-w-md rounded-2xl sm:rounded-3xl bg-white shadow-md border border-[rgba(40,54,24,0.08)] p-4 sm:p-6 space-y-4">
         <header className="space-y-1">
-          <p className="text-[0.65rem] sm:text-xs uppercase tracking-[0.2em] text-[var(--sc-green)]">
+          <p className="text-xs sm:text-sm uppercase tracking-[0.2em] text-[var(--sc-green)]">
             Payment methods
           </p>
-          <h1 className="text-lg sm:text-xl font-semibold text-[var(--sc-green-dark)]">
+          <h1 className="text-xl sm:text-2xl font-semibold text-[var(--sc-green-dark)]">
             Add a new payment method
           </h1>
-          <p className="text-[0.7rem] sm:text-xs text-[var(--sc-green)]">
+          <p className="text-sm sm:text-base text-[var(--sc-green)]">
             Use this to top up your Campus Wallet. We only store masked details.
           </p>
         </header>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="block text-[0.7rem] sm:text-xs font-medium text-[var(--sc-green-dark)]">
+            <label className="block text-xs sm:text-sm font-medium text-[var(--sc-green-dark)]">
               Type
             </label>
-            <div className="grid grid-cols-3 gap-2 text-[0.65rem] sm:text-[0.7rem]">
+            <div className="grid grid-cols-3 gap-2 text-xs sm:text-sm">
               {([
                 [PaymentMethodType.DebitCard, "Debit card"],
                 [PaymentMethodType.CreditCard, "Credit card"],
@@ -100,11 +100,11 @@ export default function NewPaymentMethodPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-[0.7rem] sm:text-xs font-medium text-[var(--sc-green-dark)]">
+            <label className="block text-xs sm:text-sm font-medium text-[var(--sc-green-dark)]">
               Display label
             </label>
             <input
-              className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40"
+              className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40"
               placeholder={
                 type === PaymentMethodType.BankAccount
                   ? "e.g. Chase Checking"
@@ -116,11 +116,11 @@ export default function NewPaymentMethodPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-[0.7rem] sm:text-xs font-medium text-[var(--sc-green-dark)]">
+            <label className="block text-xs sm:text-sm font-medium text-[var(--sc-green-dark)]">
               Brand (optional)
             </label>
             <input
-              className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40"
+              className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40"
               placeholder={
                 type === PaymentMethodType.BankAccount ? "e.g. Chase" : "e.g. Visa, Mastercard"
               }
@@ -130,13 +130,13 @@ export default function NewPaymentMethodPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-[0.7rem] sm:text-xs font-medium text-[var(--sc-green-dark)]">
+            <label className="block text-xs sm:text-sm font-medium text-[var(--sc-green-dark)]">
               {type === PaymentMethodType.BankAccount
                 ? "Account number"
                 : "Card number"}
             </label>
             <input
-              className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40"
+              className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40"
               placeholder={
                 type === PaymentMethodType.BankAccount
                   ? "Enter account number"
@@ -146,13 +146,13 @@ export default function NewPaymentMethodPage() {
               onChange={(e) => setNumber(e.target.value)}
               inputMode="numeric"
             />
-            <p className="text-[0.6rem] sm:text-[0.65rem] text-[var(--sc-green)]">
+            <p className="text-xs sm:text-sm text-[var(--sc-green)]">
               We’ll only store a masked version (****1234) in this hackathon
               build.
             </p>
           </div>
 
-          <label className="flex items-center gap-2 text-[0.7rem] sm:text-xs text-[var(--sc-green-dark)]">
+          <label className="flex items-center gap-2 text-xs sm:text-sm text-[var(--sc-green-dark)]">
             <input
               type="checkbox"
               checked={isDefault}
@@ -163,21 +163,21 @@ export default function NewPaymentMethodPage() {
           </label>
 
           {error && (
-            <p className="text-[0.7rem] sm:text-xs text-red-600">{error}</p>
+            <p className="text-xs sm:text-sm text-red-600">{error}</p>
           )}
 
           <div className="flex items-center justify-between gap-2 pt-1">
             <button
               type="button"
               onClick={() => router.back()}
-              className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] hover:underline cursor-pointer"
+              className="text-xs sm:text-sm text-[var(--sc-green)] hover:underline cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-[0.7rem] sm:text-xs font-medium hover:bg-[var(--sc-green)] disabled:opacity-60 cursor-pointer"
+              className="px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-xs sm:text-sm font-medium hover:bg-[var(--sc-green)] disabled:opacity-60 cursor-pointer"
             >
               {loading ? "Saving..." : "Save payment method"}
             </button>

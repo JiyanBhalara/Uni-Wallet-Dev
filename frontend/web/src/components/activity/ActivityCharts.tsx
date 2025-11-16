@@ -75,13 +75,13 @@ export default function ActivityCharts({ transactions, eventAttendance }: Props)
           <CardContent className="py-4 sm:py-5">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
-                <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-gold-dark)] uppercase tracking-[0.16em] font-semibold">
+                <p className="text-xs sm:text-sm text-[var(--sc-gold-dark)] uppercase tracking-[0.16em] font-semibold">
                   Total spent
                 </p>
-                <p className="mt-2 text-xl sm:text-2xl lg:text-3xl font-bold text-[var(--sc-gold-dark)]">
+                <p className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold text-[var(--sc-gold-dark)]">
                   ${Math.abs(totalSpent ?? 0).toFixed(2)}
                 </p>
-                <p className="mt-1.5 text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] flex items-center gap-1">
+                <p className="mt-1.5 text-xs sm:text-sm text-[var(--sc-green)] flex items-center gap-1">
                   <TrendingDown className="w-3 h-3" />
                   All outgoing transactions
                 </p>
@@ -96,13 +96,13 @@ export default function ActivityCharts({ transactions, eventAttendance }: Props)
           <CardContent className="py-4 sm:py-5">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
-                <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green-dark)] uppercase tracking-[0.16em] font-semibold">
+                <p className="text-xs sm:text-sm text-[var(--sc-green-dark)] uppercase tracking-[0.16em] font-semibold">
                   Total top-ups
                 </p>
-                <p className="mt-2 text-xl sm:text-2xl lg:text-3xl font-bold text-[var(--sc-green)]">
+                <p className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold text-[var(--sc-green)]">
                   ${(totalTopups ?? 0).toFixed(2)}
                 </p>
-                <p className="mt-1.5 text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] flex items-center gap-1">
+                <p className="mt-1.5 text-xs sm:text-sm text-[var(--sc-green)] flex items-center gap-1">
                   <TrendingUp className="w-3 h-3" />
                   Money added to wallets
                 </p>
@@ -117,13 +117,13 @@ export default function ActivityCharts({ transactions, eventAttendance }: Props)
           <CardContent className="py-4 sm:py-5">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
-                <p className="text-[0.65rem] sm:text-[0.7rem] text-[#bc6c25] uppercase tracking-[0.16em] font-semibold">
+                <p className="text-xs sm:text-sm text-[#bc6c25] uppercase tracking-[0.16em] font-semibold">
                   Events attended
                 </p>
-                <p className="mt-2 text-xl sm:text-2xl lg:text-3xl font-bold text-[#bc6c25]">
+                <p className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold text-[#bc6c25]">
                   {attendedCount}{rsvpedCount > 0 && `/${rsvpedCount}`}
                 </p>
-                <p className="mt-1.5 text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] flex items-center gap-1">
+                <p className="mt-1.5 text-xs sm:text-sm text-[var(--sc-green)] flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
                   {rsvpedCount > 0 ? 'Checked in / RSVP\'d' : 'Campus events registered'}
                 </p>
@@ -144,10 +144,10 @@ export default function ActivityCharts({ transactions, eventAttendance }: Props)
               <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--sc-green-dark)]" />
             </div>
             <div>
-              <p className="text-sm sm:text-base font-bold text-[var(--sc-green-dark)]">
+              <p className="text-base sm:text-lg font-bold text-[var(--sc-green-dark)]">
                 Income vs Expenses
               </p>
-              <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] mt-0.5">
+              <p className="text-xs sm:text-sm text-[var(--sc-green)] mt-0.5">
                 How much you're adding vs spending
               </p>
             </div>
@@ -159,10 +159,10 @@ export default function ActivityCharts({ transactions, eventAttendance }: Props)
               <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-[var(--sc-green)]/5 flex items-center justify-center mb-3">
                 <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-[var(--sc-green)]" />
               </div>
-              <p className="text-xs sm:text-sm text-[var(--sc-green-dark)] font-medium">
+              <p className="text-sm sm:text-base text-[var(--sc-green-dark)] font-medium">
                 No transaction data yet
               </p>
-              <p className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] mt-1">
+              <p className="text-xs sm:text-sm text-[var(--sc-green)] mt-1">
                 Start adding funds and making transactions
               </p>
             </div>
@@ -172,11 +172,11 @@ export default function ActivityCharts({ transactions, eventAttendance }: Props)
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs sm:text-sm font-semibold text-[var(--sc-green-dark)] flex items-center gap-1.5">
+                    <span className="text-sm sm:text-base font-semibold text-[var(--sc-green-dark)] flex items-center gap-1.5">
                       <TrendingUp className="w-4 h-4" />
                       Money Added
                     </span>
-                    <span className="text-base sm:text-lg font-bold text-[var(--sc-green)]">
+                    <span className="text-lg sm:text-xl font-bold text-[var(--sc-green)]">
                       ${totalTopups.toFixed(2)}
                     </span>
                   </div>
@@ -186,7 +186,7 @@ export default function ActivityCharts({ transactions, eventAttendance }: Props)
                       style={{ width: `${totalTopups > 0 ? Math.min((totalTopups / (totalTopups + Math.abs(totalSpent))) * 100, 100) : 0}%` }}
                     >
                       {totalTopups > 0 && (
-                        <span className="text-[0.65rem] font-bold text-[var(--sc-cream)] whitespace-nowrap">
+                        <span className="text-xs font-bold text-[var(--sc-cream)] whitespace-nowrap">
                           {totalTopups > 0 ? ((totalTopups / (totalTopups + Math.abs(totalSpent))) * 100).toFixed(0) : 0}%
                         </span>
                       )}
@@ -196,7 +196,7 @@ export default function ActivityCharts({ transactions, eventAttendance }: Props)
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs sm:text-sm font-semibold text-[var(--sc-gold-dark)] flex items-center gap-1.5">
+                    <span className="text-sm sm:text-base font-semibold text-[var(--sc-gold-dark)] flex items-center gap-1.5">
                       <TrendingDown className="w-4 h-4" />
                       Money Spent
                     </span>

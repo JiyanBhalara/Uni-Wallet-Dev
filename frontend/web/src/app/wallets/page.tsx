@@ -108,7 +108,7 @@ export default function WalletsPage() {
 
   return (
     <main className="space-y-4 sm:space-y-5 md:space-y-6">
-      <h1 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-[var(--sc-green-dark)]">
+      <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-[var(--sc-green-dark)]">
         Your wallets & balances
       </h1>
       
@@ -123,10 +123,10 @@ export default function WalletsPage() {
               <div className="space-y-2 sm:space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[0.6rem] sm:text-[0.65rem] uppercase tracking-[0.16em] sm:tracking-[0.18em] text-[var(--sc-green)] font-semibold">
+                    <p className="text-xs sm:text-sm uppercase tracking-[0.16em] sm:tracking-[0.18em] text-[var(--sc-green)] font-semibold">
                       {walletTypeLabel(w.type)}
                     </p>
-                    <p className="text-xs sm:text-sm md:text-base font-bold text-[var(--sc-green-dark)] mt-0.5 sm:mt-1 truncate">
+                    <p className="text-sm sm:text-base md:text-lg font-bold text-[var(--sc-green-dark)] mt-0.5 sm:mt-1 truncate">
                       {w.displayName}
                     </p>
                   </div>
@@ -140,8 +140,8 @@ export default function WalletsPage() {
             </CardHeader>
             <CardContent className="pt-0 pb-3 sm:pb-4">
               <div className="p-3 sm:p-4 rounded-xl bg-[var(--sc-cream)] border border-[var(--sc-green)]/20">
-                <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] font-medium mb-1">Balance</p>
-                <p className="text-lg sm:text-xl md:text-2xl font-bold text-[var(--sc-green-dark)] break-words">
+                <p className="text-xs sm:text-sm text-[var(--sc-green)] font-medium mb-1">Balance</p>
+                <p className="text-xl sm:text-2xl md:text-3xl font-bold text-[var(--sc-green-dark)] break-words">
                   {w.currency === "SWIPES"
                     ? `${w.balance ?? 0} swipes`
                     : `${w.currency} ${(w.balance ?? 0).toFixed(2)}`}
@@ -154,7 +154,7 @@ export default function WalletsPage() {
 
       {/* Transactions Section */}
       <div className="space-y-3 sm:space-y-4">
-        <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-[var(--sc-green-dark)]">
+        <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-[var(--sc-green-dark)]">
           Recent Transactions
         </h2>
         
@@ -164,15 +164,15 @@ export default function WalletsPage() {
               <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 mx-auto rounded-full bg-[var(--sc-cream)] border border-[var(--sc-green)]/20 flex items-center justify-center mb-3 sm:mb-4">
                 <WalletIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-[var(--sc-green)]" />
               </div>
-              <p className="text-xs sm:text-sm font-medium text-[var(--sc-green-dark)]">No transactions yet</p>
-              <p className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] mt-1">Your transaction history will appear here</p>
+              <p className="text-sm sm:text-base font-medium text-[var(--sc-green-dark)]">No transactions yet</p>
+              <p className="text-xs sm:text-sm text-[var(--sc-green)] mt-1">Your transaction history will appear here</p>
             </CardContent>
           </Card>
         ) : (
           <Card className="border border-[var(--sc-green)]/20">
             <CardContent className="p-0">
               <div className="overflow-x-auto">
-                <table className="w-full text-[0.7rem] sm:text-xs md:text-sm min-w-[550px] sm:min-w-[600px]">
+                <table className="w-full text-xs sm:text-sm md:text-base min-w-[550px] sm:min-w-[600px]">
                   <thead>
                     <tr className="border-b-2 border-[var(--sc-green-dark)] bg-[var(--sc-cream)]">
                       <th className="py-2 sm:py-3 px-2 sm:px-3 md:px-4 text-left font-semibold text-[var(--sc-green-dark)]">Date</th>
@@ -190,7 +190,7 @@ export default function WalletsPage() {
                           idx % 2 === 0 ? 'bg-white' : 'bg-[var(--sc-cream)]/30'
                         }`}
                       >
-                        <td className="py-2 sm:py-3 px-2 sm:px-3 md:px-4 text-[var(--sc-green-dark)] font-medium whitespace-nowrap text-[0.65rem] sm:text-xs md:text-sm">
+                        <td className="py-2 sm:py-3 px-2 sm:px-3 md:px-4 text-[var(--sc-green-dark)] font-medium whitespace-nowrap text-xs sm:text-sm md:text-base">
                           {new Date(t.date).toLocaleDateString('en-US', { 
                             month: 'short', 
                             day: 'numeric',
@@ -204,7 +204,7 @@ export default function WalletsPage() {
                           {t.category}
                         </td>
                         <td className="py-2 sm:py-3 px-2 sm:px-3 md:px-4 hidden sm:table-cell">
-                          <span className="inline-block rounded-full px-1.5 sm:px-2 py-0.5 sm:py-1 text-[0.6rem] sm:text-[0.65rem] md:text-xs bg-[var(--sc-green)]/10 text-[var(--sc-green-dark)] font-medium border border-[var(--sc-green)]/20 truncate max-w-[80px] sm:max-w-full">
+                          <span className="inline-block rounded-full px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs sm:text-sm md:text-base bg-[var(--sc-green)]/10 text-[var(--sc-green-dark)] font-medium border border-[var(--sc-green)]/20 truncate max-w-[80px] sm:max-w-full">
                             {t.location}
                           </span>
                         </td>
@@ -212,12 +212,7 @@ export default function WalletsPage() {
                           <span className={`flex items-center justify-end gap-0.5 sm:gap-1 ${
                             (t.amount ?? 0) < 0 ? 'text-[var(--sc-gold-dark)]' : 'text-[var(--sc-green)]'
                           }`}>
-                            {(t.amount ?? 0) < 0 ? (
-                              <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4" />
-                            ) : (
-                              <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
-                            )}
-                            <span className="text-[0.7rem] sm:text-xs md:text-sm">
+                            <span className="text-xs sm:text-sm md:text-base">
                               {(t.amount ?? 0) < 0 ? "-" : "+"}${Math.abs(t.amount ?? 0).toFixed(2)}
                             </span>
                           </span>
@@ -234,7 +229,7 @@ export default function WalletsPage() {
                   {hasMore && (
                     <button
                       onClick={handleShowMore}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-xs sm:text-sm font-semibold hover:bg-[var(--sc-green)] transition-colors"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-sm sm:text-base font-semibold hover:bg-[var(--sc-green)] transition-colors"
                     >
                       Show More
                       <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -243,7 +238,7 @@ export default function WalletsPage() {
                   {canShowLess && (
                     <button
                       onClick={handleShowLess}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full border-2 border-[var(--sc-green-dark)] text-[var(--sc-green-dark)] text-xs sm:text-sm font-semibold hover:bg-[var(--sc-green-dark)] hover:text-[var(--sc-cream)] transition-colors"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full border-2 border-[var(--sc-green-dark)] text-[var(--sc-green-dark)] text-sm sm:text-base font-semibold hover:bg-[var(--sc-green-dark)] hover:text-[var(--sc-cream)] transition-colors"
                     >
                       Show Less
                       <ChevronUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />

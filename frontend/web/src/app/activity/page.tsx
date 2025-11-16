@@ -74,7 +74,7 @@ export default function ActivityPage() {
 
   return (
     <main className="space-y-4 sm:space-y-5">
-      <h1 className="text-lg sm:text-xl md:text-2xl font-semibold text-[var(--sc-green-dark)]">
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-[var(--sc-green-dark)]">
         Full activity
       </h1>
 
@@ -84,15 +84,15 @@ export default function ActivityPage() {
       {/* Existing table */}
       <Card>
         <CardHeader>
-          <p className="text-xs sm:text-sm font-semibold text-[var(--sc-green-dark)]">
+          <p className="text-sm sm:text-base font-semibold text-[var(--sc-green-dark)]">
             Transactions
           </p>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto -mx-1">
-            <table className="w-full text-[0.7rem] sm:text-xs md:text-sm min-w-[500px]">
+            <table className="w-full text-xs sm:text-sm md:text-base min-w-[500px]">
               <thead>
-                <tr className="text-left text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] border-b border-[rgba(40,54,24,0.06)]">
+                <tr className="text-left text-xs sm:text-sm text-[var(--sc-green)] border-b border-[rgba(40,54,24,0.06)]">
                   <th className="py-2 pr-2 font-medium">Date</th>
                   <th className="py-2 pr-2 font-medium">Merchant</th>
                   <th className="py-2 pr-2 font-medium hidden sm:table-cell">

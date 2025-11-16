@@ -312,10 +312,10 @@ export default function EventsPage() {
 
       <div className="flex items-center justify-between gap-2">
         <div>
-          <h1 className="text-lg sm:text-xl md:text-2xl font-semibold">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold">
             Campus Life
           </h1>
-          <p className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] mt-1">
+          <p className="text-xs sm:text-sm text-[var(--sc-green)] mt-1">
             Discover events, RSVP, and check in from your Smart Campus Wallet.
           </p>
         </div>
@@ -331,40 +331,40 @@ export default function EventsPage() {
                   <Calendar className="w-6 h-6 sm:w-7 sm:h-7 text-[var(--sc-gold)]" />
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm text-[var(--sc-cream)]/80 font-medium">
+                  <p className="text-sm sm:text-base text-[var(--sc-cream)]/80 font-medium">
                     Your Event Activity
                   </p>
-                  <p className="text-lg sm:text-xl md:text-2xl font-bold mt-0.5">
+                  <p className="text-xl sm:text-2xl md:text-3xl font-bold mt-0.5">
                     {eventAttendance.attended} / {eventAttendance.totalRsvped}
                   </p>
-                  <p className="text-[0.7rem] sm:text-xs text-[var(--sc-cream)]/70 mt-0.5">
+                  <p className="text-xs sm:text-sm text-[var(--sc-cream)]/70 mt-0.5">
                     Events attended out of RSVP'd
                   </p>
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
                 <div className="text-center px-3 py-2 rounded-lg bg-[var(--sc-green-dark)]/40">
-                  <p className="text-xl sm:text-2xl font-bold text-[var(--sc-gold)]">
+                  <p className="text-2xl sm:text-3xl font-bold text-[var(--sc-gold)]">
                     {eventAttendance.totalRsvped}
                   </p>
-                  <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-cream)]/80 mt-0.5">
+                  <p className="text-xs sm:text-sm text-[var(--sc-cream)]/80 mt-0.5">
                     RSVP'd
                   </p>
                 </div>
                 <div className="text-center px-3 py-2 rounded-lg bg-[var(--sc-green-dark)]/40">
-                  <p className="text-xl sm:text-2xl font-bold text-green-400">
+                  <p className="text-2xl sm:text-3xl font-bold text-green-400">
                     {eventAttendance.attended}
                   </p>
-                  <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-cream)]/80 mt-0.5">
+                  <p className="text-xs sm:text-sm text-[var(--sc-cream)]/80 mt-0.5">
                     Attended
                   </p>
                 </div>
                 {eventAttendance.missed > 0 && (
                   <div className="text-center px-3 py-2 rounded-lg bg-[var(--sc-green-dark)]/40">
-                    <p className="text-xl sm:text-2xl font-bold text-red-400">
+                    <p className="text-2xl sm:text-3xl font-bold text-red-400">
                       {eventAttendance.missed}
                     </p>
-                    <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-cream)]/80 mt-0.5">
+                    <p className="text-xs sm:text-sm text-[var(--sc-cream)]/80 mt-0.5">
                       Missed
                     </p>
                   </div>
@@ -380,10 +380,10 @@ export default function EventsPage() {
           <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-[var(--sc-gold)]/15 flex items-center justify-center mb-3">
             <Ticket className="w-6 h-6 sm:w-8 sm:h-8 text-[var(--sc-gold-dark)]" />
           </div>
-          <p className="text-sm sm:text-base font-semibold text-[var(--sc-green-dark)]">
+          <p className="text-base sm:text-lg font-semibold text-[var(--sc-green-dark)]">
             No upcoming events yet
           </p>
-          <p className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] mt-1 max-w-md">
+          <p className="text-xs sm:text-sm text-[var(--sc-green)] mt-1 max-w-md">
             Once campus events are loaded, you&apos;ll be able to RSVP and check
             in right from here.
           </p>
@@ -407,37 +407,37 @@ export default function EventsPage() {
               >
                 <CardHeader className="border-none flex flex-row items-start gap-3 pb-3">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[0.65rem] sm:text-[0.7rem] uppercase tracking-[0.2em] font-bold opacity-90 flex items-center gap-1.5 mb-2">
-                      <span className="inline-flex items-center justify-center px-2 py-0.5 rounded bg-[var(--sc-gold)]/30 text-[0.65rem] font-bold border border-[var(--sc-gold)]/50">
+                    <p className="text-xs sm:text-sm uppercase tracking-[0.2em] font-bold opacity-90 flex items-center gap-1.5 mb-2">
+                      <span className="inline-flex items-center justify-center px-2 py-0.5 rounded bg-[var(--sc-gold)]/30 text-xs font-bold border border-[var(--sc-gold)]/50">
                         {e.eventCode}
                       </span>
                       <span>EVENT</span>
                     </p>
-                    <p className="text-base sm:text-lg md:text-xl font-bold truncate leading-tight">
+                    <p className="text-lg sm:text-xl md:text-2xl font-bold truncate leading-tight">
                       {e.name}
                     </p>
-                    <p className="mt-1.5 text-[0.75rem] sm:text-[0.8rem] font-medium opacity-90">
+                    <p className="mt-1.5 text-sm sm:text-base font-medium opacity-90">
                       {e.category}
                       {e.tags && ` · ${e.tags}`}
                     </p>
                   </div>
                   <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-                    <span className="text-[0.75rem] sm:text-[0.8rem] font-bold whitespace-nowrap bg-[var(--sc-gold)] text-[var(--sc-green-dark)] px-3 py-1 rounded-full shadow-sm">
+                    <span className="text-sm sm:text-base font-bold whitespace-nowrap bg-[var(--sc-gold)] text-[var(--sc-green-dark)] px-3 py-1 rounded-full shadow-sm">
                       {(e.cost ?? 0) === 0 ? "FREE" : `$${(e.cost ?? 0).toFixed(2)}`}
                     </span>
                     {e.checkedIn && (
-                      <span className="flex items-center gap-1 text-[0.65rem] sm:text-[0.7rem] font-semibold bg-green-500 text-white px-2.5 py-1 rounded-full shadow-sm">
+                      <span className="flex items-center gap-1 text-xs sm:text-sm font-semibold bg-green-500 text-white px-2.5 py-1 rounded-full shadow-sm">
                         <CheckCircle2 className="w-3 h-3" />
                         Attended
                       </span>
                     )}
                     {!e.checkedIn && e.rsvped && isPast && (
-                      <span className="flex items-center gap-1 text-[0.65rem] sm:text-[0.7rem] font-semibold bg-gray-500 text-white px-2.5 py-1 rounded-full shadow-sm">
+                      <span className="flex items-center gap-1 text-xs sm:text-sm font-semibold bg-gray-500 text-white px-2.5 py-1 rounded-full shadow-sm">
                         Missed
                       </span>
                     )}
                     {!e.checkedIn && e.rsvped && !isPast && !isDuringWindow && (
-                      <span className="flex items-center gap-1 text-[0.65rem] sm:text-[0.7rem] font-semibold bg-[var(--sc-gold-dark)] text-white px-2.5 py-1 rounded-full shadow-sm">
+                      <span className="flex items-center gap-1 text-xs sm:text-sm font-semibold bg-[var(--sc-gold-dark)] text-white px-2.5 py-1 rounded-full shadow-sm">
                         <Ticket className="w-3 h-3" />
                         Registered
                       </span>
@@ -447,7 +447,7 @@ export default function EventsPage() {
 
                 <CardContent className="pt-0 pb-5">
                   <div className="space-y-2.5">
-                    <p className="text-[0.8rem] sm:text-[0.85rem] font-medium flex items-center gap-2">
+                    <p className="text-sm sm:text-base font-medium flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
                       <span className="truncate">
                         {start.toLocaleDateString()} ·{" "}
@@ -462,14 +462,14 @@ export default function EventsPage() {
                         })}
                       </span>
                     </p>
-                    <p className="text-[0.8rem] sm:text-[0.85rem] font-medium flex items-center gap-2">
+                    <p className="text-sm sm:text-base font-medium flex items-center gap-2">
                       <MapPin className="w-4 h-4" />
                       <span className="truncate">{e.location}</span>
                     </p>
                     
                     {/* Only show "Upcoming - RSVP" if not rsvped */}
                     {!e.rsvped && !isPast && (
-                      <p className="text-[0.75rem] sm:text-[0.8rem] font-medium opacity-90 flex items-center gap-2 bg-[var(--sc-green-dark)]/40 px-3 py-2 rounded-lg">
+                      <p className="text-sm sm:text-base font-medium opacity-90 flex items-center gap-2 bg-[var(--sc-green-dark)]/40 px-3 py-2 rounded-lg">
                         <Clock className="w-4 h-4" />
                         <span>Upcoming — RSVP to save your spot.</span>
                       </p>
@@ -477,7 +477,7 @@ export default function EventsPage() {
                     
                     {/* Show check-in message during window */}
                     {e.rsvped && isDuringWindow && !e.checkedIn && (
-                      <p className="text-[0.75rem] sm:text-[0.8rem] font-medium opacity-90 flex items-center gap-2 bg-[var(--sc-green-dark)]/40 px-3 py-2 rounded-lg">
+                      <p className="text-sm sm:text-base font-medium opacity-90 flex items-center gap-2 bg-[var(--sc-green-dark)]/40 px-3 py-2 rounded-lg">
                         <Clock className="w-4 h-4" />
                         <span>Happening now — check in to mark attendance.</span>
                       </p>
@@ -485,7 +485,7 @@ export default function EventsPage() {
                     
                     {/* Show past event message */}
                     {isPast && !isDuringWindow && (
-                      <p className="text-[0.75rem] sm:text-[0.8rem] font-medium opacity-90 flex items-center gap-2 bg-[var(--sc-green-dark)]/40 px-3 py-2 rounded-lg">
+                      <p className="text-sm sm:text-base font-medium opacity-90 flex items-center gap-2 bg-[var(--sc-green-dark)]/40 px-3 py-2 rounded-lg">
                         <Clock className="w-4 h-4" />
                         <span>Event finished.</span>
                       </p>
@@ -499,7 +499,7 @@ export default function EventsPage() {
                         type="button"
                         onClick={() => handleRsvp(e)}
                         disabled={isRsvpMut}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--sc-gold)] text-[var(--sc-green-dark)] text-[0.75rem] sm:text-sm font-bold hover:bg-[var(--sc-gold-dark)] hover:text-white disabled:opacity-60 transition-colors shadow-sm cursor-pointer"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--sc-gold)] text-[var(--sc-green-dark)] text-sm sm:text-base font-bold hover:bg-[var(--sc-gold-dark)] hover:text-white disabled:opacity-60 transition-colors shadow-sm cursor-pointer"
                       >
                         <Ticket className="w-4 h-4" />
                         {isRsvpMut ? "RSVPing..." : "RSVP Now"}
@@ -511,7 +511,7 @@ export default function EventsPage() {
                         type="button"
                         onClick={() => handleCheckIn(e.id)}
                         disabled={isCheckinMut}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500 text-white text-[0.75rem] sm:text-sm font-bold hover:bg-green-600 disabled:opacity-60 transition-colors shadow-sm cursor-pointer"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500 text-white text-sm sm:text-base font-bold hover:bg-green-600 disabled:opacity-60 transition-colors shadow-sm cursor-pointer"
                       >
                         <CheckCircle2 className="w-4 h-4" />
                         {isCheckinMut ? "Checking in..." : "Check In"}
@@ -519,13 +519,13 @@ export default function EventsPage() {
                     )}
 
                     {e.checkedIn && (
-                      <span className="text-[0.75rem] sm:text-[0.8rem] font-medium opacity-90">
+                      <span className="text-sm sm:text-base font-medium opacity-90">
                         Your attendance is recorded in your activity history.
                       </span>
                     )}
 
                     {!e.checkedIn && isPast && !isDuringWindow && (
-                      <span className="text-[0.75rem] sm:text-[0.8rem] font-medium opacity-90">
+                      <span className="text-sm sm:text-base font-medium opacity-90">
                         Check-in window has closed.
                       </span>
                     )}
