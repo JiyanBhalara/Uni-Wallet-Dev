@@ -269,13 +269,3 @@ This will:
   * Harden authentication & authorization
   * Add proper logging, monitoring, and tests
 
----
-
-If you want, I can also generate:
-
-* A smaller **README “short version”** for another branch
-* A **CONTRIBUTING.md** or **API docs** (`/api/chat`, `/api/wallets`, `/api/budgets`, etc.)
-
-```
-::contentReference[oaicite:0]{index=0}
-```
