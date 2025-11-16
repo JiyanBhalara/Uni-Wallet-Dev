@@ -142,7 +142,7 @@ export default function RewardsPage() {
     setRsvping(eventId);
     try {
       await api.rsvpEvent(eventId, userEmail);
-      showToast("Successfully RSVPed! You earned 5 reward points!", "success");
+      showToast("Successfully RSVPed!", "success");
       // Remove from recommendations
       setRecommendations((prev) => prev.filter((e) => e.id !== eventId));
       await fetchData();
@@ -289,23 +289,14 @@ export default function RewardsPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex items-start gap-3 p-4 rounded-lg bg-green-50 border border-green-100">
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                <CheckCircle2 className="h-5 w-5 text-green-600" />
-              </div>
-              <div>
-                <p className="font-semibold text-sm mb-1">RSVP to Events</p>
-                <p className="text-xs text-gray-600">+5 points</p>
-              </div>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex items-start gap-3 p-4 rounded-lg bg-blue-50 border border-blue-100">
               <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
                 <DollarSign className="h-5 w-5 text-blue-600" />
               </div>
               <div>
                 <p className="font-semibold text-sm mb-1">Pay for Events</p>
-                <p className="text-xs text-gray-600">+5 bonus points</p>
+                <p className="text-xs text-gray-600">+5 points</p>
               </div>
             </div>
             <div className="flex items-start gap-3 p-4 rounded-lg bg-purple-50 border border-purple-100">

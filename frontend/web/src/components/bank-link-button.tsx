@@ -1,7 +1,7 @@
 "use client";
 
 import { usePlaidLink } from "react-plaid-link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface BankLinkButtonProps {
   userId: number;
@@ -40,12 +40,21 @@ export function BankLinkButton({ userId, onSuccess }: BankLinkButtonProps) {
 
   const { open, ready } = usePlaidLink(config);
 
+  // Auto-open Plaid Link when token is ready
+  useEffect(() => {
+    if (linkToken && ready) {
+      open();
+    }
+  }, [linkToken, ready, open]);
+
   const handleClick = async () => {
-    if (linkToken) {
+    // If we already have a token and Plaid is ready, just open it
+    if (linkToken && ready) {
       open();
       return;
     }
 
+    // Otherwise, fetch the link token (useEffect will auto-open when ready)
     try {
       setLoading(true);
       setError(null);
@@ -60,9 +69,7 @@ export function BankLinkButton({ userId, onSuccess }: BankLinkButtonProps) {
 
       const data = await response.json();
       setLinkToken(data.link_token);
-      
-      // Open Plaid Link after getting token
-      setTimeout(() => open(), 100);
+      // No need to call open() here - useEffect will handle it
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to initialize");
     } finally {

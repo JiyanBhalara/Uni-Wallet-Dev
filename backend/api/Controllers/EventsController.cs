@@ -160,12 +160,7 @@ public class EventsController : ControllerBase
             att.RsvpedAt ??= DateTime.UtcNow;
         }
 
-        // Award RSVP points (5 points) if not already awarded
-        if (!att.RsvpRewardAwarded)
-        {
-            await AwardPoints(user.Id, 5, $"RSVP for event: {ev.Name}");
-            att.RsvpRewardAwarded = true;
-        }
+        // RSVP reward removed - no points awarded for RSVP
 
         await _db.SaveChangesAsync();
         return Ok();
@@ -234,14 +229,9 @@ public class EventsController : ControllerBase
                 att.RsvpedAt ??= DateTime.UtcNow;
             }
 
-            // Award RSVP points (5 points) if not already awarded
-            if (!att.RsvpRewardAwarded)
-            {
-                await AwardPoints(user.Id, 5, $"RSVP for event: {ev.Name}");
-                att.RsvpRewardAwarded = true;
-            }
+            // RSVP reward removed - no points for RSVP
 
-            // Award paid event bonus (5 additional points) if event has cost
+            // Award paid event bonus (5 points) if event has cost
             if (ev.Cost > 0 && !att.PaidEventBonusAwarded)
             {
                 await AwardPoints(user.Id, 5, $"Paid event bonus: {ev.Name}");
@@ -300,12 +290,7 @@ public class EventsController : ControllerBase
                 att.RsvpedAt ??= DateTime.UtcNow;
             }
 
-            // Award RSVP points if not already awarded
-            if (!att.RsvpRewardAwarded)
-            {
-                await AwardPoints(user.Id, 5, $"RSVP for event: {ev.Name}");
-                att.RsvpRewardAwarded = true;
-            }
+            // RSVP reward removed - no points for auto-RSVP at check-in
         }
 
         att.CheckedIn = true;

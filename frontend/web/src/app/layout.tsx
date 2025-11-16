@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Menu, X, Wallet } from "lucide-react";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function RootLayout({
   children,
@@ -32,6 +33,13 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
   const isAuthenticated = !!session?.user;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const isLandingPage = pathname === "/";
+
+  // Hide navigation on landing page
+  if (isLandingPage) {
+    return <div className="min-h-screen">{children}</div>;
+  }
 
   return (
     <div className="min-h-screen">
@@ -39,15 +47,15 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       <header className="md:hidden sticky top-0 z-40 bg-white/80 backdrop-blur-lg shadow-sm border-b border-[rgba(40,54,24,0.08)] px-4 py-3">
         <div className="flex items-center justify-between gap-3">
           {/* Logo Section */}
-          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
-            <div className="h-9 w-9 rounded-xl bg-white flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105 p-1">
-              <Image src="/unipay-logo.png" alt="UniPay" width={32} height={32} className="object-contain" />
+          <Link href="/" className="flex items-center gap-3 flex-shrink-0 group">
+            <div className="h-11 w-11 rounded-2xl bg-white flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105 p-2">
+              <Image src="/unipay-logo.png" alt="UniWallet" width={40} height={40} className="object-contain" />
             </div>
             <div className="min-w-0">
-              <p className="text-[0.65rem] uppercase tracking-[0.2em] text-[var(--sc-green-dark)] font-bold truncate leading-tight">
-                UniPay
+              <p className="text-sm uppercase tracking-[0.2em] text-[var(--sc-green-dark)] font-bold truncate leading-tight">
+                UniWallet
               </p>
-              <p className="text-[0.6rem] text-[var(--sc-green)] truncate">
+              <p className="text-xs text-[var(--sc-green)] truncate">
                 Smarter Wallet, Smarter You
               </p>
             </div>

@@ -6,13 +6,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("alex@campus.edu");
-  const [password, setPassword] = useState("password123");
+  const [email, setEmail] = useState("jiyanbhalara0303@gmail.com");
+  const [password, setPassword] = useState("abcdefghu");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
