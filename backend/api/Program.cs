@@ -30,7 +30,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, serverVersion));
 
 // Register services
-builder.Services.AddScoped<IEmailService, ConsoleEmailService>();
+builder.Services.AddScoped<IEmailService, GmailEmailService>();
 builder.Services.AddScoped<BudgetAlertService>();
 
 builder.Services.AddEndpointsApiExplorer();

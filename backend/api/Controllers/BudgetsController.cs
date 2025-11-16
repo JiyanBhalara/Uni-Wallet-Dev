@@ -12,10 +12,12 @@ namespace SmartCampusWallet.Api.Controllers;
 public class BudgetsController : ControllerBase
 {
     private readonly AppDbContext _db;
+    private readonly BudgetAlertService _budgetAlertService;
 
-    public BudgetsController(AppDbContext db)
+    public BudgetsController(AppDbContext db, BudgetAlertService budgetAlertService)
     {
         _db = db;
+        _budgetAlertService = budgetAlertService;
     }
 
     [HttpGet]
@@ -116,5 +118,44 @@ public class BudgetsController : ControllerBase
             .ToListAsync();
 
         return Ok(updated);
+    }
+
+    // Test endpoint to manually trigger budget check
+    [HttpPost("test-alert/{userId}")]
+    public async Task<IActionResult> TestAlert(int userId)
+    {
+        var user = await _db.Users.FindAsync(userId);
+        if (user == null)
+        {
+            return NotFound(new { message = "User not found" });
+        }
+
+        // Get the most recent transaction for this user
+        var transaction = await _db.Transactions
+            .Where(t => t.UserId == userId)
+            .OrderByDescending(t => t.Date)
+            .FirstOrDefaultAsync();
+
+        if (transaction == null)
+        {
+            return NotFound(new { message = "No transactions found for this user" });
+        }
+
+        // Trigger the budget alert check
+        await _budgetAlertService.CheckAndNotifyAsync(userId, user.Email, transaction);
+
+        return Ok(new
+        {
+            message = "Budget alert check triggered. Check console logs for details.",
+            userId = userId,
+            userEmail = user.Email,
+            transaction = new
+            {
+                id = transaction.Id,
+                amount = transaction.Amount,
+                category = transaction.Category,
+                date = transaction.Date
+            }
+        });
     }
 }
