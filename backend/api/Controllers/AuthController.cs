@@ -60,6 +60,41 @@ public class AuthController : ControllerBase
         _db.Users.Add(user);
         _db.SaveChanges();
 
+        // Automatically create default wallets for new user
+        var defaultWallets = new List<Wallet>
+        {
+            new Wallet
+            {
+                UserId = user.Id,
+                Type = WalletType.Campus,
+                DisplayName = "Campus Wallet",
+                Balance = 0,
+                Currency = "USD",
+                IsPrimary = true
+            },
+            new Wallet
+            {
+                UserId = user.Id,
+                Type = WalletType.MealPlan,
+                DisplayName = "Meal Swipes",
+                Balance = 0,
+                Currency = "Swipes",
+                IsPrimary = false
+            },
+            new Wallet
+            {
+                UserId = user.Id,
+                Type = WalletType.DiningDollars,
+                DisplayName = "Dining Dollars",
+                Balance = 0,
+                Currency = "USD",
+                IsPrimary = false
+            }
+        };
+
+        _db.Wallets.AddRange(defaultWallets);
+        _db.SaveChanges();
+
         return Ok(new
         {
             id = user.Id,

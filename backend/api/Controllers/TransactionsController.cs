@@ -71,6 +71,18 @@ public class TransactionsController : ControllerBase
             w => w.Id == req.WalletId && w.UserId == user.Id);
         if (wallet == null) return BadRequest("Invalid wallet");
 
+        // Prevent transactions if wallet balance is 0 and trying to spend
+        if (wallet.Balance == 0 && req.Amount < 0)
+        {
+            return BadRequest("Cannot make a transaction with zero balance. Please top up your wallet first.");
+        }
+
+        // Prevent transactions that would result in negative balance
+        if (wallet.Balance + req.Amount < 0)
+        {
+            return BadRequest($"Insufficient balance. Available: {wallet.Currency} {wallet.Balance:F2}, Required: {wallet.Currency} {Math.Abs(req.Amount):F2}");
+        }
+
         var tx = new Transaction
         {
             UserId = user.Id,

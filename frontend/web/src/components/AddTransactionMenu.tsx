@@ -3,7 +3,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { api } from "@/lib/api";
-import { Plus, Upload } from "lucide-react";
+import { Plus, Upload, AlertTriangle, PartyPopper, CheckCircle2 } from "lucide-react";
+import { Budget } from "@/types/budget";
 
 const CATEGORY_OPTIONS = [
   "Dining",
@@ -20,6 +21,19 @@ interface WalletLite {
   id: number;
   displayName: string;
   currency: string;
+  balance: number;
+}
+
+interface Transaction {
+  id: string;
+  userId: number;
+  walletId: number;
+  amount: number;
+  merchant: string;
+  paymentMethod: string;
+  location: string;
+  date: string;
+  category: string;
 }
 
 interface Props {
@@ -48,12 +62,46 @@ export default function AddTransactionMenu({
   const [paymentMethod, setPaymentMethod] = useState("Campus Card");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [showZeroBalanceWarning, setShowZeroBalanceWarning] = useState(false);
+  const [pendingTransaction, setPendingTransaction] = useState<any>(null);
+  
+  // Budget warning states
+  const [budgets, setBudgets] = useState<Budget[]>([]);
+  const [showBudgetWarning, setShowBudgetWarning] = useState(false);
+  const [budgetWarningData, setBudgetWarningData] = useState<{
+    percentage: number;
+    isOverBudget: boolean;
+    limitAmount: number;
+    currentSpent: number;
+    transactionAmount: number;
+  } | null>(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showAvoidedMessage, setShowAvoidedMessage] = useState(false);
+
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 4000);
+  };
 
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [csvError, setCsvError] = useState<string | null>(null);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
+
+  // Fetch budgets when component mounts
+  useEffect(() => {
+    async function fetchBudgets() {
+      try {
+        const budgetsData = await api.getBudgets(userEmail);
+        setBudgets(budgetsData);
+      } catch (error) {
+        console.error("Failed to fetch budgets:", error);
+      }
+    }
+    fetchBudgets();
+  }, [userEmail]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -78,6 +126,52 @@ export default function AddTransactionMenu({
     setCsvError(null);
   };
 
+  // Calculate budget usage for a category
+  const checkBudgetUsage = async (category: string, transactionAmount: number): Promise<{
+    percentage: number;
+    isOverBudget: boolean;
+    limitAmount: number;
+    currentSpent: number;
+  } | null> => {
+    const budget = budgets.find(b => b.category === category && b.isActive);
+    if (!budget) return null;
+
+    try {
+      // Fetch all transactions for this user to calculate current spending
+      const transactions = await api.getTransactions(userEmail) as Transaction[];
+      
+      // Get current month start/end
+      const now = new Date();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+
+      // Calculate spending for this category in current month
+      const currentSpent = transactions
+        .filter((t: Transaction) => {
+          const tDate = new Date(t.date);
+          return t.category === category && 
+                 t.amount < 0 && 
+                 tDate >= monthStart && 
+                 tDate <= monthEnd;
+        })
+        .reduce((sum: number, t: Transaction) => sum + Math.abs(t.amount), 0);
+
+      const totalAfterTransaction = currentSpent + transactionAmount;
+      const percentage = (totalAfterTransaction / budget.limitAmount) * 100;
+      const isOverBudget = totalAfterTransaction >= budget.limitAmount;
+
+      return {
+        percentage,
+        isOverBudget,
+        limitAmount: budget.limitAmount,
+        currentSpent,
+      };
+    } catch (error) {
+      console.error("Failed to check budget:", error);
+      return null;
+    }
+  };
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -95,6 +189,63 @@ export default function AddTransactionMenu({
     }
 
     const signedAmount = type === "expense" ? -numericAmount : numericAmount;
+
+    // Check balance before creating expense transaction
+    if (type === "expense") {
+      if (wallet.balance === 0) {
+        showToast("Cannot make a transaction with zero balance in this wallet.", "error");
+        return;
+      }
+      
+      if (wallet.balance < numericAmount) {
+        showToast(
+          `Insufficient balance. Available: ${wallet.currency} ${wallet.balance.toFixed(2)}, Required: ${wallet.currency} ${numericAmount.toFixed(2)}`,
+          "error"
+        );
+        return;
+      }
+
+      // Check if transaction would make balance exactly 0
+      if (wallet.balance === numericAmount) {
+        setPendingTransaction({
+          walletId,
+          amount: signedAmount,
+          merchant: merchant || `${category} transaction`,
+          paymentMethod,
+          location: location || "Unknown",
+          category,
+        });
+        setShowZeroBalanceWarning(true);
+        return;
+      }
+
+      // Check budget usage for expense transactions
+      const budgetCheck = await checkBudgetUsage(category, numericAmount);
+      if (budgetCheck) {
+        const { percentage, isOverBudget, limitAmount, currentSpent } = budgetCheck;
+
+        // If 80% or more budget used, show warning
+        if (percentage >= 80) {
+          setPendingTransaction({
+            walletId,
+            amount: signedAmount,
+            merchant: merchant || `${category} transaction`,
+            paymentMethod,
+            location: location || "Unknown",
+            category,
+          });
+          setBudgetWarningData({
+            percentage,
+            isOverBudget,
+            limitAmount,
+            currentSpent,
+            transactionAmount: numericAmount,
+          });
+          setShowBudgetWarning(true);
+          return;
+        }
+      }
+    }
 
     setSaving(true);
     try {
@@ -115,10 +266,119 @@ export default function AddTransactionMenu({
       setPaymentMethod("Campus Card");
       setShowForm(false);
 
+      showToast("Transaction added successfully!", "success");
       onCreated();
     } catch (err) {
       console.error(err);
-      setError("Failed to add transaction. Please try again.");
+      
+      // Try to extract error message from backend
+      let errorMessage = "Failed to add transaction. Please try again.";
+      if (err && typeof err === 'object' && 'response' in err) {
+        const response = (err as any).response;
+        if (response?.data?.message) {
+          errorMessage = response.data.message;
+        } else if (response?.data) {
+          errorMessage = typeof response.data === 'string' ? response.data : errorMessage;
+        }
+      }
+      
+      showToast(errorMessage, "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const confirmBudgetTransaction = async () => {
+    if (!pendingTransaction || !budgetWarningData) return;
+
+    setShowBudgetWarning(false);
+    setSaving(true);
+    
+    try {
+      await api.createTransaction(userEmail, pendingTransaction);
+
+      // Reset
+      setMerchant("");
+      setAmount("");
+      setType("expense");
+      setLocation("");
+      setPaymentMethod("Campus Card");
+      setShowForm(false);
+      setPendingTransaction(null);
+      setBudgetWarningData(null);
+
+      // Show overspent message if applicable
+      if (budgetWarningData.isOverBudget || budgetWarningData.percentage >= 100) {
+        setShowSuccessMessage(true);
+        setTimeout(() => setShowSuccessMessage(false), 4000);
+      } else {
+        showToast("Transaction added successfully!", "success");
+      }
+      
+      onCreated();
+    } catch (err) {
+      console.error(err);
+      
+      let errorMessage = "Failed to add transaction. Please try again.";
+      if (err && typeof err === 'object' && 'response' in err) {
+        const response = (err as any).response;
+        if (response?.data?.message) {
+          errorMessage = response.data.message;
+        } else if (response?.data) {
+          errorMessage = typeof response.data === 'string' ? response.data : errorMessage;
+        }
+      }
+      
+      showToast(errorMessage, "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const cancelBudgetTransaction = () => {
+    setShowBudgetWarning(false);
+    setPendingTransaction(null);
+    setBudgetWarningData(null);
+    
+    // Show avoided message
+    setShowAvoidedMessage(true);
+    setTimeout(() => setShowAvoidedMessage(false), 3000);
+  };
+
+  const confirmZeroBalanceTransaction = async () => {
+    if (!pendingTransaction) return;
+
+    setShowZeroBalanceWarning(false);
+    setSaving(true);
+    
+    try {
+      await api.createTransaction(userEmail, pendingTransaction);
+
+      // Reset
+      setMerchant("");
+      setAmount("");
+      setType("expense");
+      setLocation("");
+      setPaymentMethod("Campus Card");
+      setShowForm(false);
+      setPendingTransaction(null);
+
+      showToast("Transaction added successfully!", "success");
+      onCreated();
+    } catch (err) {
+      console.error(err);
+      
+      let errorMessage = "Failed to add transaction. Please try again.";
+      if (err && typeof err === 'object' && 'response' in err) {
+        const response = (err as any).response;
+        if (response?.data?.message) {
+          errorMessage = response.data.message;
+        } else if (response?.data) {
+          errorMessage = typeof response.data === 'string' ? response.data : errorMessage;
+        }
+      }
+      
+      showToast(errorMessage, "error");
     } finally {
       setSaving(false);
     }
@@ -149,6 +409,17 @@ export default function AddTransactionMenu({
 
   return (
     <>
+      {/* Toast Notification */}
+      {toast && (
+        <div 
+          className={`fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white font-semibold text-sm ${
+            toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'
+          }`}
+        >
+          {toast.message}
+        </div>
+      )}
+
       {/* Button + dropdown */}
       <div className="relative" ref={menuRef}>
         <button
@@ -202,9 +473,10 @@ export default function AddTransactionMenu({
             <form onSubmit={handleCreate} className="space-y-3">
               <div className="space-y-1">
                 <label className="block text-[0.7rem] sm:text-xs font-medium text-[var(--sc-green-dark)]">
-                  Merchant
+                  Merchant <span className="text-red-600">*</span>
                 </label>
                 <input
+                  required
                   className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40"
                   placeholder="e.g. Starbucks, Campus Bookstore"
                   value={merchant}
@@ -215,9 +487,10 @@ export default function AddTransactionMenu({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="block text-[0.7rem] sm:text-xs font-medium text-[var(--sc-green-dark)]">
-                    Category
+                    Category <span className="text-red-600">*</span>
                   </label>
                   <select
+                    required
                     className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm bg-[var(--sc-cream)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
@@ -232,11 +505,12 @@ export default function AddTransactionMenu({
 
                 <div className="space-y-1">
                   <label className="block text-[0.7rem] sm:text-xs font-medium text-[var(--sc-green-dark)]">
-                    Amount
+                    Amount <span className="text-red-600">*</span>
                   </label>
                   <input
+                    required
                     type="number"
-                    min={0}
+                    min={0.01}
                     step="0.01"
                     className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm bg-[var(--sc-cream)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent"
                     placeholder="0.00"
@@ -281,9 +555,10 @@ export default function AddTransactionMenu({
 
                 <div className="space-y-1">
                   <label className="block text-[0.7rem] sm:text-xs font-medium text-[var(--sc-green-dark)]">
-                    Wallet
+                    Wallet <span className="text-red-600">*</span>
                   </label>
                   <select
+                    required
                     className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm bg-[var(--sc-cream)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent"
                     value={walletId}
                     onChange={(e) => setWalletId(Number(e.target.value))}
@@ -300,9 +575,10 @@ export default function AddTransactionMenu({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="block text-[0.7rem] sm:text-xs font-medium text-[var(--sc-green-dark)]">
-                    Location
+                    Location <span className="text-red-600">*</span>
                   </label>
                   <input
+                    required
                     className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm bg-[var(--sc-cream)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent"
                     placeholder="e.g. Campus Center, Downtown"
                     value={location}
@@ -311,9 +587,10 @@ export default function AddTransactionMenu({
                 </div>
                 <div className="space-y-1">
                   <label className="block text-[0.7rem] sm:text-xs font-medium text-[var(--sc-green-dark)]">
-                    Payment Method
+                    Payment Method <span className="text-red-600">*</span>
                   </label>
                   <select
+                    required
                     className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm bg-[var(--sc-cream)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent"
                     value={paymentMethod}
                     onChange={(e) => setPaymentMethod(e.target.value)}
@@ -406,6 +683,195 @@ export default function AddTransactionMenu({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Zero Balance Warning Dialog */}
+      {showZeroBalanceWarning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl p-6 space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-base font-semibold text-[var(--sc-green-dark)] mb-2">
+                  Balance Will Reach Zero
+                </h3>
+                <p className="text-sm text-gray-600">
+                  This transaction will reduce your wallet balance to $0.00. You won't be able to make any further transactions from this wallet until you add more funds.
+                </p>
+                <p className="text-sm text-gray-700 font-medium mt-3">
+                  Do you want to proceed with this transaction?
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowZeroBalanceWarning(false);
+                  setPendingTransaction(null);
+                }}
+                className="px-5 py-2 rounded-full border border-[var(--sc-green)] text-[var(--sc-green-dark)] text-sm font-medium hover:bg-[var(--sc-cream)]/50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmZeroBalanceTransaction}
+                disabled={saving}
+                className="px-5 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-sm font-medium hover:bg-[var(--sc-green)] disabled:opacity-60 transition-colors"
+              >
+                {saving ? "Processing..." : "Yes, Proceed"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Budget Warning Dialog */}
+      {showBudgetWarning && budgetWarningData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl p-6 space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[var(--sc-gold)]/20 flex items-center justify-center">
+                <AlertTriangle className="w-7 h-7 text-[var(--sc-gold-dark)]" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-[var(--sc-green-dark)] mb-2">
+                  {budgetWarningData.percentage >= 100 ? 'Budget Exceeded!' : 'Budget Warning'}
+                </h3>
+                
+                {budgetWarningData.percentage >= 80 && budgetWarningData.percentage < 100 && (
+                  <div className="space-y-2">
+                    <p className="text-sm text-gray-700">
+                      You have used <span className="font-bold text-[var(--sc-gold-dark)]">{budgetWarningData.percentage.toFixed(1)}%</span> of your monthly budget for <span className="font-semibold">{pendingTransaction?.category}</span>.
+                    </p>
+                    <div className="bg-[var(--sc-cream)] rounded-lg p-3 space-y-1 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-[var(--sc-green)]">Current Spent:</span>
+                        <span className="font-semibold text-[var(--sc-green-dark)]">${budgetWarningData.currentSpent.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-[var(--sc-green)]">This Transaction:</span>
+                        <span className="font-semibold text-[var(--sc-gold-dark)]">+${budgetWarningData.transactionAmount.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between pt-1 border-t border-[var(--sc-green)]/20">
+                        <span className="text-[var(--sc-green)] font-medium">Budget Limit:</span>
+                        <span className="font-bold text-[var(--sc-green-dark)]">${budgetWarningData.limitAmount.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {budgetWarningData.percentage >= 100 && (
+                  <div className="space-y-2">
+                    <p className="text-sm text-gray-700">
+                      This transaction will {budgetWarningData.isOverBudget ? 'exceed' : 'use up'} your monthly budget for <span className="font-semibold">{pendingTransaction?.category}</span>.
+                    </p>
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3 space-y-1 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-red-700">Current Spent:</span>
+                        <span className="font-semibold text-red-900">${budgetWarningData.currentSpent.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-red-700">This Transaction:</span>
+                        <span className="font-semibold text-red-900">+${budgetWarningData.transactionAmount.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-red-700">Total:</span>
+                        <span className="font-bold text-red-900">${(budgetWarningData.currentSpent + budgetWarningData.transactionAmount).toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between pt-1 border-t border-red-300">
+                        <span className="text-red-700 font-medium">Budget Limit:</span>
+                        <span className="font-bold text-red-900">${budgetWarningData.limitAmount.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-xs pt-1">
+                        <span className="text-red-700 font-bold">Over Budget:</span>
+                        <span className="font-bold text-red-900">${((budgetWarningData.currentSpent + budgetWarningData.transactionAmount) - budgetWarningData.limitAmount).toFixed(2)}</span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-red-700 font-medium mt-3">
+                      ⚠️ Please consider avoiding this transaction to prevent overspending.
+                    </p>
+                  </div>
+                )}
+
+                <p className="text-sm text-gray-700 font-medium mt-4">
+                  Do you still want to proceed?
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={cancelBudgetTransaction}
+                className="px-5 py-2.5 rounded-full border-2 border-[var(--sc-green)] text-[var(--sc-green-dark)] text-sm font-semibold hover:bg-[var(--sc-cream)] transition-colors"
+              >
+                No, Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmBudgetTransaction}
+                disabled={saving}
+                className="px-5 py-2.5 rounded-full bg-[var(--sc-gold-dark)] text-white text-sm font-semibold hover:bg-[var(--sc-gold)] disabled:opacity-60 transition-colors"
+              >
+                {saving ? "Processing..." : "Yes, Proceed"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Overspent Success Message */}
+      {showSuccessMessage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl p-8 text-center space-y-4 animate-bounce-in">
+            <div className="w-20 h-20 mx-auto rounded-full bg-red-100 flex items-center justify-center">
+              <AlertTriangle className="w-12 h-12 text-red-600" />
+            </div>
+            <h3 className="text-xl font-bold text-[var(--sc-green-dark)]">
+              Budget Overspent!
+            </h3>
+            <p className="text-sm text-gray-700">
+              You have exceeded your budget for this category this month. Please be mindful of your spending going forward.
+            </p>
+            <button
+              onClick={() => setShowSuccessMessage(false)}
+              className="mt-4 px-6 py-2.5 rounded-full bg-[var(--sc-green-dark)] text-white text-sm font-semibold hover:bg-[var(--sc-green)] transition-colors"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Transaction Avoided Message */}
+      {showAvoidedMessage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl p-8 text-center space-y-4 animate-scale-in">
+            <div className="w-20 h-20 mx-auto rounded-full bg-[var(--sc-green)]/10 flex items-center justify-center relative">
+              <CheckCircle2 className="w-12 h-12 text-[var(--sc-green)]" />
+              <PartyPopper className="w-6 h-6 text-[var(--sc-gold-dark)] absolute -top-2 -right-2 animate-spin-slow" />
+            </div>
+            <h3 className="text-xl font-bold text-[var(--sc-green)]">
+              Great Decision! 🎉
+            </h3>
+            <p className="text-sm text-gray-700">
+              You've made a smart choice by avoiding this transaction. Your budget thanks you for being financially responsible!
+            </p>
+            <button
+              onClick={() => setShowAvoidedMessage(false)}
+              className="mt-4 px-6 py-2.5 rounded-full bg-[var(--sc-green)] text-white text-sm font-semibold hover:bg-[var(--sc-green-dark)] transition-colors"
+            >
+              Awesome!
+            </button>
           </div>
         </div>
       )}

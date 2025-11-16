@@ -71,14 +71,14 @@ export default function ActivityCharts({ transactions, eventAttendance }: Props)
     <section className="space-y-3 sm:space-y-4 lg:space-y-5">
       {/* Stat cards row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-3 lg:gap-4">
-        <Card className="border-[rgba(40,54,24,0.08)] bg-gradient-to-br from-white to-red-50/30 hover:shadow-md transition-all duration-300">
+        <Card className="border-[rgba(40,54,24,0.08)] bg-gradient-to-br from-white to-[#dda15e]/10 hover:shadow-md transition-all duration-300">
           <CardContent className="py-4 sm:py-5">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
-                <p className="text-[0.65rem] sm:text-[0.7rem] text-red-700 uppercase tracking-[0.16em] font-semibold">
+                <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-gold-dark)] uppercase tracking-[0.16em] font-semibold">
                   Total spent
                 </p>
-                <p className="mt-2 text-xl sm:text-2xl lg:text-3xl font-bold text-red-600">
+                <p className="mt-2 text-xl sm:text-2xl lg:text-3xl font-bold text-[var(--sc-gold-dark)]">
                   ${Math.abs(totalSpent ?? 0).toFixed(2)}
                 </p>
                 <p className="mt-1.5 text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] flex items-center gap-1">
@@ -86,20 +86,20 @@ export default function ActivityCharts({ transactions, eventAttendance }: Props)
                   All outgoing transactions
                 </p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
-                <TrendingDown className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[var(--sc-gold)]/20 flex items-center justify-center flex-shrink-0">
+                <TrendingDown className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--sc-gold-dark)]" />
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="border-[rgba(40,54,24,0.08)] bg-gradient-to-br from-white to-green-50/30 hover:shadow-md transition-all duration-300">
+        <Card className="border-[rgba(40,54,24,0.08)] bg-gradient-to-br from-white to-[#606c38]/10 hover:shadow-md transition-all duration-300">
           <CardContent className="py-4 sm:py-5">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
-                <p className="text-[0.65rem] sm:text-[0.7rem] text-green-700 uppercase tracking-[0.16em] font-semibold">
+                <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green-dark)] uppercase tracking-[0.16em] font-semibold">
                   Total top-ups
                 </p>
-                <p className="mt-2 text-xl sm:text-2xl lg:text-3xl font-bold text-green-600">
+                <p className="mt-2 text-xl sm:text-2xl lg:text-3xl font-bold text-[var(--sc-green)]">
                   ${(totalTopups ?? 0).toFixed(2)}
                 </p>
                 <p className="mt-1.5 text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] flex items-center gap-1">
@@ -107,8 +107,8 @@ export default function ActivityCharts({ transactions, eventAttendance }: Props)
                   Money added to wallets
                 </p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0">
-                <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[var(--sc-green)]/20 flex items-center justify-center flex-shrink-0">
+                <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--sc-green)]" />
               </div>
             </div>
           </CardContent>
@@ -135,6 +135,157 @@ export default function ActivityCharts({ transactions, eventAttendance }: Props)
           </CardContent>
         </Card>
       </div>
+
+      {/* Income vs Expenses Comparison Chart */}
+      <Card className="border-[rgba(40,54,24,0.08)] bg-white hover:shadow-md transition-shadow duration-300">
+        <CardHeader className="pb-2 sm:pb-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-[var(--sc-green)]/10 flex items-center justify-center">
+              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--sc-green-dark)]" />
+            </div>
+            <div>
+              <p className="text-sm sm:text-base font-bold text-[var(--sc-green-dark)]">
+                Income vs Expenses
+              </p>
+              <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] mt-0.5">
+                How much you're adding vs spending
+              </p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-0 pb-3 sm:pb-4">
+          {transactions.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 sm:py-16">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-[var(--sc-green)]/5 flex items-center justify-center mb-3">
+                <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-[var(--sc-green)]" />
+              </div>
+              <p className="text-xs sm:text-sm text-[var(--sc-green-dark)] font-medium">
+                No transaction data yet
+              </p>
+              <p className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] mt-1">
+                Start adding funds and making transactions
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {/* Visual comparison bars */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs sm:text-sm font-semibold text-[var(--sc-green-dark)] flex items-center gap-1.5">
+                      <TrendingUp className="w-4 h-4" />
+                      Money Added
+                    </span>
+                    <span className="text-base sm:text-lg font-bold text-[var(--sc-green)]">
+                      ${totalTopups.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="h-8 bg-[var(--sc-cream)] rounded-full overflow-hidden border border-[rgba(40,54,24,0.1)]">
+                    <div 
+                      className="h-full bg-gradient-to-r from-[#606c38] to-[#283618] rounded-full flex items-center justify-end px-3 transition-all duration-500"
+                      style={{ width: `${totalTopups > 0 ? Math.min((totalTopups / (totalTopups + Math.abs(totalSpent))) * 100, 100) : 0}%` }}
+                    >
+                      {totalTopups > 0 && (
+                        <span className="text-[0.65rem] font-bold text-[var(--sc-cream)] whitespace-nowrap">
+                          {totalTopups > 0 ? ((totalTopups / (totalTopups + Math.abs(totalSpent))) * 100).toFixed(0) : 0}%
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs sm:text-sm font-semibold text-[var(--sc-gold-dark)] flex items-center gap-1.5">
+                      <TrendingDown className="w-4 h-4" />
+                      Money Spent
+                    </span>
+                    <span className="text-base sm:text-lg font-bold text-[var(--sc-gold-dark)]">
+                      ${Math.abs(totalSpent).toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="h-8 bg-[var(--sc-cream)] rounded-full overflow-hidden border border-[rgba(188,108,37,0.2)]">
+                    <div 
+                      className="h-full bg-gradient-to-r from-[#dda15e] to-[#bc6c25] rounded-full flex items-center justify-end px-3 transition-all duration-500"
+                      style={{ width: `${totalSpent !== 0 ? Math.min((Math.abs(totalSpent) / (totalTopups + Math.abs(totalSpent))) * 100, 100) : 0}%` }}
+                    >
+                      {totalSpent !== 0 && (
+                        <span className="text-[0.65rem] font-bold text-[var(--sc-cream)] whitespace-nowrap">
+                          {totalSpent !== 0 ? ((Math.abs(totalSpent) / (totalTopups + Math.abs(totalSpent))) * 100).toFixed(0) : 0}%
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Net balance indicator */}
+              <div className="pt-3 border-t border-[rgba(40,54,24,0.08)]">
+                <div className="flex items-center justify-between px-2">
+                  <span className="text-xs sm:text-sm font-semibold text-[var(--sc-green-dark)]">
+                    Net Balance Change:
+                  </span>
+                  <span className={`text-lg sm:text-xl font-bold ${
+                    (totalTopups + totalSpent) >= 0 ? 'text-[var(--sc-green)]' : 'text-[var(--sc-gold-dark)]'
+                  }`}>
+                    {(totalTopups + totalSpent) >= 0 ? '+' : ''}${(totalTopups + totalSpent).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Comparison chart */}
+              <div className="h-48 sm:h-56">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart 
+                    data={[
+                      { name: 'Income', value: totalTopups, fill: '#606c38' },
+                      { name: 'Expenses', value: Math.abs(totalSpent), fill: '#bc6c25' }
+                    ]}
+                    margin={{ top: 10, right: 20, left: -10, bottom: 0 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(40,54,24,0.08)" />
+                    <XAxis 
+                      dataKey="name" 
+                      tickLine={false}
+                      axisLine={{ stroke: 'rgba(40,54,24,0.1)' }}
+                      tick={{ fontSize: 12, fill: '#606C38', fontWeight: 600 }}
+                    />
+                    <YAxis 
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fontSize: 11, fill: '#606C38' }}
+                      tickFormatter={(value) => `$${value}`}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'white',
+                        border: '1px solid rgba(188,108,37,0.2)',
+                        borderRadius: '8px',
+                        fontSize: '12px',
+                        padding: '8px 12px',
+                      }}
+                      formatter={(value: any) => [`$${Number(value).toFixed(2)}`, '']}
+                      labelStyle={{ color: '#283618', fontWeight: 600 }}
+                    />
+                    <Bar 
+                      dataKey="value" 
+                      radius={[8, 8, 0, 0]}
+                      fill="#8884d8"
+                    >
+                      {[
+                        { name: 'Income', value: totalTopups, fill: '#606c38' },
+                        { name: 'Expenses', value: Math.abs(totalSpent), fill: '#bc6c25' }
+                      ].map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Charts grid */}
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] gap-3 sm:gap-4 lg:gap-5">

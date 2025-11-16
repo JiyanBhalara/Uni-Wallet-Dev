@@ -41,8 +41,6 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
-    await EventSeeder.SeedEventsAsync(db, env);
     db.Database.Migrate();
     DataSeeder.SeedInitialData(db);
 }
