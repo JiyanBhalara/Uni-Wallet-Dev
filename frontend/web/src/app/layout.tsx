@@ -116,7 +116,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       <footer className="md:hidden pt-6 pb-4 px-3 sm:px-4 border-t border-[rgba(40,54,24,0.06)] bg-gradient-to-br from-[var(--sc-cream)] via-[var(--sc-cream)] to-[#f5f1e3]">
         <div className="flex flex-col items-center justify-between gap-3 text-center">
           <p className="text-xs text-[var(--sc-green)] font-medium">
-            © 2025 UniPay. Smarter Wallet, Smarter You.
+            © 2025 UniWallet. Smarter Wallet, Smarter You.
           </p>
           <div className="flex items-center gap-4 text-xs">
             <Link 
@@ -149,11 +149,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 mb-6 group">
               <div className="h-11 w-11 rounded-2xl bg-white flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105 p-1.5">
-                <Image src="/unipay-logo.png" alt="UniPay" width={40} height={40} className="object-contain" />
+                <Image src="/unipay-logo.png" alt="UniWallet" width={40} height={40} className="object-contain" />
               </div>
               <div className="min-w-0">
                 <p className="text-sm uppercase tracking-[0.2em] text-[var(--sc-green-dark)] font-bold truncate leading-tight">
-                  UniPay
+                  UniWallet
                 </p>
                 <p className="text-xs text-[var(--sc-green)] truncate">
                   Smarter Wallet, Smarter You
@@ -179,11 +179,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               <div className="max-w-7xl mx-auto flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-3 group">
                   <div className="h-11 w-11 rounded-2xl bg-white flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-105 p-1.5">
-                    <Image src="/unipay-logo.png" alt="UniPay" width={40} height={40} className="object-contain" />
+                    <Image src="/unipay-logo.png" alt="UniWallet" width={40} height={40} className="object-contain" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm uppercase tracking-[0.2em] text-[var(--sc-green-dark)] font-bold truncate leading-tight">
-                      UniPay
+                      UniWallet
                     </p>
                     <p className="text-xs text-[var(--sc-green)] truncate">
                       Smarter Wallet, Smarter You
@@ -224,7 +224,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           <footer className="mt-auto pt-8 pb-4 px-6 border-t border-[rgba(40,54,24,0.06)] bg-gradient-to-br from-[var(--sc-cream)] via-[var(--sc-cream)] to-[#f5f1e3]">
             <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
               <p className="text-xs text-[var(--sc-green)] font-medium">
-                © 2025 UniPay. Smarter Wallet, Smarter You.
+                © 2025 UniWallet. Smarter Wallet, Smarter You.
               </p>
               <div className="flex items-center gap-4 text-xs">
                 <Link 
