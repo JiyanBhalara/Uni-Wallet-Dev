@@ -35,6 +35,10 @@ public class AppDbContext : DbContext
             .HasForeignKey(w => w.UserId);
 
         modelBuilder.Entity<Transaction>()
+            .Property(t => t.Id)
+            .ValueGeneratedNever(); // ID is generated in application code, not by database
+
+        modelBuilder.Entity<Transaction>()
             .HasOne(t => t.User)
             .WithMany(u => u.Transactions)
             .HasForeignKey(t => t.UserId);

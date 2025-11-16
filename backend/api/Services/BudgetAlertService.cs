@@ -38,8 +38,8 @@ public class BudgetAlertService
                 .Where(t =>
                     t.UserId == userId &&
                     t.Category == category &&
-                    t.Timestamp >= periodStart &&
-                    t.Timestamp < periodEnd &&
+                    t.Date >= periodStart &&
+                    t.Date < periodEnd &&
                     t.Amount < 0)
                 .SumAsync(t => t.Amount);
 

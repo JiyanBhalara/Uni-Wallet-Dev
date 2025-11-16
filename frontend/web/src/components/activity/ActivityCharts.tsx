@@ -28,15 +28,15 @@ import {
 } from "lucide-react";
 
 interface Transaction {
-  id: number;
+  id: string;
   userId: number;
   walletId: number;
   amount: number;
-  currency: string;
-  timestamp: string;
-  description: string;
+  merchant: string;
+  paymentMethod: string;
+  location: string;
+  date: string;
   category: string;
-  isOnCampus: boolean;
 }
 
 interface Props {
@@ -416,7 +416,7 @@ function summarize(transactions: Transaction[]) {
 
     // month bucket for spend (again, only negative)
     if (amount < 0) {
-      const date = new Date(t.timestamp);
+      const date = new Date(t.date);
       if (!Number.isNaN(date.getTime())) {
         const key = `${date.getFullYear()}-${String(
           date.getMonth() + 1
@@ -426,8 +426,8 @@ function summarize(transactions: Transaction[]) {
       }
     }
 
-    // campus split (all transactions)
-    if (t.isOnCampus) onCampusCount += 1;
+    // campus split based on location containing "Campus"
+    if (t.location && t.location.toLowerCase().includes("campus")) onCampusCount += 1;
     else offCampusCount += 1;
   }
 

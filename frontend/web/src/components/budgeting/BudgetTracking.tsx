@@ -14,15 +14,15 @@ import {
 } from "recharts";
 
 interface Transaction {
-  id: number;
+  id: string;
   userId: number;
   walletId: number;
   amount: number;
-  currency: string;
-  timestamp: string;
-  description: string;
+  merchant: string;
+  paymentMethod: string;
+  location: string;
+  date: string;
   category: string;
-  isOnCampus: boolean;
 }
 
 interface Props {
@@ -200,7 +200,7 @@ function computeBudgets(budgets: Budget[], transactions: Transaction[]) {
           t.category.trim().toLowerCase() === b.category.trim().toLowerCase();
         if (!catMatch) return false;
 
-        const ts = new Date(t.timestamp);
+        const ts = new Date(t.date);
         return ts >= start && ts < end;
       })
       .reduce((sum, t) => sum + Math.abs(Number(t.amount)), 0);

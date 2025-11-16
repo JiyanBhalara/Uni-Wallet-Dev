@@ -76,11 +76,11 @@ public class WalletsController : ControllerBase
           UserId = wallet.UserId,
           WalletId = wallet.Id,
           Amount = req.Amount,                      // positive top-up
-          Currency = wallet.Currency,
-          Timestamp = DateTime.UtcNow,
-          Description = BuildTopUpDescription(req),
-          Category = "Top-up",
-          IsOnCampus = false
+          Merchant = BuildTopUpDescription(req),
+          PaymentMethod = req.SourceType,
+          Location = "Online",
+          Date = DateTime.UtcNow,
+          Category = "Top-up"
         };
 
         _db.Transactions.Add(tx);

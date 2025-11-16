@@ -1,19 +1,26 @@
 // Models/Transaction.cs
+using NanoidDotNet;
+
 namespace SmartCampusWallet.Api.Models;
 
 public class Transaction
 {
-    public int Id { get; set; }
+    public string Id { get; set; } = string.Empty;
     public int UserId { get; set; }
-    public int WalletId { get; set; }
-    public decimal Amount { get; set; }
-    public string Currency { get; set; } = "USD";
-    public DateTime Timestamp { get; set; }
-
-    public string Description { get; set; } = string.Empty;
+    public string Merchant { get; set; } = string.Empty;
     public string Category { get; set; } = "Other";
-    public bool IsOnCampus { get; set; }
+    public decimal Amount { get; set; }
+    public string PaymentMethod { get; set; } = string.Empty;
+    public string Location { get; set; } = string.Empty;
+    public DateTime Date { get; set; }
+    public int WalletId { get; set; }
 
+    // Navigation properties
     public User User { get; set; } = null!;
     public Wallet Wallet { get; set; } = null!;
+
+    public Transaction()
+    {
+        Id = Nanoid.Generate(size: 12);
+    }
 }

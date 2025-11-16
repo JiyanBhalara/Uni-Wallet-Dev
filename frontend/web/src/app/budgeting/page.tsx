@@ -10,15 +10,15 @@ import BudgetTracking from "@/components/budgeting/BudgetTracking";
 import type { Budget } from "@/types/budget";
 
 interface Transaction {
-  id: number;
+  id: string;
   userId: number;
   walletId: number;
   amount: number;
-  currency: string;
-  timestamp: string;
-  description: string;
+  merchant: string;
+  paymentMethod: string;
+  location: string;
+  date: string;
   category: string;
-  isOnCampus: boolean;
 }
 
 export default function BudgetingPage() {

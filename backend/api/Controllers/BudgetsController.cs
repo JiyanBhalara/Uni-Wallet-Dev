@@ -18,14 +18,23 @@ public class BudgetsController : ControllerBase
         _db = db;
     }
 
-    private int GetCurrentUserId() => 1; // TODO: hook into auth
-
     [HttpGet]
     public async Task<IActionResult> GetMine()
     {
-        var userId = GetCurrentUserId();
+        var userEmail = Request.Headers["X-User-Email"].FirstOrDefault();
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found" });
+        }
+
         var budgets = await _db.Budgets
-            .Where(b => b.UserId == userId && b.IsActive)
+            .Where(b => b.UserId == user.Id && b.IsActive)
             .ToListAsync();
         return Ok(budgets);
     }
@@ -41,7 +50,19 @@ public class BudgetsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> SaveBudgets([FromBody] SaveBudgetsRequest request)
     {
-        var userId = GetCurrentUserId();
+        var userEmail = Request.Headers["X-User-Email"].FirstOrDefault();
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found" });
+        }
+
+        var userId = user.Id;
 
         // Soft-disable any existing budgets not present anymore
         var existing = await _db.Budgets

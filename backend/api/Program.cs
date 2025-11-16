@@ -1,4 +1,5 @@
 using SmartCampusWallet.Api.Data;
+using SmartCampusWallet.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
 // Add CORS
@@ -26,6 +28,10 @@ var serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, serverVersion));
+
+// Register services
+builder.Services.AddScoped<IEmailService, ConsoleEmailService>();
+builder.Services.AddScoped<BudgetAlertService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

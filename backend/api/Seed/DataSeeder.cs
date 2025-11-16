@@ -32,9 +32,9 @@ public static class DataSeeder
 
         var transactions = new List<Transaction>
         {
-            new Transaction { UserId = user.Id, WalletId = wallets[0].Id, Amount = -8.50m, Currency = "USD", Description = "Cafeteria North Hall", Category = "Food", IsOnCampus = true, Timestamp = DateTime.Now.AddDays(-1) },
-            new Transaction { UserId = user.Id, WalletId = wallets[0].Id, Amount = -2.00m, Currency = "USD", Description = "Library Printing", Category = "Printing", IsOnCampus = true, Timestamp = DateTime.Now.AddDays(-2) },
-            new Transaction { UserId = user.Id, WalletId = wallets[3].Id, Amount = -40m, Currency = "USD", Description = "Metro Pass", Category = "Transport", IsOnCampus = false, Timestamp = DateTime.Now.AddDays(-3) }
+            new Transaction { UserId = user.Id, WalletId = wallets[0].Id, Amount = -8.50m, Merchant = "Cafeteria North Hall", PaymentMethod = "Campus Card", Location = "Campus Center", Category = "Dining", Date = DateTime.Now.AddDays(-1) },
+            new Transaction { UserId = user.Id, WalletId = wallets[0].Id, Amount = -2.00m, Merchant = "Library Printing", PaymentMethod = "Campus Card", Location = "Library", Category = "Supplies", Date = DateTime.Now.AddDays(-2) },
+            new Transaction { UserId = user.Id, WalletId = wallets[3].Id, Amount = -40m, Merchant = "Metro Pass", PaymentMethod = "Credit Card", Location = "Downtown Newark", Category = "Entertainment", Date = DateTime.Now.AddDays(-3) }
         };
 
         db.Transactions.AddRange(transactions);

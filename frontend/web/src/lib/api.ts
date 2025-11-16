@@ -89,5 +89,36 @@ export const api = {
       body: JSON.stringify({ budgets: mapped }),
     }, userEmail);
   },
+  async createTransaction(
+    userEmail: string,
+    payload: {
+      walletId: number;
+      amount: number;
+      merchant: string;
+      paymentMethod: string;
+      location: string;
+      category: string;
+    }
+  ) {
+    return apiFetch("/api/transactions", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }, userEmail);
+  },
+
+  async uploadTransactionsCsv(userEmail: string, file: File) {
+    const formData = new FormData();
+    formData.append("userEmail", userEmail);
+    formData.append("file", file);
+
+    const res = await fetch(`${API_BASE}/api/transactions/upload-csv`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) {
+      throw new Error(`CSV upload failed: ${res.status}`);
+    }
+  },
 };
 
