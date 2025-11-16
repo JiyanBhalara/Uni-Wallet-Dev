@@ -37,6 +37,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IEmailService, GmailEmailService>();
 builder.Services.AddScoped<BudgetAlertService>();
 builder.Services.AddSingleton<AIChatService>();
+builder.Services.AddHttpClient<IPlaidService, PlaidService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

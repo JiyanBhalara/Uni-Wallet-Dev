@@ -171,7 +171,7 @@ export default function BudgetSetupForm({ initialBudgets }: Props) {
         <button
           type="submit"
           disabled={saving}
-          className="px-5 py-2.5 sm:px-6 sm:py-3 md:px-8 md:py-3.5 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-sm sm:text-base md:text-lg font-semibold hover:bg-[var(--sc-green)] disabled:opacity-60 transition-all duration-200 shadow-md hover:shadow-lg"
+          className="px-5 py-2.5 sm:px-6 sm:py-3 md:px-8 md:py-3.5 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-sm sm:text-base md:text-lg font-semibold hover:bg-[var(--sc-green)] disabled:opacity-60 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer"
         >
           {saving ? "Saving..." : "Save Budgets"}
         </button>

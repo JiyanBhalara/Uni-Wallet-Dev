@@ -425,7 +425,7 @@ export default function AddTransactionMenu({
         <button
           type="button"
           onClick={() => setMenuOpen((v) => !v)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-[0.65rem] sm:text-xs font-medium hover:bg-[var(--sc-green)] transition-all"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-[0.65rem] sm:text-xs font-medium hover:bg-[var(--sc-green)] transition-all cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>Add transaction</span>
@@ -436,7 +436,7 @@ export default function AddTransactionMenu({
             <button
               type="button"
               onClick={openForm}
-              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-[rgba(40,54,24,0.03)] text-[var(--sc-green-dark)]"
+              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-[rgba(40,54,24,0.03)] text-[var(--sc-green-dark)] cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Add single transaction</span>
@@ -444,7 +444,7 @@ export default function AddTransactionMenu({
             <button
               type="button"
               onClick={openCsv}
-              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-[rgba(40,54,24,0.03)] text-[var(--sc-green-dark)] border-t border-[rgba(40,54,24,0.05)]"
+              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-[rgba(40,54,24,0.03)] text-[var(--sc-green-dark)] border-t border-[rgba(40,54,24,0.05)] cursor-pointer"
             >
               <Upload className="w-3.5 h-3.5" />
               <span>Upload CSV</span>
@@ -464,7 +464,7 @@ export default function AddTransactionMenu({
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="text-[0.7rem] text-[var(--sc-green)] hover:underline"
+                className="text-[0.7rem] text-[var(--sc-green)] hover:underline cursor-pointer"
               >
                 Close
               </button>
@@ -530,7 +530,7 @@ export default function AddTransactionMenu({
                       type="button"
                       onClick={() => setType("expense")}
                       className={[
-                        "flex-1 px-2.5 py-1.5 rounded-full border",
+                        "flex-1 px-2.5 py-1.5 rounded-full border cursor-pointer",
                         type === "expense"
                           ? "bg-[var(--sc-green-dark)] text-[var(--sc-cream)] border-[var(--sc-green-dark)]"
                           : "bg-[var(--sc-cream)]/40 text-[var(--sc-green-dark)] border-[rgba(40,54,24,0.2)]",
@@ -542,7 +542,7 @@ export default function AddTransactionMenu({
                       type="button"
                       onClick={() => setType("income")}
                       className={[
-                        "flex-1 px-2.5 py-1.5 rounded-full border",
+                        "flex-1 px-2.5 py-1.5 rounded-full border cursor-pointer",
                         type === "income"
                           ? "bg-[var(--sc-green-dark)] text-[var(--sc-cream)] border-[var(--sc-green-dark)]"
                           : "bg-[var(--sc-cream)]/40 text-[var(--sc-green-dark)] border-[rgba(40,54,24,0.2)]",
@@ -613,14 +613,14 @@ export default function AddTransactionMenu({
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] hover:underline"
+                  className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] hover:underline cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-[0.7rem] sm:text-xs font-medium hover:bg-[var(--sc-green)] disabled:opacity-60"
+                  className="px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-[0.7rem] sm:text-xs font-medium hover:bg-[var(--sc-green)] disabled:opacity-60 cursor-pointer"
                 >
                   {saving ? "Saving..." : "Save transaction"}
                 </button>
@@ -641,7 +641,7 @@ export default function AddTransactionMenu({
               <button
                 type="button"
                 onClick={() => setShowCsv(false)}
-                className="text-[0.7rem] text-[var(--sc-green)] hover:underline"
+                className="text-[0.7rem] text-[var(--sc-green)] hover:underline cursor-pointer"
               >
                 Close
               </button>
@@ -677,7 +677,7 @@ export default function AddTransactionMenu({
                 <button
                   type="submit"
                   disabled={uploading}
-                  className="px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-[0.7rem] sm:text-xs font-medium hover:bg-[var(--sc-green)] disabled:opacity-60"
+                  className="px-4 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-[0.7rem] sm:text-xs font-medium hover:bg-[var(--sc-green)] disabled:opacity-60 cursor-pointer"
                 >
                   {uploading ? "Uploading..." : "Upload CSV"}
                 </button>
@@ -717,7 +717,7 @@ export default function AddTransactionMenu({
                   setShowZeroBalanceWarning(false);
                   setPendingTransaction(null);
                 }}
-                className="px-5 py-2 rounded-full border border-[var(--sc-green)] text-[var(--sc-green-dark)] text-sm font-medium hover:bg-[var(--sc-cream)]/50 transition-colors"
+                className="px-5 py-2 rounded-full border border-[var(--sc-green)] text-[var(--sc-green-dark)] text-sm font-medium hover:bg-[var(--sc-cream)]/50 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -725,7 +725,7 @@ export default function AddTransactionMenu({
                 type="button"
                 onClick={confirmZeroBalanceTransaction}
                 disabled={saving}
-                className="px-5 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-sm font-medium hover:bg-[var(--sc-green)] disabled:opacity-60 transition-colors"
+                className="px-5 py-2 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-sm font-medium hover:bg-[var(--sc-green)] disabled:opacity-60 transition-colors cursor-pointer"
               >
                 {saving ? "Processing..." : "Yes, Proceed"}
               </button>
@@ -812,7 +812,7 @@ export default function AddTransactionMenu({
               <button
                 type="button"
                 onClick={cancelBudgetTransaction}
-                className="px-5 py-2.5 rounded-full border-2 border-[var(--sc-green)] text-[var(--sc-green-dark)] text-sm font-semibold hover:bg-[var(--sc-cream)] transition-colors"
+                className="px-5 py-2.5 rounded-full border-2 border-[var(--sc-green)] text-[var(--sc-green-dark)] text-sm font-semibold hover:bg-[var(--sc-cream)] transition-colors cursor-pointer"
               >
                 No, Cancel
               </button>
@@ -820,7 +820,7 @@ export default function AddTransactionMenu({
                 type="button"
                 onClick={confirmBudgetTransaction}
                 disabled={saving}
-                className="px-5 py-2.5 rounded-full bg-[var(--sc-gold-dark)] text-white text-sm font-semibold hover:bg-[var(--sc-gold)] disabled:opacity-60 transition-colors"
+                className="px-5 py-2.5 rounded-full bg-[var(--sc-gold-dark)] text-white text-sm font-semibold hover:bg-[var(--sc-gold)] disabled:opacity-60 transition-colors cursor-pointer"
               >
                 {saving ? "Processing..." : "Yes, Proceed"}
               </button>
@@ -844,7 +844,7 @@ export default function AddTransactionMenu({
             </p>
             <button
               onClick={() => setShowSuccessMessage(false)}
-              className="mt-4 px-6 py-2.5 rounded-full bg-[var(--sc-green-dark)] text-white text-sm font-semibold hover:bg-[var(--sc-green)] transition-colors"
+              className="mt-4 px-6 py-2.5 rounded-full bg-[var(--sc-green-dark)] text-white text-sm font-semibold hover:bg-[var(--sc-green)] transition-colors cursor-pointer"
             >
               Got it
             </button>
@@ -868,7 +868,7 @@ export default function AddTransactionMenu({
             </p>
             <button
               onClick={() => setShowAvoidedMessage(false)}
-              className="mt-4 px-6 py-2.5 rounded-full bg-[var(--sc-green)] text-white text-sm font-semibold hover:bg-[var(--sc-green-dark)] transition-colors"
+              className="mt-4 px-6 py-2.5 rounded-full bg-[var(--sc-green)] text-white text-sm font-semibold hover:bg-[var(--sc-green-dark)] transition-colors cursor-pointer"
             >
               Awesome!
             </button>

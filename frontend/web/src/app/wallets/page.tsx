@@ -229,7 +229,7 @@ export default function WalletsPage() {
                   {hasMore && (
                     <button
                       onClick={handleShowMore}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-sm sm:text-base font-semibold hover:bg-[var(--sc-green)] transition-colors"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[var(--sc-green-dark)] text-[var(--sc-cream)] text-sm sm:text-base font-semibold hover:bg-[var(--sc-green)] transition-colors cursor-pointer"
                     >
                       Show More
                       <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -238,7 +238,7 @@ export default function WalletsPage() {
                   {canShowLess && (
                     <button
                       onClick={handleShowLess}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full border-2 border-[var(--sc-green-dark)] text-[var(--sc-green-dark)] text-sm sm:text-base font-semibold hover:bg-[var(--sc-green-dark)] hover:text-[var(--sc-cream)] transition-colors"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full border-2 border-[var(--sc-green-dark)] text-[var(--sc-green-dark)] text-sm sm:text-base font-semibold hover:bg-[var(--sc-green-dark)] hover:text-[var(--sc-cream)] transition-colors cursor-pointer"
                     >
                       Show Less
                       <ChevronUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />

@@ -24,6 +24,8 @@ public class AppDbContext : DbContext
     public DbSet<CampusEvent> Events { get; set; } = null!;
     public DbSet<EventAttendance> EventAttendances { get; set; } = null!;
 
+    public DbSet<LinkedAccount> LinkedAccounts { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

@@ -84,11 +84,11 @@ export default function WalletActions({ walletId, paymentMethods, onRefresh }: P
 
   return (
     <>
-      <div className="flex flex-wrap items-center justify-start sm:justify-end gap-2">
+      <div className="flex flex-col items-stretch gap-2">
         {/* Add balance button */}
         <button
           onClick={() => setShowTopUpModal(true)}
-          className="group relative text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[rgba(254,250,224,0.18)] hover:bg-[rgba(254,250,224,0.28)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center gap-1.5 border border-[rgba(254,250,224,0.2)] hover:border-[rgba(254,250,224,0.35)] cursor-pointer"
+          className="group relative text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[rgba(254,250,224,0.18)] hover:bg-[rgba(254,250,224,0.28)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center justify-center gap-1.5 border border-[rgba(254,250,224,0.2)] hover:border-[rgba(254,250,224,0.35)] cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5 transition-transform group-hover:rotate-90 duration-200" />
           <span>Add balance</span>
@@ -97,7 +97,7 @@ export default function WalletActions({ walletId, paymentMethods, onRefresh }: P
         {/* Add payment method button */}
         <button
           onClick={() => setShowAddPaymentModal(true)}
-          className="group text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[rgba(254,250,224,0.35)] hover:bg-[rgba(254,250,224,0.18)] hover:border-[rgba(254,250,224,0.5)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center gap-1.5 cursor-pointer"
+          className="group text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[rgba(254,250,224,0.35)] hover:bg-[rgba(254,250,224,0.18)] hover:border-[rgba(254,250,224,0.5)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
         >
           <CreditCard className="w-3.5 h-3.5 transition-transform group-hover:scale-110 duration-200" />
           <span>Add payment method</span>
@@ -108,10 +108,10 @@ export default function WalletActions({ walletId, paymentMethods, onRefresh }: P
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="group text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[rgba(254,250,224,0.12)] hover:bg-[rgba(254,250,224,0.22)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center gap-1.5 border border-[rgba(254,250,224,0.15)] hover:border-[rgba(254,250,224,0.3)] cursor-pointer"
+            className="group text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[rgba(254,250,224,0.12)] hover:bg-[rgba(254,250,224,0.22)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center justify-center gap-1.5 border border-[rgba(254,250,224,0.15)] hover:border-[rgba(254,250,224,0.3)] cursor-pointer"
           >
             <Eye className="w-3.5 h-3.5 transition-transform group-hover:scale-110 duration-200" />
-            <span>See all ({localMethods.length})</span>
+            <span>See all Payment Methods</span>
           </button>
         )}
       </div>

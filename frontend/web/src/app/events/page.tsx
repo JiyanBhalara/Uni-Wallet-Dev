@@ -240,7 +240,7 @@ export default function EventsPage() {
                     setSelectedEvent(null);
                     setSelectedWalletId(null);
                   }}
-                  className="text-white/80 hover:text-white"
+                  className="text-white/80 hover:text-white cursor-pointer"
                 >
                   <X className="w-6 h-6" />
                 </button>
@@ -260,7 +260,7 @@ export default function EventsPage() {
                   <button
                     key={wallet.id}
                     onClick={() => setSelectedWalletId(wallet.id)}
-                    className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all ${
+                    className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all cursor-pointer ${
                       selectedWalletId === wallet.id
                         ? 'border-[var(--sc-green)] bg-[var(--sc-green)]/5'
                         : 'border-gray-200 hover:border-gray-300'
@@ -301,7 +301,7 @@ export default function EventsPage() {
               <button
                 onClick={handlePayAndRsvp}
                 disabled={!selectedWalletId || mutatingId === selectedEvent.id}
-                className="w-full mt-6 px-6 py-3 rounded-xl bg-[var(--sc-green)] text-white font-bold text-sm hover:bg-[var(--sc-green-dark)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full mt-6 px-6 py-3 rounded-xl bg-[var(--sc-green)] text-white font-bold text-sm hover:bg-[var(--sc-green-dark)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 {mutatingId === selectedEvent.id ? "Processing..." : `Pay $${selectedEvent.cost.toFixed(2)} & RSVP`}
               </button>

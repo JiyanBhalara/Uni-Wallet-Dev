@@ -9,6 +9,8 @@ import { PaymentMethod } from "@/types/payment-method";
 import { EventItem } from "@/types/event";
 import WalletActions from "@/components/WalletActions";
 import AddTransactionMenu from "@/components/AddTransactionMenu";
+import { BankLinkButton } from "@/components/bank-link-button";
+import AddDiningDollarsModal from "@/components/AddDiningDollarsModal";
 import {
   Wallet as WalletIcon,
   TrendingUp,
@@ -21,6 +23,8 @@ import {
   ArrowUpRight,
   Sparkles,
   ArrowRight,
+  Landmark,
+  X,
 } from "lucide-react";
 
 interface User {
@@ -69,6 +73,9 @@ export default function Home() {
     paymentMethods: [],
   });
   const [loading, setLoading] = useState(true);
+
+  const [showAllBankAccounts, setShowAllBankAccounts] = useState(false);
+  const [showAddDiningDollars, setShowAddDiningDollars] = useState(false);
 
   const fetchData = async () => {
     if (!session?.user?.email) {
@@ -137,10 +144,20 @@ export default function Home() {
   const latestTransaction = sortedTransactions[0];
   const totalPaymentMethods = paymentMethods.length;
 
+  // Separate bank-linked wallets from other wallets
+  const bankLinkedWallets = wallets.filter((w) => w.type === 3);
+  const diningDollarsWallet = wallets.find((w) => w.type === 2);
   const otherWallets = wallets.filter(
     (w) =>
       w.id !== primaryWallet.id &&
-      (!mealPlanWallet || w.id !== mealPlanWallet.id)
+      (!mealPlanWallet || w.id !== mealPlanWallet.id) &&
+      w.type !== 3 && // Exclude bank-linked wallets
+      w.type !== 2 // Exclude dining dollars (we'll show it separately)
+  );
+
+  // Available wallets for dining dollars transfer (campus wallet + bank accounts)
+  const availableWalletsForDining = wallets.filter((w) => 
+    w.type === 0 || w.type === 3 // Campus wallet or bank-linked wallets
   );
 
   return (
@@ -180,9 +197,9 @@ export default function Home() {
         </header>
 
         {/* ===== WALLET CARDS SECTION ===== */}
-        <section className="grid gap-3 sm:gap-4 lg:grid-cols-[2fr_1fr] xl:grid-cols-[2.2fr_1fr] animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <section className="grid gap-3 sm:gap-4 lg:grid-cols-[1.5fr_1fr] xl:grid-cols-[1.8fr_1fr] animate-in fade-in slide-in-from-bottom-4 duration-700">
           {/* Primary Wallet Card */}
-          <div className="relative overflow-hidden rounded-[20px] sm:rounded-[24px] bg-gradient-to-br from-[var(--sc-green-dark)] via-[var(--sc-green)] to-[#3d5c24] text-[var(--sc-cream)] p-5 sm:p-6 shadow-xl hover:shadow-2xl transition-all duration-300 group">
+          <div className="relative overflow-hidden rounded-[20px] sm:rounded-[24px] bg-gradient-to-br from-[var(--sc-green-dark)] via-[var(--sc-green)] to-[#3d5c24] text-[var(--sc-cream)] p-4 sm:p-6 shadow-xl hover:shadow-2xl transition-all duration-300 group">
             {/* Decorative background elements */}
             <div className="absolute top-0 right-0 w-40 h-40 sm:w-56 sm:h-56 bg-white/5 rounded-full blur-3xl -mr-20 sm:-mr-28 -mt-20 sm:-mt-28 group-hover:bg-white/8 transition-colors duration-500" />
             <div className="absolute bottom-0 left-0 w-32 h-32 sm:w-44 sm:h-44 bg-black/5 rounded-full blur-2xl -ml-16 sm:-ml-22 -mb-16 sm:-mb-22" />
@@ -191,9 +208,7 @@ export default function Home() {
               {/* Card Header */}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs sm:text-sm uppercase tracking-[0.25em] text-[rgba(254,250,224,0.75)] font-medium mb-1.5">
-                    Campus Wallet
-                  </p>
+                  
                   <h2 className="text-xl sm:text-2xl font-bold truncate">
                     {primaryWallet.displayName}
                   </h2>
@@ -210,7 +225,7 @@ export default function Home() {
                   <p className="text-xs sm:text-sm uppercase tracking-wide text-[rgba(254,250,224,0.75)] font-medium mb-1.5">
                     Available balance
                   </p>
-                  <p className="text-4xl sm:text-5xl font-bold tracking-tight">
+                  <p className="text-4xl sm:text-3xl font-bold tracking-tight">
                     {primaryWallet.currency === "USD"
                       ? "$"
                       : primaryWallet.currency}{" "}
@@ -230,28 +245,39 @@ export default function Home() {
               </div>
 
               {/* Tags and Actions */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2 border-t border-[rgba(254,250,224,0.15)]">
-                <div className="flex flex-wrap gap-2 text-[0.65rem] sm:text-[0.7rem]">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[rgba(254,250,224,0.15)] px-2.5 py-1 border border-[rgba(254,250,224,0.18)]">
-                    <CreditCard className="w-3 h-3" />
-                    Campus card · Default
-                  </span>
-                  <span className="inline-flex items-center rounded-full bg-[rgba(254,250,224,0.12)] px-2.5 py-1 border border-[rgba(254,250,224,0.15)]">
-                    Smart budget active
-                  </span>
-                  <span className="hidden sm:inline-flex items-center rounded-full bg-[rgba(254,250,224,0.12)] px-2.5 py-1 border border-[rgba(254,250,224,0.15)]">
-                    {totalPaymentMethods} method
-                    {totalPaymentMethods !== 1 ? "s" : ""} linked
-                  </span>
-                </div>
+              <div className="flex flex-col gap-1 pt-2 ">
 
                 {/* Wallet Actions Component */}
                 <div className="flex-shrink-0">
-                  <WalletActions
-                    walletId={primaryWallet.id}
-                    paymentMethods={paymentMethods}
-                    onRefresh={fetchData}
-                  />
+                  <div className="space-y-2">
+                    <WalletActions
+                      walletId={primaryWallet.id}
+                      paymentMethods={paymentMethods}
+                      onRefresh={fetchData}
+                    />
+                    {/* Link Bank Account Button */}
+                    {me && (
+                      <>
+                        <button
+                          onClick={() => {
+                            const linkBtn = document.querySelector('[data-bank-link-trigger]') as HTMLButtonElement;
+                            linkBtn?.click();
+                          }}
+                          className="w-full text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[rgba(254,250,224,0.35)] hover:bg-[rgba(254,250,224,0.18)] hover:border-[rgba(254,250,224,0.5)] transition-all duration-200 whitespace-nowrap font-medium shadow-sm hover:shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
+                        >
+                          <Landmark className="w-3.5 h-3.5 transition-transform group-hover:scale-110 duration-200" />
+                          <span>Link Bank Account</span>
+                        </button>
+                        {/* Hidden Plaid Button */}
+                        <div className="hidden">
+                          <BankLinkButton
+                            userId={me.id}
+                            onSuccess={fetchData}
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -287,6 +313,42 @@ export default function Home() {
               </div>
             )}
 
+            {/* Dining Dollars Wallet Card */}
+            {diningDollarsWallet && (
+              <div className="rounded-[20px] sm:rounded-[24px] bg-white shadow-md hover:shadow-lg transition-all duration-300 border border-[rgba(40,54,24,0.06)] p-4 group">
+                <div className="flex justify-between items-center gap-3 mb-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      <WalletIcon className="w-3.5 h-3.5 text-[var(--sc-green)] flex-shrink-0" />
+                      <p className="text-[0.65rem] uppercase tracking-[0.2em] text-[var(--sc-green)] font-medium">
+                        Dining Dollars
+                      </p>
+                    </div>
+                    <p className="text-sm sm:text-base font-bold text-[var(--sc-green-dark)] truncate">
+                      {diningDollarsWallet.displayName}
+                    </p>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-[0.65rem] text-[var(--sc-green)] font-medium uppercase tracking-wide">
+                      Balance 
+                    </p>
+                    <p className="text-lg sm:text-xl font-bold text-[#bc6c25] whitespace-nowrap mt-0.5">
+                      ${(diningDollarsWallet.balance ?? 0).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowAddDiningDollars(true)}
+                  className="w-full px-3 py-2 rounded-lg bg-gradient-to-r from-[var(--sc-gold)] to-[var(--sc-gold-dark)] hover:from-[var(--sc-gold-dark)] hover:to-[#9a5819] text-white text-xs font-medium transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Add Dining Dollars
+                </button>
+              </div>
+            )}
+
             {/* Other Wallets */}
             {otherWallets.map((w) => (
               <div
@@ -318,8 +380,103 @@ export default function Home() {
                 </div>
               </div>
             ))}
+
+            {/* Bank Linked Account (show first one) */}
+            {bankLinkedWallets.length > 0 && (
+              <div className="rounded-[20px] sm:rounded-[24px] bg-white shadow-md hover:shadow-lg transition-all duration-300 border border-[rgba(40,54,24,0.06)] p-4 flex justify-between items-center gap-3 group cursor-pointer">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <Landmark className="w-3.5 h-3.5 text-[var(--sc-green)] flex-shrink-0" />
+                    <p className="text-[0.65rem] uppercase tracking-[0.2em] text-[var(--sc-green)] font-medium">
+                      Linked Bank
+                    </p>
+                  </div>
+                  <p className="text-lg sm:text-base font-bold text-[var(--sc-green-dark)] truncate">
+                    {bankLinkedWallets[0].displayName}
+                  </p>
+                  {bankLinkedWallets.length > 1 && (
+                    <button
+                      onClick={() => setShowAllBankAccounts(true)}
+                      className="cursor-pointer text-[0.65rem] text-[var(--sc-gold)] hover:text-[var(--sc-gold-dark)] font-medium mt-1 flex items-center gap-1"
+                    >
+                      <span>+{bankLinkedWallets.length - 1} more</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <p className="text-[0.65rem] text-[var(--sc-green)] font-medium uppercase tracking-wide">
+                    Balance
+                  </p>
+                  <p className="text-lg sm:text-xl font-bold text-[#bc6c25] whitespace-nowrap mt-0.5">
+                    ${(bankLinkedWallets[0].balance ?? 0).toFixed(2)}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </section>
+
+        {/* Bank Accounts Modal */}
+        {showAllBankAccounts && (
+          <>
+            <div
+              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
+              onClick={() => setShowAllBankAccounts(false)}
+            />
+            <div className="fixed inset-0 z-[60] flex items-center justify-center px-3 pointer-events-none">
+              <div className="w-full max-w-2xl rounded-2xl sm:rounded-3xl bg-white shadow-2xl p-4 sm:p-6 pointer-events-auto animate-in zoom-in-95 slide-in-from-bottom-4 fade-in duration-300 border border-[rgba(40,54,24,0.08)] max-h-[80vh] overflow-y-auto">
+                <div className="flex items-center justify-between mb-4 pb-3 border-b border-[rgba(40,54,24,0.08)]">
+                  <div>
+                    <p className="text-[0.65rem] sm:text-xs uppercase tracking-[0.2em] text-[var(--sc-green)]">
+                      Your Accounts
+                    </p>
+                    <h2 className="text-base sm:text-lg font-semibold text-[var(--sc-green-dark)] mt-0.5">
+                      Linked Bank Accounts
+                    </h2>
+                  </div>
+                  <button
+                    onClick={() => setShowAllBankAccounts(false)}
+                    className="w-8 h-8 rounded-full hover:bg-[var(--sc-green)]/5 flex items-center justify-center transition-colors duration-200 text-[var(--sc-green)] cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {bankLinkedWallets.map((w) => (
+                    <div
+                      key={w.id}
+                      className="rounded-xl bg-[var(--sc-cream)]/40 border border-[rgba(40,54,24,0.08)] p-4 flex justify-between items-center gap-3 hover:bg-[var(--sc-cream)]/60 transition-colors"
+                    >
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className="w-10 h-10 rounded-lg bg-[var(--sc-green)]/10 flex items-center justify-center flex-shrink-0">
+                          <Landmark className="w-5 h-5 text-[var(--sc-green-dark)]" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-[var(--sc-green-dark)] truncate">
+                            {w.displayName}
+                          </p>
+                          <p className="text-xs text-[var(--sc-green)] mt-0.5">
+                            Linked Bank Account
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-xs text-[var(--sc-green)] font-medium uppercase tracking-wide">
+                          Balance
+                        </p>
+                        <p className="text-lg font-bold text-[#bc6c25] whitespace-nowrap mt-0.5">
+                          ${(w.balance ?? 0).toFixed(2)}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
         {/* ===== RECENT TRANSACTION HIGHLIGHT ===== */}
         {latestTransaction && (
@@ -548,6 +705,17 @@ export default function Home() {
           </div>
         </section>
       </div>
+
+      {/* Add Dining Dollars Modal */}
+      {diningDollarsWallet && (
+        <AddDiningDollarsModal
+          isOpen={showAddDiningDollars}
+          onClose={() => setShowAddDiningDollars(false)}
+          onSuccess={fetchData}
+          diningDollarsWalletId={diningDollarsWallet.id}
+          availableWallets={availableWalletsForDining}
+        />
+      )}
     </main>
   );
 }

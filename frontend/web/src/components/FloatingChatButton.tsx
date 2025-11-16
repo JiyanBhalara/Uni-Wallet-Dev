@@ -15,7 +15,7 @@ export function FloatingChatButton() {
       {/* Enhanced Floating Action Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-4 right-4 sm:bottom-8 sm:right-8 h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-gradient-to-br from-[var(--sc-green)] via-[var(--sc-green)] to-[var(--sc-green-dark)] text-[var(--sc-cream)] shadow-2xl hover:shadow-[0_20px_60px_rgba(96,108,56,0.4)] transition-all duration-500 flex items-center justify-center group ${
+        className={`fixed bottom-4 right-4 sm:bottom-8 sm:right-8 h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-gradient-to-br from-[var(--sc-green)] via-[var(--sc-green)] to-[var(--sc-green-dark)] text-[var(--sc-cream)] shadow-2xl hover:shadow-[0_20px_60px_rgba(96,108,56,0.4)] transition-all duration-500 flex items-center justify-center group cursor-pointer ${
           isOpen ? "scale-0 opacity-0" : "scale-100 opacity-100"
         }`}
         style={{

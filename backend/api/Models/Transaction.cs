@@ -15,9 +15,14 @@ public class Transaction
     public DateTime Date { get; set; }
     public int WalletId { get; set; }
 
+    // Plaid integration fields
+    public string? PlaidTransactionId { get; set; }
+    public int? LinkedAccountId { get; set; }
+
     // Navigation properties
     public User User { get; set; } = null!;
     public Wallet Wallet { get; set; } = null!;
+    public LinkedAccount? LinkedAccount { get; set; }
 
     public Transaction()
     {

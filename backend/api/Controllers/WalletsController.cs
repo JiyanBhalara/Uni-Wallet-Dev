@@ -105,4 +105,88 @@ public class WalletsController : ControllerBase
 
         return $"Wallet top-up via {label}";
     }
+
+    // POST: api/wallets/{walletId}/transfer
+    [HttpPost("{walletId:int}/transfer")]
+    public async Task<IActionResult> Transfer(int walletId, [FromBody] TransferRequest req)
+    {
+        var userEmail = Request.Headers["X-User-Email"].FirstOrDefault();
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return Unauthorized(new { message = "User not authenticated" });
+        }
+
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found" });
+        }
+
+        if (req is null || req.Amount <= 0)
+        {
+            return BadRequest("Amount must be greater than 0.");
+        }
+
+        // Get destination wallet (the one receiving money)
+        var destinationWallet = await _db.Wallets.FirstOrDefaultAsync(w => w.Id == walletId && w.UserId == user.Id);
+        if (destinationWallet == null)
+        {
+            return NotFound($"Destination wallet {walletId} not found.");
+        }
+
+        // Get source wallet (the one sending money)
+        var sourceWallet = await _db.Wallets.FirstOrDefaultAsync(w => w.Id == req.SourceWalletId && w.UserId == user.Id);
+        if (sourceWallet == null)
+        {
+            return NotFound($"Source wallet {req.SourceWalletId} not found.");
+        }
+
+        // Check if source wallet has sufficient balance
+        if (sourceWallet.Balance < req.Amount)
+        {
+            return BadRequest("Insufficient balance in source wallet.");
+        }
+
+        // Perform transfer
+        sourceWallet.Balance -= req.Amount;
+        destinationWallet.Balance += req.Amount;
+
+        // Create transaction records for both wallets
+        var debitTx = new Transaction
+        {
+            UserId = user.Id,
+            WalletId = sourceWallet.Id,
+            Amount = -req.Amount, // Negative for debit
+            Merchant = $"Transfer to {destinationWallet.DisplayName}",
+            PaymentMethod = "Wallet Transfer",
+            Location = "Internal",
+            Date = DateTime.UtcNow,
+            Category = "Transfer"
+        };
+
+        var creditTx = new Transaction
+        {
+            UserId = user.Id,
+            WalletId = destinationWallet.Id,
+            Amount = req.Amount, // Positive for credit
+            Merchant = $"Transfer from {sourceWallet.DisplayName}",
+            PaymentMethod = "Wallet Transfer",
+            Location = "Internal",
+            Date = DateTime.UtcNow,
+            Category = "Transfer"
+        };
+
+        _db.Transactions.Add(debitTx);
+        _db.Transactions.Add(creditTx);
+
+        await _db.SaveChangesAsync();
+
+        return Ok(new
+        {
+            sourceWallet = new { sourceWallet.Id, sourceWallet.Balance, sourceWallet.DisplayName },
+            destinationWallet = new { destinationWallet.Id, destinationWallet.Balance, destinationWallet.DisplayName }
+        });
+    }
+
+    public record TransferRequest(int SourceWalletId, decimal Amount);
 }
