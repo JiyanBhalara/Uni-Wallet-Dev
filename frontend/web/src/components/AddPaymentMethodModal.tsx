@@ -143,7 +143,7 @@ export default function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: Pr
                 Display label
               </label>
               <input
-                className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40 transition-all duration-200"
+                className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40 transition-all duration-200"
                 placeholder={
                   type === PaymentMethodType.BankAccount
                     ? "e.g. Chase Checking"
@@ -159,7 +159,7 @@ export default function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: Pr
                 Brand (optional)
               </label>
               <input
-                className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40 transition-all duration-200"
+                className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40 transition-all duration-200"
                 placeholder={
                   type === PaymentMethodType.BankAccount ? "e.g. Chase" : "e.g. Visa, Mastercard"
                 }
@@ -175,7 +175,7 @@ export default function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: Pr
                   : "Card number"}
               </label>
               <input
-                className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40 transition-all duration-200"
+                className="w-full rounded-xl border border-[rgba(40,54,24,0.15)] px-3 py-2 text-xs sm:text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--sc-green)] focus:border-transparent bg-[var(--sc-cream)]/40 transition-all duration-200"
                 placeholder={
                   type === PaymentMethodType.BankAccount
                     ? "Enter account number"

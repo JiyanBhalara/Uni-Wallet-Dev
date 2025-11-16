@@ -12,7 +12,6 @@ public class AppDbContext : DbContext
     public DbSet<Wallet> Wallets => Set<Wallet>();
     public DbSet<Transaction> Transactions { get; set; } = null!;
 
-    public DbSet<Event> Events => Set<Event>();
     public DbSet<EventRegistration> EventRegistrations => Set<EventRegistration>();
     public DbSet<RewardSummary> RewardSummaries => Set<RewardSummary>();
     public DbSet<RewardEvent> RewardEvents => Set<RewardEvent>();
@@ -20,6 +19,10 @@ public class AppDbContext : DbContext
 
     public DbSet<PaymentMethod> PaymentMethods { get; set; } = null!;
     public DbSet<Budget> Budgets { get; set; } = null!;
+
+    
+    public DbSet<CampusEvent> Events { get; set; } = null!;
+    public DbSet<EventAttendance> EventAttendances { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

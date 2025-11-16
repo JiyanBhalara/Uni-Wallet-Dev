@@ -3,8 +3,10 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { api } from "@/lib/api";
 import { PaymentMethod } from "@/types/payment-method";
+import { EventItem } from "@/types/event";
 import WalletActions from "@/components/WalletActions";
 import AddTransactionMenu from "@/components/AddTransactionMenu";
 import {
@@ -18,6 +20,7 @@ import {
   ArrowDownRight,
   ArrowUpRight,
   Sparkles,
+  ArrowRight,
 } from "lucide-react";
 
 interface User {
@@ -48,15 +51,6 @@ interface Transaction {
   location: string;
   date: string;
   category: string;
-}
-
-interface EventItem {
-  id: number;
-  title: string;
-  startsAt: string;
-  location: string;
-  price: number;
-  currency: string;
 }
 
 export default function Home() {
@@ -220,7 +214,7 @@ export default function Home() {
                     {primaryWallet.currency === "USD"
                       ? "$"
                       : primaryWallet.currency}{" "}
-                    {primaryWallet.balance.toFixed(2)}
+                    {(primaryWallet.balance ?? 0).toFixed(2)}
                   </p>
                 </div>
                 <div className="text-left sm:text-right space-y-0.5">
@@ -316,10 +310,10 @@ export default function Home() {
                   </p>
                   <p className="text-lg sm:text-xl font-bold text-[#bc6c25] whitespace-nowrap mt-0.5">
                     {w.currency === "SWIPES"
-                      ? `${w.balance}`
+                      ? `${w.balance ?? 0}`
                       : `${
                           w.currency === "USD" ? "$" : w.currency
-                        } ${w.balance.toFixed(2)}`}
+                        } ${(w.balance ?? 0).toFixed(2)}`}
                   </p>
                 </div>
               </div>
@@ -381,7 +375,7 @@ export default function Home() {
                   }`}
                 >
                   {latestTransaction.amount < 0 ? "-" : "+"}
-                  ${Math.abs(latestTransaction.amount).toFixed(2)}
+                  ${Math.abs(latestTransaction.amount ?? 0).toFixed(2)}
                 </p>
               </div>
             </div>
@@ -470,7 +464,7 @@ export default function Home() {
                       }`}
                     >
                       {t.amount < 0 ? "-" : "+"}
-                      ${Math.abs(t.amount).toFixed(2)}
+                      ${Math.abs(t.amount ?? 0).toFixed(2)}
                     </p>
                   </div>
                 </li>
@@ -499,19 +493,19 @@ export default function Home() {
 
               {/* Events List */}
               <ul className="space-y-2 sm:space-y-2.5">
-                {events.map((e) => (
+                {events.slice(0, 5).map((e) => (
                   <li
                     key={e.id}
                     className="rounded-lg sm:rounded-xl bg-[rgba(254,250,224,0.12)] backdrop-blur-sm border border-[rgba(254,250,224,0.15)] p-2.5 sm:p-3 flex justify-between items-start gap-2 sm:gap-3 hover:bg-[rgba(254,250,224,0.18)] transition-colors duration-200 cursor-pointer"
                   >
                     <div className="flex-1 min-w-0">
                       <p className="text-[0.7rem] sm:text-xs lg:text-sm font-bold truncate">
-                        {e.title}
+                        {e.name}
                       </p>
                       <p className="text-[0.65rem] sm:text-[0.7rem] lg:text-xs opacity-90 truncate flex items-center gap-1 sm:gap-1.5 mt-0.5 sm:mt-1">
                         <Calendar className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                         <span>
-                          {new Date(e.startsAt).toLocaleDateString()}
+                          {new Date(e.startTime).toLocaleDateString()}
                         </span>
                         <span className="hidden sm:inline">·</span>
                         <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3 hidden sm:inline" />
@@ -521,15 +515,24 @@ export default function Home() {
                       </p>
                     </div>
                     <span className="text-[0.65rem] sm:text-[0.7rem] lg:text-xs font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-[rgba(254,250,224,0.15)] border border-[rgba(254,250,224,0.2)] flex-shrink-0">
-                      {e.price === 0
-                        ? "Free"
-                        : `${
-                            e.currency === "USD" ? "$" : e.currency
-                          } ${e.price.toFixed(2)}`}
+                      {(e.cost ?? 0) === 0 ? "Free" : `$${(e.cost ?? 0).toFixed(2)}`}
                     </span>
                   </li>
                 ))}
               </ul>
+
+              {/* Show All Events Link */}
+              {events.length > 5 && (
+                <Link
+                  href="/events"
+                  className="mt-3 sm:mt-4 flex items-center justify-center gap-2 p-2.5 sm:p-3 rounded-lg sm:rounded-xl bg-[rgba(254,250,224,0.1)] hover:bg-[rgba(254,250,224,0.18)] border border-[rgba(254,250,224,0.12)] hover:border-[rgba(254,250,224,0.2)] transition-all duration-200 group"
+                >
+                  <span className="text-[0.7rem] sm:text-xs lg:text-sm font-semibold">
+                    Show all {events.length} events
+                  </span>
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform duration-200" />
+                </Link>
+              )}
 
               {/* Info Banner */}
               <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 rounded-lg sm:rounded-xl bg-[rgba(254,250,224,0.1)] border border-[rgba(254,250,224,0.12)]">
@@ -567,23 +570,23 @@ function walletTypeLabel(type: number): string {
 }
 
 function formatMealPlanText(w: Wallet): string {
-  if (w.currency === "SWIPES" && w.balance < 0) {
+  if (w.currency === "SWIPES" && (w.balance ?? 0) < 0) {
     return "Unlimited meal swipes this semester";
   }
   if (w.currency === "SWIPES") {
-    return `${w.balance} swipes left`;
+    return `${w.balance ?? 0} swipes left`;
   }
   return `${
     w.currency === "USD" ? "$" : w.currency
-  } ${w.balance.toFixed(2)} remaining`;
+  } ${(w.balance ?? 0).toFixed(2)} remaining`;
 }
 
 function mealPlanDisplayValue(w: Wallet): string {
-  if (w.currency === "SWIPES" && w.balance < 0) {
+  if (w.currency === "SWIPES" && (w.balance ?? 0) < 0) {
     return "Unlimited";
   }
   if (w.currency === "SWIPES") {
-    return `${w.balance}`;
+    return `${w.balance ?? 0}`;
   }
-  return w.balance.toFixed(2);
+  return (w.balance ?? 0).toFixed(2);
 }

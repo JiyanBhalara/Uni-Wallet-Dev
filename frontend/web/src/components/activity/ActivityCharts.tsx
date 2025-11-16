@@ -39,14 +39,21 @@ interface Transaction {
   category: string;
 }
 
+interface EventAttendance {
+  totalRsvped: number;
+  attended: number;
+  missed: number;
+}
+
 interface Props {
   transactions: Transaction[];
+  eventAttendance: EventAttendance | null;
 }
 
 const CATEGORY_COLORS = ["#283618", "#606C38", "#DDA15E", "#BC6C25", "#A3B18A"];
 const CAMPUS_COLORS = ["#606C38", "#BC6C25"];
 
-export default function ActivityCharts({ transactions }: Props) {
+export default function ActivityCharts({ transactions, eventAttendance }: Props) {
   const {
     totalSpent,
     totalTopups,
@@ -55,6 +62,10 @@ export default function ActivityCharts({ transactions }: Props) {
     campusSplitData,
     monthlyData,
   } = useMemo(() => summarize(transactions), [transactions]);
+
+  // Use actual attendance data if available, otherwise fall back to transaction count
+  const attendedCount = eventAttendance?.attended ?? eventCount;
+  const rsvpedCount = eventAttendance?.totalRsvped ?? 0;
 
   return (
     <section className="space-y-3 sm:space-y-4 lg:space-y-5">
@@ -68,7 +79,7 @@ export default function ActivityCharts({ transactions }: Props) {
                   Total spent
                 </p>
                 <p className="mt-2 text-xl sm:text-2xl lg:text-3xl font-bold text-red-600">
-                  ${Math.abs(totalSpent).toFixed(2)}
+                  ${Math.abs(totalSpent ?? 0).toFixed(2)}
                 </p>
                 <p className="mt-1.5 text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] flex items-center gap-1">
                   <TrendingDown className="w-3 h-3" />
@@ -89,7 +100,7 @@ export default function ActivityCharts({ transactions }: Props) {
                   Total top-ups
                 </p>
                 <p className="mt-2 text-xl sm:text-2xl lg:text-3xl font-bold text-green-600">
-                  ${totalTopups.toFixed(2)}
+                  ${(totalTopups ?? 0).toFixed(2)}
                 </p>
                 <p className="mt-1.5 text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] flex items-center gap-1">
                   <TrendingUp className="w-3 h-3" />
@@ -110,11 +121,11 @@ export default function ActivityCharts({ transactions }: Props) {
                   Events attended
                 </p>
                 <p className="mt-2 text-xl sm:text-2xl lg:text-3xl font-bold text-[#bc6c25]">
-                  {eventCount}
+                  {attendedCount}{rsvpedCount > 0 && `/${rsvpedCount}`}
                 </p>
                 <p className="mt-1.5 text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
-                  Campus events registered
+                  {rsvpedCount > 0 ? 'Checked in / RSVP\'d' : 'Campus events registered'}
                 </p>
               </div>
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#dda15e]/20 flex items-center justify-center flex-shrink-0">
@@ -297,34 +308,34 @@ export default function ActivityCharts({ transactions }: Props) {
             </CardContent>
           </Card>
 
-          {/* Campus split pie */}
+          {/* Event Attendance pie */}
           <Card className="border-[rgba(40,54,24,0.08)] bg-white hover:shadow-md transition-shadow duration-300">
             <CardHeader className="pb-2 sm:pb-3">
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-[var(--sc-green)]/10 flex items-center justify-center">
-                  <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--sc-green-dark)]" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-[#dda15e]/10 flex items-center justify-center">
+                  <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-[#bc6c25]" />
                 </div>
                 <div>
                   <p className="text-sm sm:text-base font-bold text-[var(--sc-green-dark)]">
-                    Location Analysis
+                    Event Attendance
                   </p>
                   <p className="text-[0.65rem] sm:text-[0.7rem] text-[var(--sc-green)] mt-0.5">
-                    On vs off campus activity
+                    RSVP'd vs. Actually attended
                   </p>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="pt-0 pb-3 sm:pb-4">
-              {campusSplitData.reduce((sum, d) => sum + d.value, 0) === 0 ? (
+              {!eventAttendance || eventAttendance.totalRsvped === 0 ? (
                 <div className="flex flex-col items-center justify-center py-10 sm:py-12">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-[var(--sc-green)]/5 flex items-center justify-center mb-3">
-                    <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-[var(--sc-green)]" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-[#dda15e]/10 flex items-center justify-center mb-3">
+                    <Calendar className="w-6 h-6 sm:w-8 sm:h-8 text-[#bc6c25]" />
                   </div>
                   <p className="text-xs sm:text-sm text-[var(--sc-green-dark)] font-medium">
-                    No location data
+                    No event RSVPs yet
                   </p>
                   <p className="text-[0.7rem] sm:text-xs text-[var(--sc-green)] mt-1">
-                    Transactions will appear here
+                    Register for campus events to track attendance
                   </p>
                 </div>
               ) : (
@@ -332,7 +343,10 @@ export default function ActivityCharts({ transactions }: Props) {
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={campusSplitData}
+                        data={[
+                          { name: 'Attended', value: eventAttendance.attended },
+                          { name: 'Missed', value: eventAttendance.missed },
+                        ]}
                         dataKey="value"
                         nameKey="name"
                         cx="50%"
@@ -344,14 +358,8 @@ export default function ActivityCharts({ transactions }: Props) {
                           percent ? `${value} (${(percent * 100).toFixed(0)}%)` : `${value}`
                         }
                       >
-                        {campusSplitData.map((entry, index) => (
-                          <Cell
-                            key={entry.name}
-                            fill={CAMPUS_COLORS[index] ?? "#A3B18A"}
-                            stroke="white"
-                            strokeWidth={3}
-                          />
-                        ))}
+                        <Cell fill="#606c38" stroke="white" strokeWidth={3} />
+                        <Cell fill="#bc6c25" stroke="white" strokeWidth={3} />
                       </Pie>
                       <Tooltip
                         contentStyle={{
@@ -361,7 +369,11 @@ export default function ActivityCharts({ transactions }: Props) {
                           fontSize: '12px',
                           padding: '8px 12px',
                         }}
-                        formatter={(value: any) => [`${value} transactions`, '']}
+                        formatter={(value: any, name: any) => {
+                          const total = eventAttendance.totalRsvped;
+                          const percent = total > 0 ? ((Number(value) / total) * 100).toFixed(1) : '0.0';
+                          return [`${value} events (${percent}%)`, name];
+                        }}
                       />
                       <Legend
                         layout="vertical"

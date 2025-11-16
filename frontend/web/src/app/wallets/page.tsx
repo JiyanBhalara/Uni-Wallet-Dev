@@ -98,8 +98,8 @@ export default function WalletsPage() {
                 <p className="text-[0.7rem] text-[var(--sc-green)]">Balance</p>
                 <p className="text-xl font-semibold text-[var(--sc-gold-dark)]">
                   {w.currency === "SWIPES"
-                    ? `${w.balance} swipes`
-                    : `${w.currency} ${w.balance.toFixed(2)}`}
+                    ? `${w.balance ?? 0} swipes`
+                    : `${w.currency} ${(w.balance ?? 0).toFixed(2)}`}
                 </p>
               </div>
             </CardContent>

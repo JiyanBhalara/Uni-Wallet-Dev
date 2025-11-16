@@ -1,4 +1,5 @@
 import { Budget } from "@/types/budget";
+import { EventItem } from "@/types/event";
 import type { PaymentMethod } from "@/types/payment-method";
 import { PaymentMethodType } from "@/types/payment-method";
 
@@ -19,14 +20,15 @@ async function apiFetch<T>(url: string, options: RequestInit = {}, userEmail?: s
     throw new Error(`API request failed: ${res.status}`);
   }
 
-  return res.json();
+  // Handle empty responses (204 No Content or empty body)
+  const text = await res.text();
+  return text ? JSON.parse(text) : ({} as T);
 }
 
 export const api = {
   getMe: (userEmail: string) => apiFetch("/api/users/me", {}, userEmail),
   getWallets: (userEmail: string) => apiFetch("/api/wallets", {}, userEmail),
   getTransactions: (userEmail: string) => apiFetch("/api/transactions", {}, userEmail),
-  getEvents: (userEmail: string) => apiFetch("/api/events", {}, userEmail),
   async getPaymentMethods(userEmail: string): Promise<PaymentMethod[]> {
     const methods = await apiFetch<any[]>("/api/paymentmethods", {}, userEmail);
     // Backend sends numeric type, we just use it directly as the enum value
@@ -119,6 +121,36 @@ export const api = {
     if (!res.ok) {
       throw new Error(`CSV upload failed: ${res.status}`);
     }
+  },
+  getEvents(userEmail: string): Promise<EventItem[]> {
+    return apiFetch<EventItem[]>(`/api/events?userEmail=${encodeURIComponent(userEmail)}`);
+  },
+
+  rsvpEvent(eventId: number, userEmail: string) {
+    return apiFetch<void>(`/api/events/${eventId}/rsvp`, {
+      method: "POST",
+      body: JSON.stringify({ userEmail }),
+    });
+  },
+
+  payAndRsvpEvent(eventId: number, userEmail: string, walletId: number) {
+    return apiFetch<{ success: boolean; transactionId: string }>(`/api/events/${eventId}/pay-and-rsvp`, {
+      method: "POST",
+      body: JSON.stringify({ userEmail, walletId }),
+    });
+  },
+
+  checkInEvent(eventId: number, userEmail: string) {
+    return apiFetch<void>(`/api/events/${eventId}/checkin`, {
+      method: "POST",
+      body: JSON.stringify({ userEmail }),
+    });
+  },
+
+  getEventAttendanceSummary(userEmail: string) {
+    return apiFetch<{ totalRsvped: number; attended: number; missed: number }>(
+      `/api/events/attendance-summary?userEmail=${encodeURIComponent(userEmail)}`
+    );
   },
 };
 

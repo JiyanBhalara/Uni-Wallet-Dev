@@ -19,27 +19,38 @@ interface Transaction {
   category: string;
 }
 
+interface EventAttendance {
+  totalRsvped: number;
+  attended: number;
+  missed: number;
+}
+
 export default function ActivityPage() {
   const { data: session, status } = useSession();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [eventAttendance, setEventAttendance] = useState<EventAttendance | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchTransactions() {
+    async function fetchData() {
       if (!session?.user?.email) return;
       
       try {
-        const data = await api.getTransactions(session.user.email) as Transaction[];
-        setTransactions(data);
+        const [transactionsData, attendanceData] = await Promise.all([
+          api.getTransactions(session.user.email) as Promise<Transaction[]>,
+          api.getEventAttendanceSummary(session.user.email) as Promise<EventAttendance>
+        ]);
+        setTransactions(transactionsData);
+        setEventAttendance(attendanceData);
       } catch (error) {
-        console.error("Failed to fetch transactions:", error);
+        console.error("Failed to fetch activity data:", error);
       } finally {
         setLoading(false);
       }
     }
 
     if (status === "authenticated") {
-      fetchTransactions();
+      fetchData();
     } else if (status === "unauthenticated") {
       setLoading(false);
     }
@@ -68,7 +79,7 @@ export default function ActivityPage() {
       </h1>
 
       {/* NEW: charts / summary section */}
-      <ActivityCharts transactions={sorted} />
+      <ActivityCharts transactions={sorted} eventAttendance={eventAttendance} />
 
       {/* Existing table */}
       <Card>
@@ -113,11 +124,11 @@ export default function ActivityPage() {
                     </td>
                     <td
                       className={`py-2 pl-2 text-right font-semibold whitespace-nowrap ${
-                        t.amount < 0 ? "text-red-600" : "text-green-600"
+                        (t.amount ?? 0) < 0 ? "text-red-600" : "text-green-600"
                       }`}
                     >
-                      {t.amount < 0 ? "-" : "+"}
-                      ${Math.abs(t.amount).toFixed(2)}
+                      {(t.amount ?? 0) < 0 ? "-" : "+"}
+                      ${Math.abs(t.amount ?? 0).toFixed(2)}
                     </td>
                   </tr>
                 ))}

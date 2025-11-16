@@ -56,13 +56,13 @@ export default function BudgetTracking({ budgets, transactions }: Props) {
             <span>
               Total spent:{" "}
               <span className="font-bold text-[var(--sc-green-dark)]">
-                ${Math.abs(totalSpent).toFixed(2)}
+                ${Math.abs(totalSpent ?? 0).toFixed(2)}
               </span>
             </span>
             <span>
               Total budget:{" "}
               <span className="font-bold text-[var(--sc-green-dark)]">
-                ${totalLimit.toFixed(2)}
+                ${(totalLimit ?? 0).toFixed(2)}
               </span>
             </span>
           </div>
@@ -79,7 +79,7 @@ export default function BudgetTracking({ budgets, transactions }: Props) {
                       {row.category}
                     </p>
                     <p className="text-xs sm:text-sm md:text-base text-[var(--sc-green)] mt-0.5">
-                      ${row.spent.toFixed(2)} of ${row.limit.toFixed(2)}
+                      ${(row.spent ?? 0).toFixed(2)} of ${(row.limit ?? 0).toFixed(2)}
                     </p>
                   </div>
                   <div className="text-right">
