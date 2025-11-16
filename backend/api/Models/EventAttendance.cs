@@ -16,4 +16,9 @@ public class EventAttendance
 
     public DateTime? RsvpedAt { get; set; }
     public DateTime? CheckedInAt { get; set; }
+
+    // Track if reward points have been awarded
+    public bool RsvpRewardAwarded { get; set; }
+    public bool PaidEventBonusAwarded { get; set; }
+    public bool CheckInRewardAwarded { get; set; }
 }

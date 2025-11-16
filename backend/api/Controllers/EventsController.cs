@@ -20,6 +20,65 @@ public class EventsController : ControllerBase
     private async Task<User?> GetUserByEmailAsync(string email) =>
         await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
 
+    private async Task AwardPoints(int userId, int points, string reason)
+    {
+        // Get or create reward summary
+        var summary = await _db.RewardSummaries
+            .FirstOrDefaultAsync(r => r.UserId == userId);
+
+        if (summary == null)
+        {
+            summary = new RewardSummary
+            {
+                UserId = userId,
+                Points = 0,
+                Tier = "Bronze",
+                NextTierAt = 500
+            };
+            _db.RewardSummaries.Add(summary);
+        }
+
+        // Add points
+        summary.Points += points;
+
+        // Update tier if necessary
+        UpdateTier(summary);
+
+        // Create reward event
+        var rewardEvent = new RewardEvent
+        {
+            UserId = userId,
+            OccurredAt = DateTime.UtcNow,
+            PointsDelta = points,
+            Reason = reason
+        };
+        _db.RewardEvents.Add(rewardEvent);
+    }
+
+    private void UpdateTier(RewardSummary summary)
+    {
+        if (summary.Points >= 2000)
+        {
+            summary.Tier = "Platinum";
+            summary.NextTierAt = 5000;
+        }
+        else if (summary.Points >= 1000)
+        {
+            summary.Tier = "Gold";
+            summary.NextTierAt = 2000;
+        }
+        else if (summary.Points >= 500)
+        {
+            summary.Tier = "Silver";
+            summary.NextTierAt = 1000;
+        }
+        else
+        {
+            summary.Tier = "Bronze";
+            summary.NextTierAt = 500;
+        }
+    }
+
     public record EventDto(
         int Id,
         string EventCode,
@@ -101,6 +160,13 @@ public class EventsController : ControllerBase
             att.RsvpedAt ??= DateTime.UtcNow;
         }
 
+        // Award RSVP points (5 points) if not already awarded
+        if (!att.RsvpRewardAwarded)
+        {
+            await AwardPoints(user.Id, 5, $"RSVP for event: {ev.Name}");
+            att.RsvpRewardAwarded = true;
+        }
+
         await _db.SaveChangesAsync();
         return Ok();
     }
@@ -168,6 +234,20 @@ public class EventsController : ControllerBase
                 att.RsvpedAt ??= DateTime.UtcNow;
             }
 
+            // Award RSVP points (5 points) if not already awarded
+            if (!att.RsvpRewardAwarded)
+            {
+                await AwardPoints(user.Id, 5, $"RSVP for event: {ev.Name}");
+                att.RsvpRewardAwarded = true;
+            }
+
+            // Award paid event bonus (5 additional points) if event has cost
+            if (ev.Cost > 0 && !att.PaidEventBonusAwarded)
+            {
+                await AwardPoints(user.Id, 5, $"Paid event bonus: {ev.Name}");
+                att.PaidEventBonusAwarded = true;
+            }
+
             await _db.SaveChangesAsync();
             await transaction.CommitAsync();
 
@@ -219,10 +299,24 @@ public class EventsController : ControllerBase
                 att.Rsvped = true;
                 att.RsvpedAt ??= DateTime.UtcNow;
             }
+
+            // Award RSVP points if not already awarded
+            if (!att.RsvpRewardAwarded)
+            {
+                await AwardPoints(user.Id, 5, $"RSVP for event: {ev.Name}");
+                att.RsvpRewardAwarded = true;
+            }
         }
 
         att.CheckedIn = true;
         att.CheckedInAt = DateTime.UtcNow;
+
+        // Award check-in points (5 points) if not already awarded
+        if (!att.CheckInRewardAwarded)
+        {
+            await AwardPoints(user.Id, 5, $"Checked in to event: {ev.Name}");
+            att.CheckInRewardAwarded = true;
+        }
 
         await _db.SaveChangesAsync();
         return Ok();

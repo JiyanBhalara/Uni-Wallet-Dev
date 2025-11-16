@@ -3,7 +3,7 @@ import { EventItem } from "@/types/event";
 import type { PaymentMethod } from "@/types/payment-method";
 import { PaymentMethodType } from "@/types/payment-method";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5234";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 async function apiFetch<T>(url: string, options: RequestInit = {}, userEmail?: string): Promise<T> {
   const res = await fetch(`${API_BASE}${url}`, {
@@ -151,6 +151,50 @@ export const api = {
     return apiFetch<{ totalRsvped: number; attended: number; missed: number }>(
       `/api/events/attendance-summary?userEmail=${encodeURIComponent(userEmail)}`
     );
+  },
+
+  // Rewards endpoints
+  getRewardsBalance(userEmail: string) {
+    return apiFetch<{ points: number; tier: string; nextTierAt: number }>(
+      `/api/rewards/balance?userEmail=${encodeURIComponent(userEmail)}`
+    );
+  },
+
+  getRewardsHistory(userEmail: string) {
+    return apiFetch<Array<{
+      id: number;
+      userId: number;
+      occurredAt: string;
+      pointsDelta: number;
+      reason: string;
+    }>>(`/api/rewards/history?userEmail=${encodeURIComponent(userEmail)}`);
+  },
+
+  getRecommendedEvents(userEmail: string) {
+    return apiFetch<Array<{
+      id: number;
+      eventCode: string;
+      name: string;
+      category: string;
+      location: string;
+      startTime: string;
+      endTime: string;
+      cost: number;
+      recommendationReason: string;
+    }>>(`/api/rewards/recommendations?userEmail=${encodeURIComponent(userEmail)}`);
+  },
+
+  redeemPoints(userEmail: string, walletId: number, pointsToRedeem: number) {
+    return apiFetch<{
+      success: boolean;
+      pointsRedeemed: number;
+      cashbackAmount: number;
+      remainingPoints: number;
+      newBalance: number;
+    }>(`/api/rewards/redeem`, {
+      method: "POST",
+      body: JSON.stringify({ userEmail, walletId, pointsToRedeem }),
+    });
   },
 };
 

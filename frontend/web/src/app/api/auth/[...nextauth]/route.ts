@@ -2,7 +2,9 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  secret: process.env.AUTH_SECRET || "fallback-secret-for-development-only",
+  trustHost: true,
+  secret: process.env.AUTH_SECRET,
+  basePath: "/api/auth",
   pages: {
     signIn: "/login",
   },

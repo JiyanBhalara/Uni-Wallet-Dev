@@ -177,7 +177,7 @@ public class GmailEmailService : IEmailService
             </div>
 
             <p style=""text-align: center; margin-top: 30px;"">
-                <a href=\""http://localhost:3000/budgeting\"" class=\""button\"">View Full Budget Details</a>
+                <a href=\""http://localhost:3001/budgeting\"" class=\""button\"">View Full Budget Details</a>
             </p>
 
             <p style=\""color: #606C38; font-size: 14px; margin-top: 20px;\"">
@@ -291,7 +291,7 @@ public class GmailEmailService : IEmailService
             </div>
 
             <p style=""text-align: center; margin-top: 30px;"">
-                <a href=""http://localhost:3000/budgeting"" class=""button"">Adjust Budget Settings</a>
+                <a href=""http://localhost:3001/budgeting"" class=""button"">Adjust Budget Settings</a>
             </p>
 
             <p style=""color: #991B1B; font-size: 14px; margin-top: 20px; font-weight: bold;"">
