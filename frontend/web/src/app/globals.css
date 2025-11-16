@@ -1,4 +1,6 @@
-@import "tailwindcss";
+@import "tailwindcss/theme" layer(theme);
+@import "tailwindcss/preflight" layer(base);
+@import "tailwindcss/utilities" layer(utilities);
 
 :root {
   --sc-green: #606c38;
@@ -64,6 +66,76 @@ body {
   }
 }
 
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes slide-in-from-bottom {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
 .animate-bounce-in {
   animation: bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
@@ -75,3 +147,40 @@ body {
 .animate-spin-slow {
   animation: spin-slow 2s linear infinite;
 }
+
+.animate-slide-in-from-bottom {
+  animation: slide-in-from-bottom 0.3s ease-out;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom focus ring */
+*:focus-visible {
+  outline: 2px solid var(--sc-green);
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+/* Smooth hover effects */
+button, a {
+  transition: all 0.3s ease;
+}
+
+/* Glass morphism utility */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(135deg, var(--sc-green), var(--sc-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+

@@ -187,7 +187,7 @@ export default function Home() {
             <div className="absolute top-0 right-0 w-40 h-40 sm:w-56 sm:h-56 bg-white/5 rounded-full blur-3xl -mr-20 sm:-mr-28 -mt-20 sm:-mt-28 group-hover:bg-white/8 transition-colors duration-500" />
             <div className="absolute bottom-0 left-0 w-32 h-32 sm:w-44 sm:h-44 bg-black/5 rounded-full blur-2xl -ml-16 sm:-ml-22 -mb-16 sm:-mb-22" />
 
-            <div className="relative z-10 space-y-5 sm:space-y-6">
+            <div className="relative space-y-5 sm:space-y-6">
               {/* Card Header */}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">

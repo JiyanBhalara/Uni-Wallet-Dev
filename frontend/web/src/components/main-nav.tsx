@@ -12,7 +12,8 @@ import {
   Calendar, 
   Gift, 
   Target,
-  LogOut 
+  LogOut,
+  Brain
 } from "lucide-react";
 
 const links = [
@@ -20,6 +21,7 @@ const links = [
   { href: "/wallets", label: "Wallets", icon: Wallet },
   { href: "/activity", label: "Activity", icon: Activity },
   { href: "/budgeting", label: "Budget & Goals", icon: Target },
+  { href: "/financial-coach", label: "Financial Coach", icon: Brain },
   { href: "/events", label: "Campus Life", icon: Calendar },
   { href: "/rewards", label: "Rewards", icon: Gift },
 ];
@@ -28,8 +30,8 @@ export function MainNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex md:flex-row flex-col md:items-center gap-1 sm:gap-1.5 w-full md:w-auto">
-      <div className="flex md:flex-row flex-col md:items-center gap-1 sm:gap-1.5 w-full md:w-auto">
+    <nav className="flex flex-col gap-1 sm:gap-1.5 w-full">
+      <div className="flex flex-col gap-1 sm:gap-1.5 w-full">
         {links.map((link) => {
           const active =
             link.href === "/"
@@ -39,11 +41,11 @@ export function MainNav() {
           const Icon = link.icon;
 
           return (
-            <Link key={link.href} href={link.href} className="w-full md:w-auto">
+            <Link key={link.href} href={link.href} className="w-full">
               <Button
                 variant={active ? "primary" : "ghost"}
                 className={cn(
-                  "text-[0.7rem] sm:text-xs lg:text-sm px-3 sm:px-4 lg:px-5 py-2 sm:py-2.5 whitespace-nowrap font-medium transition-all duration-200 w-full md:w-auto justify-start md:justify-center",
+                  "text-[0.7rem] sm:text-xs lg:text-sm px-3 sm:px-4 py-2 sm:py-2.5 whitespace-nowrap font-medium transition-all duration-200 w-full justify-start",
                   active && "shadow-sm"
                 )}
               >
@@ -55,11 +57,11 @@ export function MainNav() {
         })}
       </div>
       
-      <div className="md:ml-2 lg:ml-3 pt-2 md:pt-0 border-t md:border-t-0 md:border-l border-[rgba(40,54,24,0.08)] md:pl-2 lg:pl-3 mt-2 md:mt-0">
+      <div className="pt-2 border-t border-[rgba(40,54,24,0.08)] mt-2">
         <Button
           variant="ghost"
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="text-[0.7rem] sm:text-xs lg:text-sm px-3 sm:px-4 lg:px-5 py-2 sm:py-2.5 whitespace-nowrap text-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-200 font-medium w-full md:w-auto justify-start md:justify-center"
+          className="text-[0.7rem] sm:text-xs lg:text-sm px-3 sm:px-4 py-2 sm:py-2.5 whitespace-nowrap text-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-200 font-medium w-full justify-start"
         >
           <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2" />
           Logout

@@ -56,7 +56,7 @@ public class GmailEmailService : IEmailService
         var smtpPort = int.Parse(_config["Email:SmtpPort"] ?? "587");
         var senderEmail = _config["Email:SenderEmail"];
         var senderPassword = _config["Email:SenderPassword"];
-        var senderName = _config["Email:SenderName"] ?? "Smart Campus Wallet";
+        var senderName = _config["Email:SenderName"] ?? "UniPay";
 
         if (string.IsNullOrEmpty(senderEmail) || string.IsNullOrEmpty(senderPassword))
         {
@@ -177,20 +177,20 @@ public class GmailEmailService : IEmailService
             </div>
 
             <p style=""text-align: center; margin-top: 30px;"">
-                <a href=""http://localhost:3000/budgeting"" class=""button"">View Full Budget Details</a>
+                <a href=\""http://localhost:3000/budgeting\"" class=\""button\"">View Full Budget Details</a>
             </p>
 
-            <p style=""color: #606C38; font-size: 14px; margin-top: 20px;"">
+            <p style=\""color: #606C38; font-size: 14px; margin-top: 20px;\"">
                 Keep track of your spending to avoid exceeding your budget. You can adjust your budget limits anytime from your dashboard.
             </p>
         </div>
-        <div class=""footer"">
-            <p>© 2025 Smart Campus Wallet. All rights reserved.</p>
+        <div class=\""footer\"">
+            <p>© 2025 UniPay. Smarter Wallet, Smarter You.</p>
             <p>This is an automated budget alert. Please do not reply to this email.</p>
         </div>
     </div>
 </body>
-</html>";
+</html>\";
     }
 
     private string GenerateOverBudgetEmail(

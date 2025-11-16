@@ -1,6 +1,10 @@
 using SmartCampusWallet.Api.Data;
 using SmartCampusWallet.Api.Services;
 using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
+
+// Load .env file
+Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +36,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Register services
 builder.Services.AddScoped<IEmailService, GmailEmailService>();
 builder.Services.AddScoped<BudgetAlertService>();
+builder.Services.AddSingleton<AIChatService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
