@@ -1,0 +1,32 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 8080",
+    "build": "next build",
+    "start": "next start -p 8080",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.17",
+    "html2canvas-pro": "^1.5.13",
+    "jspdf": "^3.0.3",
+    "lucide-react": "^0.553.0",
+    "next": "16.0.3",
+    "next-auth": "^5.0.0-beta.30",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-plaid-link": "^4.1.1",
+    "recharts": "^3.4.1",
+    "tailwindcss": "^4.1.17"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.3",
+    "typescript": "^5"
+  }
+}
