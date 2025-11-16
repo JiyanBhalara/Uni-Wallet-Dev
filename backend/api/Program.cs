@@ -10,7 +10,7 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
-
+ 
 // Add CORS
 builder.Services.AddCors(options =>
 {
