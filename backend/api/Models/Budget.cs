@@ -26,4 +26,7 @@ public class Budget
 
     // for 80% notifications – we only want to send once per period
     public DateTime? LastAlertSentAt { get; set; }
+    
+    // Track if 100% alert has been sent this period
+    public bool OverBudgetAlertSent { get; set; } = false;
 }

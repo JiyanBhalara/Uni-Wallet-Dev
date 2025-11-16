@@ -1,6 +1,5 @@
 // Services/BudgetAlertService.cs
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using SmartCampusWallet.Api.Data;
 using SmartCampusWallet.Api.Models;
 
@@ -10,58 +9,40 @@ public class BudgetAlertService
 {
     private readonly AppDbContext _db;
     private readonly IEmailService _email;
-    private readonly ILogger<BudgetAlertService> _logger;
 
-    public BudgetAlertService(AppDbContext db, IEmailService email, ILogger<BudgetAlertService> logger)
+    public BudgetAlertService(AppDbContext db, IEmailService email)
     {
         _db = db;
         _email = email;
-        _logger = logger;
     }
 
     public async Task CheckAndNotifyAsync(int userId, string userEmail, Transaction transaction)
     {
-        _logger.LogInformation("🔍 CheckAndNotifyAsync called for UserId={UserId}, Email={Email}, Amount={Amount}, Category={Category}",
-            userId, userEmail, transaction.Amount, transaction.Category);
-
         // Only care about spending (negative amounts)
-        if (transaction.Amount >= 0)
-        {
-            _logger.LogInformation("⏭️ Skipping: Amount is positive (income), not spending");
-            return;
-        }
+        if (transaction.Amount >= 0) return;
 
         var category = (transaction.Category ?? "Other").Trim();
         if (string.IsNullOrEmpty(category)) category = "Other";
-
-        _logger.LogInformation("📂 Category: {Category}", category);
 
         // Get user name for email personalization
         var user = await _db.Users.FindAsync(userId);
         var userName = user?.FullName ?? "User";
 
-        _logger.LogInformation("👤 User: {UserName}", userName);
-
         var budgets = await _db.Budgets
             .Where(b => b.UserId == userId && b.IsActive && b.Category == category)
             .ToListAsync();
 
-        _logger.LogInformation("💰 Found {BudgetCount} active budget(s) for category {Category}", budgets.Count, category);
-
-        if (!budgets.Any())
-        {
-            _logger.LogInformation("⏭️ No active budgets found for this category. Skipping.");
-            return;
-        }
+        if (!budgets.Any()) return;
 
         foreach (var budget in budgets)
         {
-            _logger.LogInformation("📊 Checking budget: Id={BudgetId}, Limit={Limit}, Period={Period}",
-                budget.Id, budget.LimitAmount, budget.PeriodType);
-
             var (periodStart, periodEnd) = GetCurrentPeriodRange(budget.PeriodType);
 
-            _logger.LogInformation("📅 Period: {Start} to {End}", periodStart, periodEnd);
+            // Reset flags if we're in a new period
+            if (budget.LastAlertSentAt != null && budget.LastAlertSentAt < periodStart)
+            {
+                budget.OverBudgetAlertSent = false;
+            }
 
             // Get all transactions in this period for this category
             var periodTransactions = await _db.Transactions
@@ -74,31 +55,32 @@ public class BudgetAlertService
                 .OrderByDescending(t => t.Date)
                 .ToListAsync();
 
-            _logger.LogInformation("🧾 Found {TransactionCount} transactions in period", periodTransactions.Count);
-
             var spentInPeriod = periodTransactions.Sum(t => t.Amount);
             var spentPositive = Math.Abs(spentInPeriod);
-
-            _logger.LogInformation("💸 Spent in period: ${Spent} / ${Limit} = {Ratio:P1}",
-                spentPositive, budget.LimitAmount, spentPositive / budget.LimitAmount);
-
-            if (spentPositive <= 0)
-            {
-                _logger.LogInformation("⏭️ No spending in this period. Skipping.");
-                continue;
-            }
+            if (spentPositive <= 0) continue;
 
             var ratio = spentPositive / budget.LimitAmount;
 
-            _logger.LogInformation("🚦 Ratio check: {Ratio:P1} >= 80%? {IsOver80}. LastAlert: {LastAlert}",
-                ratio, ratio >= 0.8m, budget.LastAlertSentAt);
+            // Determine if we should send an alert
+            bool shouldSendAlert = false;
+            bool isOver100 = ratio >= 1.0m;
 
-            // Only send once per period once they cross 80%
-            if (ratio >= 0.8m &&
-                (budget.LastAlertSentAt == null || budget.LastAlertSentAt < periodStart))
+            // Send alert if:
+            // 1. Over 80% and no alert sent this period yet, OR
+            // 2. Over 100% and haven't sent 100% alert this period yet
+            if (ratio >= 0.8m && (budget.LastAlertSentAt == null || budget.LastAlertSentAt < periodStart))
             {
-                _logger.LogWarning("⚠️ ALERT THRESHOLD CROSSED! Preparing to send email...");
+                // First alert (80%+)
+                shouldSendAlert = true;
+            }
+            else if (isOver100 && budget.LastAlertSentAt != null && !budget.OverBudgetAlertSent)
+            {
+                // Second alert (100%+) - only if we haven't sent 100% alert yet
+                shouldSendAlert = true;
+            }
 
+            if (shouldSendAlert)
+            {
                 // Prepare transaction summaries for email
                 var recentTransactionSummaries = periodTransactions
                     .Take(10)
@@ -111,35 +93,23 @@ public class BudgetAlertService
                     })
                     .ToList();
 
-                _logger.LogInformation("📧 Sending email to {Email} with {TransactionCount} transactions",
-                    userEmail, recentTransactionSummaries.Count);
-                _logger.LogWarning("📮 EMAIL RECIPIENT: {Email}", userEmail);
-                _logger.LogWarning("👤 USER NAME: {UserName}", userName);
+                await _email.SendBudgetAlertAsync(
+                    userEmail,
+                    userName,
+                    category,
+                    budget.LimitAmount,
+                    spentPositive,
+                    ratio,
+                    recentTransactionSummaries
+                );
 
-                try
+                budget.LastAlertSentAt = DateTime.UtcNow;
+                
+                // Mark that we've sent the 100% alert
+                if (isOver100)
                 {
-                    await _email.SendBudgetAlertAsync(
-                        userEmail,
-                        userName,
-                        category,
-                        budget.LimitAmount,
-                        spentPositive,
-                        ratio,
-                        recentTransactionSummaries
-                    );
-
-                    budget.LastAlertSentAt = DateTime.UtcNow;
-                    _logger.LogInformation("✅ Email sent successfully! LastAlertSentAt updated to {Time}", budget.LastAlertSentAt);
+                    budget.OverBudgetAlertSent = true;
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "❌ Failed to send budget alert email");
-                    throw;
-                }
-            }
-            else
-            {
-                _logger.LogInformation("⏭️ Alert condition not met. Skipping email.");
             }
         }
 

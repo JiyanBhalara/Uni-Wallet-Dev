@@ -26,13 +26,6 @@ public class GmailEmailService : IEmailService
         decimal ratio,
         List<TransactionSummary> recentTransactions)
     {
-        _logger.LogInformation("📧 GmailEmailService.SendBudgetAlertAsync called");
-        _logger.LogInformation("   To: {Email}", toEmail);
-        _logger.LogInformation("   User: {UserName}", userName);
-        _logger.LogInformation("   Category: {Category}", category);
-        _logger.LogInformation("   Spent/Limit: ${Spent}/${Limit} ({Ratio:P1})", spent, limit, ratio);
-        _logger.LogInformation("   Transaction Count: {Count}", recentTransactions?.Count ?? 0);
-
         try
         {
             var isOverBudget = ratio >= 1.0m;
@@ -40,57 +33,43 @@ public class GmailEmailService : IEmailService
                 ? $"⚠️ Budget Exceeded Alert - {category}"
                 : $"⚠️ Budget Warning - {category} at {ratio:P0}";
 
-            _logger.LogInformation("📝 Generating email with subject: {Subject}", subject);
-
             var htmlBody = isOverBudget
                 ? GenerateOverBudgetEmail(userName, category, limit, spent, ratio, recentTransactions)
                 : GenerateWarningEmail(userName, category, limit, spent, ratio, recentTransactions);
 
-            _logger.LogInformation("📤 Calling SendEmailAsync...");
             await SendEmailAsync(toEmail, subject, htmlBody);
 
             _logger.LogInformation(
-                "✅ Budget alert email sent successfully to {Email}: Category {Category} is at {Ratio:P0}",
+                "Budget alert email sent to {Email}: Category {Category} is at {Ratio:P0}",
                 toEmail, category, ratio);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "❌ Failed to send budget alert email to {Email}", toEmail);
+            _logger.LogError(ex, "Failed to send budget alert email to {Email}", toEmail);
             throw;
         }
     }
 
     private async Task SendEmailAsync(string toEmail, string subject, string htmlBody)
     {
-        _logger.LogInformation("🔧 SendEmailAsync: Reading configuration...");
-
         var smtpHost = _config["Email:SmtpHost"] ?? "smtp.gmail.com";
         var smtpPort = int.Parse(_config["Email:SmtpPort"] ?? "587");
         var senderEmail = _config["Email:SenderEmail"];
         var senderPassword = _config["Email:SenderPassword"];
         var senderName = _config["Email:SenderName"] ?? "Smart Campus Wallet";
 
-        _logger.LogInformation("📮 SMTP Configuration:");
-        _logger.LogInformation("   Host: {Host}", smtpHost);
-        _logger.LogInformation("   Port: {Port}", smtpPort);
-        _logger.LogInformation("   Sender: {Sender}", senderEmail);
-        _logger.LogInformation("   Password configured: {HasPassword}", !string.IsNullOrEmpty(senderPassword));
-        _logger.LogInformation("   Sender Name: {SenderName}", senderName);
-
         if (string.IsNullOrEmpty(senderEmail) || string.IsNullOrEmpty(senderPassword))
         {
-            _logger.LogWarning("❌ Email credentials not configured. Email not sent.");
+            _logger.LogWarning("Email credentials not configured. Email not sent.");
             return;
         }
 
-        _logger.LogInformation("🔌 Creating SMTP client...");
         using var client = new SmtpClient(smtpHost, smtpPort)
         {
             EnableSsl = true,
             Credentials = new NetworkCredential(senderEmail, senderPassword)
         };
 
-        _logger.LogInformation("✉️ Creating mail message...");
         var mailMessage = new MailMessage
         {
             From = new MailAddress(senderEmail, senderName),
@@ -100,24 +79,8 @@ public class GmailEmailService : IEmailService
         };
 
         mailMessage.To.Add(toEmail);
-        _logger.LogInformation("📬 Recipient added: {To}", toEmail);
 
-        _logger.LogInformation("🚀 Sending email via SMTP...");
-        try
-        {
-            await client.SendMailAsync(mailMessage);
-            _logger.LogInformation("✅ SMTP SendMailAsync completed successfully");
-        }
-        catch (SmtpException smtpEx)
-        {
-            _logger.LogError(smtpEx, "❌ SMTP Error: StatusCode={StatusCode}", smtpEx.StatusCode);
-            throw;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "❌ General error sending email");
-            throw;
-        }
+        await client.SendMailAsync(mailMessage);
     }
 
     private string GenerateWarningEmail(
